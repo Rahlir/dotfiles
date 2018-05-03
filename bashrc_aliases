@@ -1,0 +1,35 @@
+# File where all aliases should be
+alias q='exit'
+alias c='clear && tmux clear-history'
+alias ll='ls -alF'
+alias lsa='ls -a'
+alias mkdirv='mkdir -v'
+
+alias home='cd ~'
+alias dev='cd ~/Development'
+alias phys='cd ~/Development/Physics'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+alias gcom='git commit -m'
+alias gst='git status'
+alias gmod='git add -u'
+alias config='git --git-dir=$HOME/.dotconfig --work-tree=$HOME'
+
+alias powerlinedir='cd /anaconda3/lib/python3.6/site-packages/powerline'
+alias tmux-reload='tmux source $HOME/.tmux.conf'
+alias base16-colortest='. $HOME/.config/base16-shell/colortest'
+
+# Shortcuts to rc files
+alias vimrc='vim ~/.vimrc'
+alias bashrc='vim ~/.bashrc'
+alias aliases='vim ~/.bashrc_aliases'
+alias reload='source ~/.bash_profile'
+
+# SSH shortcut
+alias wall-e='ssh wall-e.karlov.mff.cuni.cz'
+
+# Applications shortcuts
+alias vmd='/Applications/VMD\ 1.9.3.app/Contents/Resources/VMD.app/Contents/MacOS/VMD'
+alias temp='osx-cpu-temp'
