@@ -5,7 +5,6 @@ test -d ../.origdot && mv -vf ../.origdot ../.origdotold
 mkdir -vp ../.origdot/.config
 
 for file in *; do
-	echo $file
 	if [ "$file" == "README.md" ] || [ "$file" == "bootstrap.sh" ]; then
 		continue;
 	fi
