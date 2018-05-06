@@ -1,13 +1,8 @@
-# Define PATH
-# Added by Anaconda3 5.0.0 installer
-export PATH="/anaconda3/bin:$PATH"
-# Setting PATH for Python 3.6
-export PATH="/Library/Frameworks/Python.framework/Versions/3.6/bin:$PATH"
-# Lammps directory
-export PATH="/usr/local/Cellar/lammps/2017-08-11_3/bin:$PATH"
-
-# Define CLASSPATH for Java
-export CLASSPATH="/Users/rahlir/Development/Java/Jars/mysql-connector-java-5.1.44-bin.jar:$CLASSPATH"
+if [ -f ~/.bashrc_mac ]; then
+	source ~/.bashrc_mac
+elif [ -f ~/.bashrc_linux ]; then
+	source ~/.basrhc_linux
+fi
 
 # Redirecting to aliases file
 if [ -f ~/.bashrc_aliases ]; then
@@ -15,9 +10,7 @@ if [ -f ~/.bashrc_aliases ]; then
 fi
 
 # Add colors
-d=/Users/rahlir/.dircolors/dircolors.base16
-test -r $d && eval "$(gdircolors $d)" # && echo "Dircolors Loaded"
-alias ls='gls --color'
+test -r $d && eval "$(dircolors $d)" # && echo "Dircolors Loaded"
 
 # Powerline
 if [ -d "$HOME/.local/bin" ]; then
@@ -27,16 +20,8 @@ export POWERLINE_COMMAND=powerline
 powerline-daemon -q
 POWERLINE_BASH_CONTINUATION=1
 POWERLINE_BASH_SELECT=1
-. /anaconda3/lib/python3.6/site-packages/powerline/bindings/bash/powerline.sh
+. $POWERLINEDIR
 
-# Add all autocompletions if any are installed
-if [ -d /usr/local/etc/bash_completion.d ]; then
-	for F in "/usr/local/etc/bash_completion.d/"*; do
-		if [ -f "${F}" ]; then
-			source "${F}";
-		fi
-	done
-fi
 
 BASE16_SHELL=$HOME/.config/base16-shell/
 [ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
