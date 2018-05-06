@@ -1,0 +1,30 @@
+{
+	"name": "Default color scheme for shell prompts",
+	"groups": {
+		"hostname":         { "fg": "brightyellow", "bg": "mediumorange", "attrs": [] },
+		"environment":      { "fg": "white", "bg": "darkestgreen", "attrs": [] },
+		"mode":             { "fg": "darkestgreen", "bg": "brightgreen", "attrs": ["bold"] },
+		"attached_clients": { "fg": "white", "bg": "darkestgreen", "attrs": [] },
+    "gitstatus":                 { "fg": "black",           "bg": "extra", "attrs": [] },
+    "gitstatus_branch":          { "fg": "black",           "bg": "extra", "attrs": [] },
+    "gitstatus_branch_clean":    { "fg": "green",           "bg": "extra", "attrs": [] },
+    "gitstatus_branch_dirty":    { "fg": "black",           "bg": "extra", "attrs": [] },
+    "gitstatus_branch_detached": { "fg": "mediumpurple",    "bg": "extra", "attrs": [] },
+    "gitstatus_tag":             { "fg": "darkcyan",        "bg": "extra", "attrs": [] },
+    "gitstatus_behind":          { "fg": "black",          "bg": "extra", "attrs": [] },
+    "gitstatus_ahead":           { "fg": "black",          "bg": "extra", "attrs": [] },
+    "gitstatus_staged":          { "fg": "green",           "bg": "extra", "attrs": [] },
+    "gitstatus_unmerged":        { "fg": "brightred",       "bg": "extra", "attrs": [] },
+    "gitstatus_changed":         { "fg": "brightred",    "bg": "extra", "attrs": [] },
+    "gitstatus_untracked":       { "fg": "brightyellow", "bg": "extra", "attrs": [] },
+    "gitstatus_stashed":         { "fg": "darkblue",        "bg": "extra", "attrs": [] },
+    "gitstatus:divider":         { "fg": "black",           "bg": "extra", "attrs": [] }
+	},
+	"mode_translations": {
+		"vicmd": {
+			"groups": {
+				"mode": {"fg": "darkestcyan", "bg": "white", "attrs": ["bold"]}
+			}
+		}
+	}
+}
