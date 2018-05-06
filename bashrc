@@ -16,7 +16,7 @@ fi
 
 # Add colors
 d=/Users/rahlir/.dircolors/dircolors.base16
-test -r $d && eval "$(gdircolors $d)"
+test -r $d && eval "$(gdircolors $d)" # && echo "Dircolors Loaded"
 alias ls='gls --color'
 
 # Powerline
