@@ -10,7 +10,7 @@ export PATH="/usr/local/Cellar/lammps/2017-08-11_3/bin:$PATH"
 export CLASSPATH="/Users/rahlir/Development/Java/Jars/mysql-connector-java-5.1.44-bin.jar:$CLASSPATH"
 
 DIRCOLORSDIR='/Users/rahlir/.dircolors/dircolors.base16'
-POWERLINEDIR='/anaconda3/lib/python3.6/site-packages/powerline/bindings/bash/powerline.sh'
+POWERLINEDIR='/anaconda3/lib/python3.6/site-packages/powerline'
 COMPLETIONDIR='/usr/local/etc/bash_completion.d'
 
 alias dircolors='gdircolors'
