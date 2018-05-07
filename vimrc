@@ -8,6 +8,7 @@ Plug 'itchyny/lightline.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'davidhalter/jedi-vim'
+Plug 'ericpruitt/tmux.vim', {'rtp': 'vim/'}
 Plug 'ervandew/supertab'
 Plug 'christoomey/vim-tmux-navigator'
 let g:vimtex_version_check = 0

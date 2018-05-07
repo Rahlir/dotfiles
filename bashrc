@@ -1,7 +1,7 @@
 if [ -f ~/.bashrc_mac ]; then
 	source ~/.bashrc_mac
 elif [ -f ~/.bashrc_linux ]; then
-	source ~/.basrhc_linux
+	source ~/.bashrc_linux
 fi
 
 # Redirecting to aliases file
@@ -29,7 +29,7 @@ export POWERLINE_COMMAND=powerline
 powerline-daemon -q
 POWERLINE_BASH_CONTINUATION=1
 POWERLINE_BASH_SELECT=1
-. $POWERLINEDIR
+. $POWERLINEDIR/bindings/bash/powerline.sh
 
 
 BASE16_SHELL=$HOME/.config/base16-shell/

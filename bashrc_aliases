@@ -17,7 +17,7 @@ alias gst='git status'
 alias gmod='git add -u'
 alias config='git --git-dir=$HOME/.dotconfig --work-tree=$HOME'
 
-alias powerlinedir='cd /anaconda3/lib/python3.6/site-packages/powerline'
+alias powerlinedir='cd $POWERLINEDIR'
 alias tmux-reload='tmux source $HOME/.tmux.conf'
 alias base16-colortest='. $HOME/.config/base16-shell/colortest'
 
@@ -25,11 +25,9 @@ alias base16-colortest='. $HOME/.config/base16-shell/colortest'
 alias vimrc='vim ~/.vimrc'
 alias bashrc='vim ~/.bashrc'
 alias aliases='vim ~/.bashrc_aliases'
-alias reload='source ~/.bash_profile'
+alias reload='source ~/.bashrc'
 
 # SSH shortcut
 alias wall-e='ssh wall-e.karlov.mff.cuni.cz'
 
 # Applications shortcuts
-alias vmd='/Applications/VMD\ 1.9.3.app/Contents/Resources/VMD.app/Contents/MacOS/VMD'
-alias temp='osx-cpu-temp'

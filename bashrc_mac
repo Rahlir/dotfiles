@@ -15,3 +15,5 @@ COMPLETIONDIR='/usr/local/etc/bash_completion.d'
 
 alias dircolors='gdircolors'
 alias ls='gls --color'
+alias vmd='/Applications/VMD\ 1.9.3.app/Contents/Resources/VMD.app/Contents/MacOS/VMD'
+alias temp='osx-cpu-temp'
