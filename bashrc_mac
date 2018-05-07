@@ -9,17 +9,9 @@ export PATH="/usr/local/Cellar/lammps/2017-08-11_3/bin:$PATH"
 # Define CLASSPATH for Java
 export CLASSPATH="/Users/rahlir/Development/Java/Jars/mysql-connector-java-5.1.44-bin.jar:$CLASSPATH"
 
-d=/Users/rahlir/.dircolors/dircolors.base16
+DIRCOLORSDIR='/Users/rahlir/.dircolors/dircolors.base16'
+POWERLINEDIR='/anaconda3/lib/python3.6/site-packages/powerline/bindings/bash/powerline.sh'
+COMPLETIONDIR='/usr/local/etc/bash_completion.d'
+
 alias dircolors='gdircolors'
 alias ls='gls --color'
-
-POWERLINEDIR='/anaconda3/lib/python3.6/site-packages/powerline/bindings/bash/powerline.sh'
-
-# Add all autocompletions if any are installed
-if [ -d /usr/local/etc/bash_completion.d ]; then
-	for F in "/usr/local/etc/bash_completion.d/"*; do
-		if [ -f "${F}" ]; then
-			source "${F}";
-		fi
-	done
-fi

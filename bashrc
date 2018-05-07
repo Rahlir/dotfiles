@@ -9,8 +9,17 @@ if [ -f ~/.bashrc_aliases ]; then
 	source  ~/.bashrc_aliases
 fi
 
+# Add all autocompletions if any are installed
+if [ -d $COMPLETIONDIR ]; then
+	for F in "$COMPLETIONDIR"/*; do
+		if [ -f "${F}" ]; then
+			source "${F}";
+		fi
+	done
+fi
+
 # Add colors
-test -r $d && eval "$(dircolors $d)" # && echo "Dircolors Loaded"
+test -r $DIRCOLORSDIR && eval "$(dircolors $DIRCOLORSDIR)" # && echo "Dircolors Loaded"
 
 # Powerline
 if [ -d "$HOME/.local/bin" ]; then
