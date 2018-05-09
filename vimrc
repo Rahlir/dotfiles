@@ -30,7 +30,7 @@ if filereadable(expand("~/.vimrc_background"))
 endif
 
 " Custom mappings
-nmap <C-k> O<Esc>
+nmap <C-p> O<Esc>
 nmap <CR> o<Esc>
 nnoremap <leader>s :nohlsearch<CR>
 
@@ -39,11 +39,27 @@ nnoremap <leader>s :nohlsearch<CR>
 let g:jedi#show_call_signatures = "2"
 autocmd FileType python setlocal completeopt-=preview
 autocmd FileType python noremap + :call BlockComment("#")<CR>
+autocmd FileType python noremap - :call UnBlockComment("#")<CR>
 
 " Vim
 autocmd FileType vim noremap + :call BlockComment("\"")<CR>
+autocmd FileType vim noremap - :call UnBlockComment("\"")<CR>
+
+" LAMMPS
+autocmd FileType lammps noremap + :call BlockComment("#")<CR>
+autocmd FileType lammps noremap - :call UnBlockComment("#")<CR>
+
+" Shell
+autocmd FileType sh noremap + :call BlockComment("#")<CR>
+autocmd FileType sh noremap - :call UnBlockComment("#")<CR>
+	
 
 function BlockComment(cmnt)
-	exe 's/^/' . a:cmnt
+	exe 's/^/' . a:cmnt . ' /'
+	nohlsearch
+endfunction
+
+function UnBlockComment(cmnt)
+	exe 's/^' . a:cmnt . ' //'
 	nohlsearch
 endfunction
