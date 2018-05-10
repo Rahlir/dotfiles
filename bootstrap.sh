@@ -11,15 +11,17 @@ for file in *; do
 
 	if [ "$file" == "config" ]; then
 		for cfile in "$file"/*; do
-			if [ -a ../."$cfile" ]; then
+			if [ -a ../."$cfile" ] && ! [ -h ../."$cfile" ]; then
 				mv -v ../."$cfile" ../.origdot/."$file" || exit 1
 			fi
-			ln -vfs "../.dotfiles/$cfile" ../."$cfile"
+			ln -vfsn "../.dotfiles/$cfile" ../."$cfile"
 		done
 	else
-		if [ -a ../."$file" ]; then
+		if [ -a ../."$file" ] && ! [ -h ../."$file" ]; then
 			mv -v ../."$file" ../.origdot/ || exit 1
 		fi
-		ln -vfs ".dotfiles/$file" ../."$file"
+		ln -vfsn ".dotfiles/$file" ../."$file"
 	fi
 done
+
+rmdir ../.origdot/.config ../.origdot
