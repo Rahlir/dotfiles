@@ -1,5 +1,9 @@
 # Config dotfiles for Vim & Bash
 
+### How to install
+- Run bootstrap.sh
+- Delete files of wrong operation system -> appendix "\_linux" or "\_mac"
+
 ### Sources
 [Storing dotfiles](https://developer.atlassian.com/blog/2016/02/best-way-to-store-dotfiles-git-bare-repo/)
 
