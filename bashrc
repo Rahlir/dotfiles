@@ -18,6 +18,10 @@ if [ -d $COMPLETIONDIR ]; then
 	done
 fi
 
+# Setting history length
+HISTSIZE=1000
+HISTFILESIZE=2000
+
 # Add colors
 test -r $DIRCOLORSDIR && eval "$(dircolors $DIRCOLORSDIR)" # && echo "Dircolors Loaded"
 
