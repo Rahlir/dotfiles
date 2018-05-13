@@ -15,7 +15,6 @@ alias ....='cd ../../..'
 alias gcom='git commit -m'
 alias gst='git status'
 alias gmod='git add -u'
-alias config='git --git-dir=$HOME/.dotconfig --work-tree=$HOME'
 
 alias powerlinedir='cd $POWERLINEDIR'
 alias tmux-reload='tmux source $HOME/.tmux.conf'
@@ -26,6 +25,7 @@ alias vimrc='vim ~/.vimrc'
 alias bashrc='vim ~/.bashrc'
 alias aliases='vim ~/.bashrc_aliases'
 alias reload='source ~/.bashrc'
+alias dotfiles='cd ~/.dotfiles'
 
 # SSH shortcut
 alias wall-e='ssh wall-e.karlov.mff.cuni.cz'
