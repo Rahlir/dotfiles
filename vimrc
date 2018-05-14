@@ -23,6 +23,7 @@ syntax on
 set number lbr laststatus=2 title hlsearch ruler mouse=a
 set shiftwidth=2 tabstop=2 " Tab indentation
 set noshowmode " Don't show -- INSERT --
+set autochdir " Automatically change directory to file being editted
 
 " Colorscheme setting
 if filereadable(expand("~/.vimrc_background"))
@@ -34,6 +35,10 @@ endif
 nmap <C-p> O<Esc>
 nmap <CR> o<Esc>
 nnoremap <leader>s :nohlsearch<CR>
+
+let g:lightline = {
+      \ 'colorscheme': 'jellybeans',
+      \ }
 
 "-----------Filetype Specific Config------------
 " Python
