@@ -36,6 +36,10 @@ nmap <C-p> O<Esc>
 nmap <CR> o<Esc>
 nnoremap <leader>s :nohlsearch<CR>
 
+let g:lightline = {
+      \ 'colorscheme': 'jellybeans',
+      \ }
+
 "-----------Filetype Specific Config------------
 " Python
 let g:jedi#show_call_signatures = "2"
