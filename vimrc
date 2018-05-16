@@ -40,11 +40,18 @@ let g:lightline = {
       \ 'colorscheme': 'jellybeans',
       \ }
 
+let g:SuperTabDefaultCompletionType = 'context'
+let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&completefunc']
+let g:SuperTabCrMapping = 1
+
+set completeopt+=longest
+
 "-----------Filetype Specific Config------------
 " Python
 let g:jedi#popup_select_first = 0
 let g:jedi#popup_on_dot = 0
 let g:jedi#show_call_signatures = "2"
+let g:jedi#use_splits_not_buffers = "top"
 autocmd FileType python setlocal completeopt-=preview
 autocmd FileType python noremap + :call BlockComment("#")<CR>
 autocmd FileType python noremap - :call UnBlockComment("#")<CR>
