@@ -12,6 +12,7 @@ Plug 'ericpruitt/tmux.vim', {'rtp': 'vim/'}
 Plug 'ervandew/supertab'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'w0rp/ale'
+Plug 'raimondi/delimitmate'
 let g:vimtex_version_check = 0
 
 " List ends here. Plugins become visible to Vim after this call.
