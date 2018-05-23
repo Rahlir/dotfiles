@@ -1,0 +1,18 @@
+
+export POWERLINEDIR=$HOME/.local/lib/python2.7/site-packages/powerline
+COMPLETIONDIR="/usr/share/bash-completion"
+DIRCOLORSDIR=$HOME/.dircolors/dircolors.base16
+
+
+
+alias ls='ls --color'
+alias mol='cd ~/Development/MolecularSims'
+
+# added by Anaconda3 installer
+export PATH="/home/rahlir/anaconda3/bin:$PATH"
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# Custom functions
+
