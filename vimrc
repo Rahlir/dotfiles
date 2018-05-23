@@ -45,6 +45,10 @@ let g:SuperTabDefaultCompletionType = 'context'
 let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&completefunc']
 let g:SuperTabCrMapping = 1
 
+let g:ale_linters = {
+			\   'python': ['autopep8', 'flake8']
+			\}
+
 set completeopt+=longest
 
 "-----------Filetype Specific Config------------
