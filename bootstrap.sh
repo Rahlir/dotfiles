@@ -9,7 +9,7 @@ for file in *; do
 		continue;
 	fi
 
-	if [ "$file" == "config" ]; then
+	if [ "$file" == "config" || "$file" == "vim" ]; then
 		for cfile in "$file"/*; do
 			if [ -a ../."$cfile" ] && ! [ -h ../."$cfile" ]; then
 				mv -v ../."$cfile" ../.origdot/."$file" || exit 1
