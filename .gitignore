@@ -1,2 +1,5 @@
 *.swp
 *.pyo
+config/ranger/history
+config/ranger/bookmarks
+config/ranger/tagged
