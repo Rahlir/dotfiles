@@ -1,4 +1,4 @@
 syn region pythonDocString
 			\ start=+^\s*"""+ end=+"""+ keepend
 
-hi def link pythonDocString Comment
+hi def link pythonDocString Statement

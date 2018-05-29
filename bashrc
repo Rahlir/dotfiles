@@ -54,7 +54,6 @@ BASE16_SHELL=$HOME/.config/base16-shell/
 # My python modules 
 export PYTHONPATH="$PYTHONPATH:$HOME/Development/python-tools"
 
-
 #---Functions---
 things() {
 	open "things:///add?title=$1"

@@ -1,10 +1,10 @@
 # Define PATH
-# Added by Anaconda3 5.0.0 installer
-export PATH="/anaconda3/bin:$PATH"
 # Setting PATH for Python 3.6
 export PATH="/Library/Frameworks/Python.framework/Versions/3.6/bin:$PATH"
 # Lammps directory
 export PATH="/usr/local/Cellar/lammps/2017-08-11_3/bin:$PATH"
+# Added by Anaconda3 5.0.0 installer
+export PATH="/anaconda3/bin:$PATH"
 
 # Define CLASSPATH for Java
 export CLASSPATH="/Users/rahlir/Development/Java/Jars/mysql-connector-java-5.1.44-bin.jar:$CLASSPATH"
