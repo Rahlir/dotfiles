@@ -1,6 +1,7 @@
 # File where all aliases should be
 alias q='exit'
-alias c='clear && tmux clear-history'
+alias c='clear'
+alias cc='clear && tmux clear-history'
 alias ll='ls -alF'
 alias lsa='ls -a'
 alias mkdirv='mkdir -v'
