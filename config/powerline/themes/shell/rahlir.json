@@ -16,7 +16,10 @@
 				},
 				{
 					"function": "powerline.segments.shell.cwd",
-					"priority": 10
+					"priority": 30,
+					"args": {
+						"dir_limit_depth": 5
+					}
 				},
 				{
 					"function": "powerline.segments.shell.jobnum",
