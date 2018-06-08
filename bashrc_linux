@@ -7,6 +7,7 @@ DIRCOLORSDIR=$HOME/.dircolors/dircolors.base16
 
 alias ls='ls --color'
 alias mol='cd ~/Development/MolecularSims'
+alias clip='xclip -selection clipboard -i'
 
 # added by Anaconda3 installer
 export PATH="/home/rahlir/anaconda3/bin:$PATH"
