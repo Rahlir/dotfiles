@@ -71,7 +71,7 @@ class Base16(ColorScheme):
                 else:
                     fg = red
             if not context.selected and (context.cut or context.copied):
-                fg = 18
+                fg = 19
                 attr |= bold
             if context.main_column:
                 if context.selected:
@@ -90,12 +90,15 @@ class Base16(ColorScheme):
 
         elif context.in_titlebar:
             attr |= bold
+            bg = 240
             if context.hostname:
-                fg = 16 if context.bad else 255
+                fg = 0 if context.bad else white
                 if context.bad:
-                    bg = 166
+                    bg = 1
+                else:
+                    bg = 31
             elif context.directory:
-                fg = 33
+                fg = 250
             elif context.tab:
                 fg = 47 if context.good else 33
                 bg = 239
@@ -105,7 +108,7 @@ class Base16(ColorScheme):
         elif context.in_statusbar:
             if context.permissions:
                 if context.good:
-                    fg = 93
+                    fg = 16
                 elif context.bad:
                     fg = 160
                     bg = 235
@@ -116,7 +119,7 @@ class Base16(ColorScheme):
             if context.message:
                 if context.bad:
                     attr |= bold
-                    fg = 160
+                    fg = 1
                     bg = 235
             if context.loaded:
                 bg = self.progress_bar_color
