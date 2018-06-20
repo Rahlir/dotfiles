@@ -37,6 +37,7 @@ endif
 nmap <C-p> O<Esc>
 nmap <CR> o<Esc>
 nnoremap <leader>s :nohlsearch<CR>
+nnoremap <leader>w :call RemLdWs()<CR>
 
 let g:lightline = {
       \ 'colorscheme': 'jellybeans',
@@ -82,5 +83,10 @@ endfunction
 
 function UnBlockComment(cmnt)
 	exe 's/^' . a:cmnt . ' //'
+	nohlsearch
+endfunction
+
+function RemLdWs()
+	exe 's/\s\+$//e'
 	nohlsearch
 endfunction
