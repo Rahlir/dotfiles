@@ -2,7 +2,7 @@
 alias q='exit'
 alias c='clear'
 alias cc='clear && tmux clear-history'
-alias ll='ls -alF'
+alias ll='LC_COLLATE=C ls -alF'
 alias lsa='ls -a'
 alias mkdirv='mkdir -v'
 alias pfind='find . -name'
