@@ -75,3 +75,7 @@ tmux-colortest() {
 		printf "\x1b[38;5;${i}mcolour${i}\x1b[0m\n"
 	done
 }
+
+catlines() {
+	sed -n $1,$2p "$3"
+}
