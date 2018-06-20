@@ -38,7 +38,7 @@ VISUAL=vim; export VISUAL EDITOR=vim; export EDITOR
 # export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
 
 # Powerline
-if [ -d "$HOME/.local/bin" ]; then
+if [ -d "$HOME/.local/bin" ] && ! [[ :$PATH: == *:"$HOME/.local/bin":* ]]; then
 	PATH="$HOME/.local/bin:$PATH"
 fi
 export POWERLINE_COMMAND=powerline
