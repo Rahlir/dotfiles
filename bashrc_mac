@@ -15,9 +15,12 @@ COMPLETIONDIR='/usr/local/etc/bash_completion.d'
 
 alias dircolors='gdircolors'
 alias ls='gls --color'
-alias vmd='/Applications/VMD\ 1.9.3.app/Contents/Resources/VMD.app/Contents/MacOS/VMD'
 alias temp='osx-cpu-temp'
 
 # SSH shortcuts
 alias portfw='ssh -N -L localhost:8889:localhost:8888 wall-e.karlov.mff.cuni.cz'
 alias wall-e='ssh wall-e.karlov.mff.cuni.cz'
+
+# Application shortcuts
+alias vmd='/Applications/VMD\ 1.9.3.app/Contents/Resources/VMD.app/Contents/MacOS/VMD'
+alias matlab='/Applications/MATLAB_R2018a.app/bin/matlab'
