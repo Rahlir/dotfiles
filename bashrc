@@ -77,5 +77,5 @@ tmux-colortest() {
 }
 
 catlines() {
-	sed -n $1,$2p "$3"
+	sed $1,$2p "$3"
 }
