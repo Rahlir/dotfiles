@@ -14,10 +14,13 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'w0rp/ale'
 Plug 'raimondi/delimitmate'
 Plug 'chriskempson/base16-vim'
-let g:vimtex_version_check = 0
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
+
+" Vimtex options
+let g:vimtex_version_check = 0
+let g:vimtex_compiler_latexmk = {'callback' : 0}
 
 syntax on
 
@@ -74,6 +77,10 @@ autocmd FileType lammps noremap - :call UnBlockComment("#")<CR>
 " Shell
 autocmd FileType sh noremap + :call BlockComment("#")<CR>
 autocmd FileType sh noremap - :call UnBlockComment("#")<CR>
+
+" Latex
+au FileType tex let b:delimitMate_quotes = "\" ' ` $"
+" au FileType tex let b:delimitMate_matchpairs = "(:),[:],{:},\\[:\\]"
 	
 
 function BlockComment(cmnt)
