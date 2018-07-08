@@ -5,3 +5,4 @@
 
 [alias]
 	tracked = ls-tree -r master --name-only
+	last = cat-file commit HEAD
