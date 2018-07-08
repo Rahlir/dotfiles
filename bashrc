@@ -79,3 +79,7 @@ tmux-colortest() {
 catlines() {
 	sed $1,$2p "$3"
 }
+
+gac() {
+	git add "$1" && gcom "$2"
+}
