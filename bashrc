@@ -83,3 +83,9 @@ catlines() {
 gac() {
 	git add "$1" && gcom "$2"
 }
+
+colors-sample() {
+	for col in "$@"; do
+		printf "\x1b[38;5;${col}mxxxxxxx\x1b[0m\n"
+	done
+}
