@@ -80,8 +80,11 @@ autocmd FileType sh noremap - :call UnBlockComment("#")<CR>
 
 " Latex
 au FileType tex let b:delimitMate_quotes = "\" ' ` $"
-" au FileType tex let b:delimitMate_matchpairs = "(:),[:],{:},\\[:\\]"
-	
+
+" Matlab
+au FileType matlab noremap + :call BlockComment("%")<CR>
+au Filetype matlab noremap - :call UnBlockComment("%")<CR>
+
 
 function BlockComment(cmnt)
 	exe 's/^/' . a:cmnt . ' /'
