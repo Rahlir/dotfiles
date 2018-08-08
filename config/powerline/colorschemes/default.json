@@ -38,7 +38,7 @@
 		"battery":                    { "fg": "gray8", "bg": "gray10", "attrs": [] },
 		"battery_gradient":           { "fg": "gray0", "bg": "green_yellow_orange_red", "attrs": [] },
 		"cputemp":           					{ "fg": "gray8", "bg": "gray0", "attrs": [] },
-		"cputemp_gradient":  					{ "fg": "gray0", "bg": "green_yellow_orange_red", "attrs": [] },
+		"cputemp_gradient":  					{ "fg": "gray0", "bg": "my", "attrs": [] },
 		"battery_full":               { "fg": "red", "bg": "gray0", "attrs": [] },
 		"battery_empty":              { "fg": "white", "bg": "gray0", "attrs": [] },
 		"player":                     { "fg": "gray10", "bg": "black", "attrs": [] },
