@@ -22,6 +22,9 @@ fi
 HISTSIZE=1000
 HISTFILESIZE=2000
 
+PROMPT_TITLE='echo -ne "\033]0;${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/~}\007"'
+export PROMPT_COMMAND="${PROMPT_TITLE}; ${PROMPT_COMMAND}"
+
 # Add colors
 test -r $DIRCOLORSDIR && eval "$(dircolors $DIRCOLORSDIR)" # && echo "Dircolors Loaded"
 
@@ -77,7 +80,7 @@ tmux-colortest() {
 }
 
 catlines() {
-	sed $1,$2p "$3"
+	sed -n $1,$2p "$3"
 }
 
 gac() {
