@@ -24,3 +24,4 @@ alias wall-e='ssh wall-e.karlov.mff.cuni.cz'
 # Application shortcuts
 alias vmd='/Applications/VMD\ 1.9.3.app/Contents/Resources/VMD.app/Contents/MacOS/VMD'
 alias matlab='/Applications/MATLAB_R2018a.app/bin/matlab'
+alias mlint='/Applications/MATLAB_R2018a.app/bin/maci64/mlint'
