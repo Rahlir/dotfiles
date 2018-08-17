@@ -14,6 +14,7 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'w0rp/ale'
 Plug 'raimondi/delimitmate'
 Plug 'chriskempson/base16-vim'
+Plug 'rizzatti/dash.vim'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -87,12 +88,12 @@ au Filetype matlab noremap - :call UnBlockComment("%")<CR>
 
 
 function BlockComment(cmnt)
-	exe 's/^/' . a:cmnt . ' /'
+	exe 's/^\(\s*\)/\1' . a:cmnt . ' /'
 	nohlsearch
 endfunction
 
 function UnBlockComment(cmnt)
-	exe 's/^' . a:cmnt . ' //'
+	exe 's/^\(\s*\)' . a:cmnt .  ' /\1/'
 	nohlsearch
 endfunction
 
