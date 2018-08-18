@@ -40,6 +40,8 @@ endif
 " Custom mappings
 nmap <C-p> O<Esc>
 nmap <CR> o<Esc>
+nmap <silent> <leader>j <Plug>(ale_next)
+nmap <silent> <leader>k <Plug>(ale_previous)
 nnoremap <leader>s :nohlsearch<CR>
 nnoremap <leader>w :call RemLdWs()<CR>
 
