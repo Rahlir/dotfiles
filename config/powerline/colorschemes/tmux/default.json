@@ -1,7 +1,7 @@
 {
 	"groups": {
 		"active_window_status": {"fg": "gray8",   "bg": "black",    "attrs": []},
-		"window_status":        {"fg": "gray70",     "bg": "gray0",    "attrs": []},
+		"window_status":        {"fg": "gray70",     "bg": "black",    "attrs": []},
 		"activity_status":      {"fg": "yellow",     "bg": "white",    "attrs": []},
 		"bell_status":          {"fg": "red",        "bg": "gray0",    "attrs": []},
 		"window":               {"fg": "gray6",      "bg": "black",    "attrs": []},
