@@ -8,16 +8,22 @@ Plug 'itchyny/lightline.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'davidhalter/jedi-vim'
-Plug 'ericpruitt/tmux.vim', {'rtp': 'vim/'}
+" Plug 'ericpruitt/tmux.vim', {'rtp': 'vim/'}
 Plug 'ervandew/supertab'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'w0rp/ale'
 Plug 'raimondi/delimitmate'
-Plug 'chriskempson/base16-vim'
+" Plug 'chriskempson/base16-vim'
 Plug 'rizzatti/dash.vim'
+" Plug 'yggdroot/indentline'
+Plug 'jeetsukumaran/vim-indentwise'
+Plug 'nathanaelkane/vim-indent-guides'
+Plug 'Vimjas/vim-python-pep8-indent'
+Plug 'SirVer/ultisnips'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
+set clipboard=exclude:.*
 
 " Vimtex options
 let g:vimtex_version_check = 0
@@ -35,6 +41,12 @@ set autochdir " Automatically change directory to file being editted
 if filereadable(expand("~/.vimrc_background"))
 	let base16colorspace=256
 	source ~/.vimrc_background
+endif
+
+if has('python3')
+    command! -nargs=1 Py py3 <args>
+    set pythonthreedll=/usr/local/Frameworks/Python.framework/Versions/3.7/Python
+    set pythonthreehome=/usr/local/Frameworks/Python.framework/Versions/3.7
 endif
 
 " Custom mappings
@@ -56,6 +68,12 @@ let g:SuperTabCrMapping = 1
 let g:ale_linters = {
 			\   'python': ['autopep8', 'flake8']
 			\}
+let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips', 'UltiSnips']
+
+let g:indent_guides_auto_colors = 0
+let g:indent_guides_guide_size = 1
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=240
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=235
 
 set completeopt+=longest
 
@@ -103,3 +121,10 @@ function RemLdWs()
 	exe 's/\s\+$//e'
 	nohlsearch
 endfunction
+
+function! SynStack()
+  if !exists("*synstack")
+    return
+  endif
+  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
