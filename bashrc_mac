@@ -16,6 +16,7 @@ COMPLETIONDIR='/usr/local/etc/bash_completion.d'
 alias dircolors='gdircolors'
 alias ls='gls --color'
 alias temp='osx-cpu-temp'
+alias copyc="tr -d '\n' | pbcopy"
 
 # SSH shortcuts
 alias portfw='ssh -N -L localhost:8889:localhost:8888 wall-e.karlov.mff.cuni.cz'

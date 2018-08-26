@@ -5,7 +5,8 @@ DIRCOLORSDIR=$HOME/.dircolors/dircolors.base16
 # OS specific aliases
 alias ls='ls --color'
 alias mol='cd ~/Development/MolecularSims'
-alias clip='xclip -selection clipboard -i'
+alias copyc="tr -d '\n' | xclip -selection clipboard -i"
+alias copy="xclip -selection clipboard -i"
 alias bashrcl='vim ~/.bashrc_linux'
 
 # added by Anaconda3 installer
