@@ -1,11 +1,11 @@
+"""""""""""""""""""""""""""""""""Plug section"""""""""""""""""""""""""""""""""
 " Plugins will be downloaded under the specified directory.
 call plug#begin('~/.vim/plugged')
 
-" Declare the list of plugins.
 Plug 'tpope/vim-sensible'
 Plug 'lervag/vimtex'
 Plug 'itchyny/lightline.vim'
-Plug 'tpope/vim-fugitive'
+" Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'davidhalter/jedi-vim'
 " Plug 'ericpruitt/tmux.vim', {'rtp': 'vim/'}
@@ -23,21 +23,32 @@ Plug 'SirVer/ultisnips'
 Plug 'scrooloose/nerdtree'
 Plug 'dearrrfish/vim-applescript'
 
-" List ends here. Plugins become visible to Vim after this call.
 call plug#end()
 
+
+"""""""""""""""""""""""""""""General vim settings"""""""""""""""""""""""""""""
 if !has('gui_running')
-	set clipboard=exclude:.*
+	set clipboard=exclude:.* " Turn off server for terminal vim
 	let g:vimtex_compiler_latexmk = {'callback' : 0}
+	nnoremap <C-_> :call CenterComment()<CR>
+else
+	nnoremap ÷ :call CenterComment()<CR>
 endif
 
-" Vimtex options
-let g:tex_flavor = 'latex'
-let g:vimtex_view_method = 'skim'
-" Not possible without matchup:
-" let g:matchup_matchparen_deferred = 1
-let g:tex_comment_nospell = 1
+" Colorscheme setting
+if filereadable(expand("~/.vimrc_background"))
+	let base16colorspace=256
+	source ~/.vimrc_background
+endif
 
+" Fixing python3 setting, only for brew vim
+if has('python3')
+    command! -nargs=1 Py py3 <args>
+    set pythonthreedll=/usr/local/Frameworks/Python.framework/Versions/3.7/Python
+    set pythonthreehome=/usr/local/Frameworks/Python.framework/Versions/3.7
+endif
+
+" Syntax
 syntax on
 let python_highlight_all = 1
 
@@ -50,18 +61,8 @@ set report=0 " Report any line yanked
 set spelllang=en_us " Set spelling language
 set splitright splitbelow " More natural splits
 set guioptions-=rL
-
-" Colorscheme setting
-if filereadable(expand("~/.vimrc_background"))
-	let base16colorspace=256
-	source ~/.vimrc_background
-endif
-
-if has('python3')
-    command! -nargs=1 Py py3 <args>
-    set pythonthreedll=/usr/local/Frameworks/Python.framework/Versions/3.7/Python
-    set pythonthreehome=/usr/local/Frameworks/Python.framework/Versions/3.7
-endif
+set hidden
+set completeopt+=longest
 
 " Custom mappings
 nmap <C-p> O<Esc>
@@ -73,76 +74,96 @@ nnoremap <leader>w :call RemLdWs()<CR>
 nnoremap <leader>a :setlocal spell!<CR>
 nnoremap ]a }kA
 nnoremap [a {jI
+nnoremap + :call BlockComment()<CR>
+nnoremap - :call UnBlockComment()<CR>
 
+
+""""""""""""""""""""""""""""""""Plugin options""""""""""""""""""""""""""""""""
+" Vimtex options
+let g:tex_flavor = 'latex'
+let g:vimtex_view_method = 'skim'
+let g:tex_comment_nospell = 1
+" Not possible without matchup:
+" let g:matchup_matchparen_deferred = 1
+
+" Lightline options
 let g:lightline = {
       \ 'colorscheme': 'jellybeans',
       \ }
 
-let g:SuperTabDefaultCompletionType = 'context'
-let g:SuperTabCrMapping = 1
+" DelimitMate options
+let g:delimitMate_expand_cr = 1
+let g:delimitMate_expand_space = 1
 
+" SuperTab options
+let g:SuperTabDefaultCompletionType = 'context'
+let g:SuperTabCrMapping = 0
 let g:SuperTabCompletionContexts = ['s:ContextText', 's:ContextDiscover']
 let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&completefunc']
 let g:SuperTabContextDiscoverDiscovery =
 		\ ["&omnifunc:<c-x><c-o>", "&completefunc:<c-x><c-u>"]
-
 let g:SuperTabMappingBackward = '<s-c-space>'
 
+" ALE options
 let g:ale_linters = {
 			\   'python': ['autopep8', 'flake8']
 			\}
+
+" UltiSnips options
 let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips', 'UltiSnips']
 
+" Jedi options
+let g:jedi#popup_select_first = 0
+let g:jedi#popup_on_dot = 0
+let g:jedi#show_call_signatures = "2"
+let g:jedi#use_splits_not_buffers = "top"
+
+" Indent-Guides  options
 let g:indent_guides_auto_colors = 0
 let g:indent_guides_guide_size = 1
 autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=240
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=235
 
-set completeopt+=longest
 
-"-----------Filetype Specific Config------------
+"""""""""""""""""""""""""""Filetype Specific Config"""""""""""""""""""""""""""
 " Python
-let g:jedi#popup_select_first = 0
-let g:jedi#popup_on_dot = 0
-let g:jedi#show_call_signatures = "2"
-let g:jedi#use_splits_not_buffers = "top"
 autocmd FileType python setlocal completeopt-=preview
-autocmd FileType python noremap <buffer> + :call BlockComment("#")<CR>
-autocmd FileType python noremap <buffer> - :call UnBlockComment("#")<CR>
+" autocmd FileType python noremap <buffer> + :call BlockComment("#")<CR>
+" autocmd FileType python noremap <buffer> - :call UnBlockComment("#")<CR>
 
 " Vim
-autocmd FileType vim noremap <buffer> + :call BlockComment("\"")<CR>
-autocmd FileType vim noremap <buffer> - :call UnBlockComment("\"")<CR>
+" autocmd FileType vim noremap <buffer> + :call BlockComment("\"")<CR>
+" autocmd FileType vim noremap <buffer> - :call UnBlockComment("\"")<CR>
+" autocmd FileType vim noremap <buffer> <C-_> :call CenterComment("\"")<CR>
 
 " LAMMPS
-autocmd FileType lammps noremap <buffer> + :call BlockComment("#")<CR>
-autocmd FileType lammps noremap <buffer> - :call UnBlockComment("#")<CR>
+" autocmd FileType lammps noremap <buffer> + :call BlockComment("#")<CR>
+" autocmd FileType lammps noremap <buffer> - :call UnBlockComment("#")<CR>
 
 " Shell
-autocmd FileType sh noremap <buffer> + :call BlockComment("#")<CR>
-autocmd FileType sh noremap <buffer> - :call UnBlockComment("#")<CR>
+" autocmd FileType sh noremap <buffer> + :call BlockComment("#")<CR>
+" autocmd FileType sh noremap <buffer> - :call UnBlockComment("#")<CR>
 
 " Latex
-au FileType tex let b:delimitMate_quotes = "\" ' $"
-au FileType tex noremap <buffer> + :call BlockComment("%")<CR>
-au Filetype tex noremap <buffer> - :call UnBlockComment("%")<CR>
+au FileType tex let b:delimitMate_quotes = "\" ' ` $"
+au FileType tex let b:delimitMate_smart_matchpairs = '^\%(\w\|\!\|£\|[^[:space:][:punct:]]\)'
+au FileType tex setlocal tw=79
+" au FileType tex noremap <buffer> + :call BlockComment("%")<CR>
+" au Filetype tex noremap <buffer> - :call UnBlockComment("%")<CR>
 
 " Matlab
-au FileType matlab noremap <buffer> + :call BlockComment("%")<CR>
-au Filetype matlab noremap <buffer> - :call UnBlockComment("%")<CR>
+" au FileType matlab noremap <buffer> + :call BlockComment("%")<CR>
+" au Filetype matlab noremap <buffer> - :call UnBlockComment("%")<CR>
 
-" Javascript
-au FileType javascript let g:delimitMate_expand_cr = 1
-au FileType javascript let g:delimitMate_expand_space = 1
-let g:delimitMate_expand_space = 1
-
-
-function! BlockComment(cmnt)
+""""""""""""""""""""""""""""""""""Functions"""""""""""""""""""""""""""""""""""
+function! BlockComment()
+	let a:cmnt = split(&commentstring, '%s')[0]
 	exe ':silent s/^\(\s*\)/\1' . a:cmnt . ' /'
 	nohlsearch
 endfunction
 
-function! UnBlockComment(cmnt)
+function! UnBlockComment()
+	let a:cmnt = split(&commentstring, '%s')[0]
 	exe ':silent s/^\(\s*\)' . a:cmnt .  ' /\1/e'
 	nohlsearch
 endfunction
@@ -157,4 +178,23 @@ function! SynStack()
     return
   endif
   echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
+
+function! CenterComment()
+	let a:cmnt = split(&commentstring, '%s')[0]
+
+  if &tw != 0
+    let a:width = &tw
+  else
+    let a:width = 80
+  endif
+
+  let a:header = getline(".")
+  let a:header_w = strlen(a:header)
+  let a:before_w = (a:width - a:header_w) / 2
+  let a:after_w = (a:width - a:header_w - a:before_w)
+  let a:before = repeat(a:cmnt, a:before_w)
+  let a:after = repeat(a:cmnt, a:after_w)
+
+  call setline(".", a:before . a:header . a:after)
 endfunc
