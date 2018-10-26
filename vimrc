@@ -22,6 +22,7 @@ Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'SirVer/ultisnips'
 Plug 'scrooloose/nerdtree'
 Plug 'dearrrfish/vim-applescript'
+Plug 'davidoc/taskpaper.vim'
 
 call plug#end()
 
@@ -50,10 +51,10 @@ endif
 
 " Syntax
 syntax on
-let python_highlight_all = 1
+" let python_highlight_all = 1
 
 " Configurations for vim
-set number lbr laststatus=2 title hlsearch ruler mouse=a
+set number lbr laststatus=2 title ruler mouse=a
 set shiftwidth=2 tabstop=2 " Tab indentation
 set noshowmode " Don't show -- INSERT --
 set autochdir " Automatically change directory to file being editted
@@ -69,14 +70,16 @@ nmap <C-p> O<Esc>
 nmap <CR> o<Esc>
 nmap <silent> <leader>j <Plug>(ale_next)
 nmap <silent> <leader>k <Plug>(ale_previous)
-nnoremap <leader>s :nohlsearch<CR>
+nnoremap <leader>s :set hlsearch!<CR>
 nnoremap <leader>w :call RemLdWs()<CR>
 nnoremap <leader>a :setlocal spell!<CR>
 nnoremap ]a }kA
 nnoremap [a {jI
-nnoremap + :call BlockComment()<CR>
-nnoremap - :call UnBlockComment()<CR>
+noremap + :call BlockComment()<CR>
+noremap - :call UnBlockComment()<CR>
+nnoremap <leader>b :b #<CR>
 
+let g:changelog_username = 'Tadeas Uhlir <tadeas.uhlir.19@dartmouth.edu>'
 
 """"""""""""""""""""""""""""""""Plugin options""""""""""""""""""""""""""""""""
 " Vimtex options
@@ -157,13 +160,15 @@ au FileType tex setlocal tw=79
 
 """"""""""""""""""""""""""""""""""Functions"""""""""""""""""""""""""""""""""""
 function! BlockComment()
-	let a:cmnt = split(&commentstring, '%s')[0]
+	let a:cmnt_raw = split(&commentstring, '%s')[0]
+	let a:cmnt = substitute(a:cmnt_raw, '^\s*\(.\{-}\)\s*$', '\1', '')
 	exe ':silent s/^\(\s*\)/\1' . a:cmnt . ' /'
 	nohlsearch
 endfunction
 
 function! UnBlockComment()
-	let a:cmnt = split(&commentstring, '%s')[0]
+	let a:cmnt_raw = split(&commentstring, '%s')[0]
+	let a:cmnt = substitute(a:cmnt_raw, '^\s*\(.\{-}\)\s*$', '\1', '')
 	exe ':silent s/^\(\s*\)' . a:cmnt .  ' /\1/e'
 	nohlsearch
 endfunction

@@ -84,7 +84,7 @@ catlines() {
 }
 
 gac() {
-	git add "$1" && gcom "$2"
+	git add -u && gcom "$1"
 }
 
 colors-sample() {
