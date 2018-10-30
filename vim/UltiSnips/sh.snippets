@@ -1,0 +1,37 @@
+snippet gitinit "initialize github repository"
+echo "*.swp" >> .gitignore
+echo ".DS_Store" >> .gitignore
+echo "`!p snip.rv = snip.fn`" >> .gitignore
+git init
+git add -v README.md .gitignore $2
+git commit -m "First commit"
+git remote add origin https://github.com/Rahlir/$1.git
+git push -u origin master
+endsnippet
+
+snippet shebang "shebang line"
+#!/bin/bash
+endsnippet
+
+snippet help "section for script's help"
+usage="$(basename "\$0") [-h] $1
+
+where:
+	-h         show this help and exit
+	$2         $3"
+
+while getopts ':h' option; do
+	case "$option" in
+		h) 	echo "$usage"
+				exit
+				;;
+		\?) printf "illegal option: -%s\n" "$OPTARG" >&2
+			  echo "$usage" >&2
+				exit 1
+				;;
+	esac
+done
+
+$0
+endsnippet
+

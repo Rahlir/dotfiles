@@ -1,0 +1,64 @@
+snippet infoplist "template for Info.plist for Launbar actions"
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+
+<dict>
+	<key>CFBundleIdentifier</key>
+	<string>com.rahlir.`pwd | rev | cut -d / -f3 | rev`</string>
+	<key>CFBundleName</key>
+	<string>`pwd | rev | cut -d / -f2 | rev | cut -d . -f1`</string>
+	<key>CFBundleVersion</key>
+	<string>$1</string>
+
+
+	<key>LBScripts</key>
+	<dict>
+		<key>LBDefaultScript</key>
+		<dict>
+			<key>LBScriptName</key>
+			<string>`find -s Scripts -name *.scpt -or -name *.js -or -name *.py -or -name *.sh | head -n 1 | cut -d / -f2`</string>
+			<key>LBRequiresArgument</key>
+			<$2/>
+			<key>LBReturnsResult</key>
+			<$3/>
+			<key>LBLiveFeedbackEnabled</key>
+			<$4/>
+			<key>LBRunInBackground</key>
+			<$5/>
+		</dict>
+	</dict>
+
+	<key>LBDescription</key>
+	<dict>
+		<key>LBAuthor</key>
+		<string>Tadeas Uhlir</string>
+		<key>LBEmail</key>
+		<string>tadeas.uhlir@gmail.com</string>
+		<key>LBSummary</key>
+		<string>$6</string>
+		<key>LBArgument</key>
+		<string>$7</string>
+		<key>LBRequirements</key>
+		<string>$8</string>
+	</dict>
+</dict>
+</plist>
+endsnippet
+
+snippet reqapp "required application field"
+<key>LBRequiredApplication</key>
+<string>$1</string>
+endsnippet
+
+snippet accepted "accepted argument types"
+<key>LBAcceptedArgumentTypes</key>
+<array>
+	<string>string</string>
+</array>
+endsnippet
+
+snippet icon "icon file field"
+<key>CFBundleIconFile</key>
+<string></string>
+endsnippet

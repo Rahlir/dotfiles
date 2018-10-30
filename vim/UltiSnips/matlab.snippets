@@ -1,0 +1,11 @@
+snippet header "header snippet"
+% Tadeas Uhlir
+% `date +%m/%d/%Y`
+% `!p snip.rv = snip.basename` $1
+endsnippet
+
+snippet func "function definition"
+function[$1] = `!p snip.rv = snip.basename`($2)
+
+$3
+endsnippet
