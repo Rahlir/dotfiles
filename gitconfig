@@ -6,3 +6,6 @@
 [alias]
 	tracked = ls-tree -r master --name-only
 	last = cat-file commit HEAD
+
+[core]
+	excludesfile = ~/.gitignore_global
