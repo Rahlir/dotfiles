@@ -36,7 +36,7 @@ syn keyword matlabBoolean		true false
 syn match matlabLineContinuation	"\.\{3}"
 
 " String
-syn region matlabString			start=+'+ end=+'+	oneline
+syn region matlabString	matchgroup=matlabQuotes		start=+\z(['"]\)+ end="\z1"	skip="\\\\\|\\\z1" oneline
 
 syn region matlabSet matchgroup=matlabSetIdentifiers 	start="\<hold" end="$" contains=matlabOption
 
@@ -60,9 +60,9 @@ syn match matlabArguments contained 	"\I[a-zA-Z_.,]*"
 
 syn match matlabComment			"%.*$"	contains=matlabTodo,matlabTab
 syn region matlabBlockComment        start=+%{+    end=+%}+ contains=matlabBlockComment
-syn region matlabOperParen matchgroup=matlabParenSep 		start="(" end=")" contains=matlabOperParen,matlabParenSep,matlabFunction
+syn region matlabOperParen matchgroup=matlabParenSep 		start="(" end=")" contains=matlabOperParen,matlabParenSep,matlabFunction,matlabString
 " Transpose character and delimiters: Either use just [...] or (...) aswell
-syn region matlabArguments matchgroup=matlabDelimiter 		start="\[" end="\]" contains=matlabFunction,matlabParenSep,matlabOperParen
+syn region matlabInDelimit matchgroup=matlabDelimiter 		start="\[" end="\]" contains=matlabFunction,matlabParenSep,matlabOperParen,matlabArguments
 
 syn keyword matlabOption contained 			on off
 
@@ -314,6 +314,7 @@ syn keyword matlabFunc contained hdf hdf5 hdf5info hdf5read hdf5write hdfinfo hd
 "Band-Interleaved Data
 syn keyword matlabFunc contained multibandread multibandwrite 
 
+syn region matlabCell matchgroup=matlabCellIdents start="%%" end="%%" contains=ALLBUT,matlabCell,matlabStatement,matlabComment,matlabBlockComment,matlabArguments,@Spell keepend
 
 " Define the default highlighting.
 " For version 5.7 and earlier: only when not done already
@@ -333,6 +334,7 @@ if version >= 508 || !exists("did_matlab_syntax_inits")
   HiLink matlabRepeat			Repeat
   HiLink matlabTodo			Todo
   HiLink matlabString			String
+  HiLink matlabQuotes 			String
   HiLink matlabDelimiter		Identifier
   HiLink matlabTransposeOther		Identifier
   HiLink matlabParenSep 		Delimiter
@@ -357,6 +359,8 @@ if version >= 508 || !exists("did_matlab_syntax_inits")
   HiLink matlabFunc 			Function
   HiLink matlabSetIdentifiers 		matlabStatement
   HiLink matlabOption 			PreProc
+  HiLink matlabCell 			Special
+  HiLink matlabCellIdents 		matlabCell
 
 
 "optional highlighting
