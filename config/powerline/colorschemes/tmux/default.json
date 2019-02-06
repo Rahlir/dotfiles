@@ -1,14 +1,14 @@
 {
 	"groups": {
-		"active_window_status": {"fg": "gray8",   "bg": "black",    "attrs": []},
-		"window_status":        {"fg": "gray70",     "bg": "black",    "attrs": []},
+		"active_window_status": {"fg": "cyan",   "bg": "gray2",    "attrs": []},
+		"window_status":        {"fg": "gray70",     "bg": "gray2",    "attrs": []},
 		"activity_status":      {"fg": "yellow",     "bg": "white",    "attrs": []},
-		"bell_status":          {"fg": "red",        "bg": "gray0",    "attrs": []},
-		"window":               {"fg": "gray6",      "bg": "black",    "attrs": []},
-		"window:divider":       {"fg": "gray4",      "bg": "black",    "attrs": []},
-		"window:current":       {"fg": "gray1",     "bg": "yellow", "attrs": []},
-		"window_name":          {"fg": "gray2",      "bg": "yellow", "attrs": ["bold"]},
-		"session":              {"fg": "black",      "bg": "gray90", "attrs": ["bold"]},
-		"session:prefix":       {"fg": "gray2",     "bg": "yellow", "attrs": ["bold"]}
+		"bell_status":          {"fg": "red",        "bg": "black",    "attrs": []},
+		"window":               {"fg": "gray70",      "bg": "gray2",    "attrs": []},
+		"window:divider":       {"fg": "gray70",      "bg": "gray2",    "attrs": []},
+		"window:current":       {"fg": "gray4",     "bg": "yellow", "attrs": []},
+		"window_name":          {"fg": "black",      "bg": "yellow", "attrs": ["bold"]},
+		"session":              {"fg": "white",      "bg": "orange", "attrs": ["bold"]},
+		"session:prefix":       {"fg": "black",     "bg": "yellow", "attrs": ["bold"]}
 	}
 }
