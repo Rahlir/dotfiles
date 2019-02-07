@@ -2,9 +2,10 @@
 	"segments": {
 		"right": [
 			{
-				"function": "powerline.segments.common.wthr.weather",
+				"function": "powerline.segments.common.net.network_load",
 				"args": {
-					"temp_format": " {temp:.1f}"
+					"recv_max": 2000000000,
+					"sent_max": 200000000
 				}
 			},
 			{
