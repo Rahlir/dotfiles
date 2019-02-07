@@ -1,9 +1,11 @@
+# Redirecting to system specific settings
 if [ -f ~/.bashrc_mac ]; then
 	source ~/.bashrc_mac
 elif [ -f ~/.bashrc_linux ]; then
 	source ~/.bashrc_linux
 fi
 
+# Redirecting to machine specific settings
 if [ -f ~/.bashrc_local ]; then
 	source ~/.bashrc_local
 fi
@@ -55,8 +57,8 @@ POWERLINE_BASH_SELECT=1
 . $POWERLINEDIR/bindings/bash/powerline.sh
 
 
-BASE16_SHELL=$HOME/.config/base16-shell/
-[ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
+# BASE16_SHELL=$HOME/.config/base16-shell/
+# [ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
 
 # My python modules 
 export PYTHONPATH="$PYTHONPATH:$HOME/Development/python-tools"
