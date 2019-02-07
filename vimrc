@@ -26,13 +26,13 @@ Plug 'dearrrfish/vim-applescript', {'for': 'applescript' }
 Plug 'davidoc/taskpaper.vim', {'for': 'taskpaper'}
 Plug 'leafgarland/typescript-vim', {'for': 'typescript'}
 " Plug 'rip-rip/clang_complete', {'for': 'cpp'}
-Plug 'daeyun/vim-matlab', {'for': 'matlab'}
 Plug 'majutsushi/tagbar'
 " Plug 'xolox/vim-easytags'
 
 if has('nvim')
 	Plug 'arakashic/chromatica.nvim', {'for': 'cpp'}
 	Plug 'numirias/semshi', {'for': 'python'}
+Plug 'daeyun/vim-matlab', {'for': 'matlab'}
 	Plug 'roxma/nvim-yarp'
   Plug 'ncm2/ncm2'
 	Plug 'ncm2/ncm2-bufword'
