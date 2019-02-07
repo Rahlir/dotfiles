@@ -105,6 +105,7 @@ set guioptions-=rL
 set hidden
 set completeopt+=longest
 set fdm=marker
+set modeline
 
 " Custom Mappings:
 
