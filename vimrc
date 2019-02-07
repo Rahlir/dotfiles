@@ -30,9 +30,9 @@ Plug 'majutsushi/tagbar'
 " Plug 'xolox/vim-easytags'
 
 if has('nvim')
-	Plug 'arakashic/chromatica.nvim', {'for': 'cpp'}
+	Plug 'arakashic/chromatica.nvim', {'for': 'cpp', 'do': ':UpdateRemotePlugins'}
 	Plug 'numirias/semshi', {'for': 'python'}
-Plug 'daeyun/vim-matlab', {'for': 'matlab'}
+	Plug 'daeyun/vim-matlab', {'for': 'matlab'}
 	Plug 'roxma/nvim-yarp'
   Plug 'ncm2/ncm2'
 	Plug 'ncm2/ncm2-bufword'
