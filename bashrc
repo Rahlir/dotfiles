@@ -4,6 +4,10 @@ elif [ -f ~/.bashrc_linux ]; then
 	source ~/.bashrc_linux
 fi
 
+if [ -f ~/.bashrc_local ]; then
+	source ~/.bashrc_local
+fi
+
 # Redirecting to aliases file
 if [ -f ~/.bashrc_aliases ]; then
 	source  ~/.bashrc_aliases
