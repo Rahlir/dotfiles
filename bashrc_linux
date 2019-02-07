@@ -1,10 +1,5 @@
-export POWERLINEDIR=$HOME/.local/lib/python3.6/site-packages/powerline
 COMPLETIONDIR="/usr/share/bash-completion"
 DIRCOLORSDIR=$HOME/.dircolors/dircolors.base16
-
-# added by Anaconda3 installer
-# export PATH="/home/rahlir/anaconda3/bin:$PATH"
-# added by Anaconda3 installer
 
 # OS specific aliases
 alias ls='ls --color'
@@ -15,5 +10,5 @@ alias bashrcl='vim ~/.bashrc_linux'
 # append to the history file, don't overwrite it
 shopt -s histappend
 
-export PATH="/net/ifs-users/rahlir/anaconda3/bin:$PATH"
 # Custom functions
+# vim: ft=sh
