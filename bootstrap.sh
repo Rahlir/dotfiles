@@ -56,7 +56,7 @@ cmd() {
 }
 
 
-filelist=$(find . -depth 1 | grep -Ev '(\.bootignore|\.git)' | grep -v -f <(sed 's/\([.|]\)/\\\1/g; s/\?/./g ; s/\*/.*/g' .bootignore))
+filelist=$(find . -maxdepth 1 -mindepth 1 | grep -Ev '(\.bootignore|\.git)' | grep -v -f <(sed 's/\([.|]\)/\\\1/g; s/\?/./g ; s/\*/.*/g' .bootignore))
 
 for file in $filelist; do
 	filename=$(basename "$file")
