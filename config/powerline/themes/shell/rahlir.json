@@ -30,6 +30,7 @@
 		"left": [
 			{
 				"function": "powerline.segments.common.time.date",
+				"name": "prompt",
 				"args": {
 					"format": "$"
 								}
