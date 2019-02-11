@@ -28,11 +28,13 @@ Plug 'leafgarland/typescript-vim', {'for': 'typescript'}
 " Plug 'rip-rip/clang_complete', {'for': 'cpp'}
 Plug 'majutsushi/tagbar'
 " Plug 'xolox/vim-easytags'
+Plug 'ryanoasis/vim-devicons'
 
 if has('nvim')
 	Plug 'arakashic/chromatica.nvim', {'for': 'cpp', 'do': ':UpdateRemotePlugins'}
 	Plug 'numirias/semshi', {'for': 'python'}
-	Plug 'daeyun/vim-matlab', {'for': 'matlab'}
+	" Plug 'daeyun/vim-matlab', {'for': 'matlab'}
+	Plug 'rahlir/nvim-matlab', {'for': 'matlab'}
 	Plug 'roxma/nvim-yarp'
   Plug 'ncm2/ncm2'
 	Plug 'ncm2/ncm2-bufword'
@@ -50,10 +52,9 @@ call plug#end()
 " Different Vim Versions Compatibility: {{{
 
 if !has('gui_running') && !has('nvim')
-	set clipboard=exclude:.* " Turn off server for terminal vim
+	" set clipboard=exclude:.* " Turn off server for terminal vim
 	let g:vimtex_compiler_latexmk = {'callback' : 0}
 	if &term =~# '^tmux'
-		set term=xterm-256color
 	" Without this setting terminal vim doesn't display true colors with tmux
 		let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 		let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
@@ -67,9 +68,6 @@ if !has('nvim')
 			set pythonthreedll=/usr/local/Frameworks/Python.framework/Versions/3.7/Python
 			set pythonthreehome=/usr/local/Frameworks/Python.framework/Versions/3.7
 	endif
-else
-	let g:gruvbox_italic = 1
-	let g:gruvbox_italicize_strings = 1
 endif
 
 " }}}
@@ -87,6 +85,9 @@ if g:colorscheme_setup == 'base16'
 elseif g:colorscheme_setup == 'gruvbox'
 	colorscheme gruvbox
 	let g:gruvbox_contrast_dark = 'medium'
+	let g:gruvbox_italic = 1
+	let g:gruvbox_italicize_strings = 1
+	set background=dark
 endif
 
 " }}}
@@ -137,6 +138,11 @@ let g:vimtex_view_method = 'skim'
 let g:tex_comment_nospell = 1
 
 " }}}
+" GitGutter Options: {{{
+let g:gitgutter_sign_added = "\u271a"
+let g:gitgutter_sign_modified = "\u279c"
+let g:gitgutter_sign_removed = "\u2718"
+" }}}
 " Lightline Options: {{{
 
 let g:lightline = {
@@ -146,7 +152,9 @@ let g:lightline = {
 			\					['gitadd', 'gitmod', 'gitremoved', 'gitbranch', 'readonly', 'filename', 'modified']]
  			\ },
 			\ 'component_function': {
-			\ 	'gitbranch': 'LightLineGitBranch'
+			\ 	'gitbranch': 'LightLineGitBranch',
+      \   'filetype': 'MyFiletype',
+      \   'fileformat': 'MyFileformat',
 			\ },
 			\ 'component_expand': {
 			\		'gitadd': 'LightLineGitAdd',
@@ -160,11 +168,18 @@ let g:lightline = {
 			\		}
       \ }
 
+function! MyFiletype()
+	return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
+endfunction
+
+function! MyFileformat()
+  return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
+endfunction
 
 function! LightLineGitAdd()
   if exists('*GitGutterGetHunkSummary') && !empty(LightLineGitBranch())
     let [ added, modified, removed ] = GitGutterGetHunkSummary()
-    return printf('%s%d', g:gitgutter_sign_added, added)
+    return printf('%s %d', g:gitgutter_sign_added, added)
   endif
   return ''
 endfunction
@@ -172,7 +187,7 @@ endfunction
 function! LightLineGitMod()
   if exists('*GitGutterGetHunkSummary') && !empty(LightLineGitBranch())
     let [ added, modified, removed ] = GitGutterGetHunkSummary()
-    return printf('%s%d', g:gitgutter_sign_modified, modified)
+    return printf('%s %d', g:gitgutter_sign_modified, modified)
   endif
   return ''
 endfunction
@@ -180,7 +195,7 @@ endfunction
 function! LightLineGitRemoved() 
   if exists('*GitGutterGetHunkSummary') && !empty(LightLineGitBranch())
     let [ added, modified, removed ] = GitGutterGetHunkSummary()
-    return printf('%s%d', g:gitgutter_sign_removed, removed)
+    return printf('%s %d', g:gitgutter_sign_removed, removed)
   endif
   return ''
 endfunction
