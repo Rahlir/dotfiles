@@ -41,6 +41,10 @@
 			"before": " "
 		},
 
+		"powerline.segments.common.time.date": {
+			"before": " "
+		},
+
 		"powerline.segments.common.cputemp.cpu_temp": {
 			"before": " "
 		},
