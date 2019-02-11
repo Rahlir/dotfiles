@@ -16,7 +16,8 @@
 			{
 				"function": "powerline.segments.common.cputemp.cpu_temp",
 				"args": {
-					"fahrnheit": false
+					"fahrnheit": false,
+					"grad_symbols": true
 				}
 			},
 			{

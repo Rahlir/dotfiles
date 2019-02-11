@@ -45,10 +45,6 @@
 			"before": " "
 		},
 
-		"powerline.segments.common.cputemp.cpu_temp": {
-			"before": " "
-		},
-
 		"powerline.segments.common.net.network_load": {
 			"args": {
 				"recv_format": "⬇ {value:>8}",
