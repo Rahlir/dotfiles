@@ -13,6 +13,11 @@ DIRCOLORSDIR='/Users/rahlir/.dircolors/dircolors.base16'
 export POWERLINEDIR='/anaconda3/lib/python3.6/site-packages/powerline'
 COMPLETIONDIR='/usr/local/etc/bash_completion.d'
 
+export PKG_CONFIG_PATH="/usr/local/opt/ncurses/lib/pkgconfig"
+export LDFLAGS="-L/usr/local/opt/ncurses/lib"
+export CPPFLAGS="-I/usr/local/opt/ncurses/include"
+export TERMINFO="/usr/local/opt/ncurses/share/terminfo/"
+
 alias dircolors='gdircolors'
 alias ls='gls --color'
 alias temp='osx-cpu-temp'
@@ -26,3 +31,5 @@ alias wall-e='ssh wall-e.karlov.mff.cuni.cz'
 alias vmd='/Applications/VMD\ 1.9.3.app/Contents/Resources/VMD.app/Contents/MacOS/VMD'
 alias matlab='/Applications/MATLAB_R2018a.app/bin/matlab'
 alias mlint='/Applications/MATLAB_R2018a.app/bin/maci64/mlint'
+
+# vim: ft=sh
