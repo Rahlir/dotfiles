@@ -1,0 +1,33 @@
+{
+    "name": "Gruvbox color scheme for shell prompts",
+
+    "groups": {
+    "environment":                  { "fg": "gruvbox.light1",       "bg": "gruvbox.faded_green",    "attrs": [] },
+    "mode":                         { "fg": "gruvbox.dark0",        "bg": "gruvbox.green",          "attrs": ["bold"] },
+    "date":                         { "fg": "gruvbox.dark0",        "bg": "gruvbox.yellow",         "attrs": ["bold"] },
+
+    "gitstatus":                    { "fg": "gruvbox.dark0",        "bg": "gruvbox.light2",         "attrs": ["bold"] },
+    "gitstatus_branch":             { "fg": "gruvbox.dark0",        "bg": "gruvbox.light2",         "attrs": ["bold"] },
+    "gitstatus_branch_clean":       { "fg": "gruvbox.faded_green",  "bg": "gruvbox.light2",         "attrs": ["bold"] },
+    "gitstatus_branch_dirty":       { "fg": "gruvbox.dark0",        "bg": "gruvbox.light2",         "attrs": ["bold"] },
+    "gitstatus_branch_detached":    { "fg": "gruvbox.purple",       "bg": "gruvbox.light2",         "attrs": ["bold"] },
+    "gitstatus_tag":                { "fg": "gruvbox.faded_aqua",   "bg": "gruvbox.light2",         "attrs": ["bold"] },
+    "gitstatus_behind":             { "fg": "gruvbox.dark0",        "bg": "gruvbox.light2",         "attrs": ["bold"] },
+    "gitstatus_ahead":              { "fg": "gruvbox.dark0",        "bg": "gruvbox.light2",         "attrs": ["bold"] },
+    "gitstatus_staged":             { "fg": "gruvbox.faded_green",  "bg": "gruvbox.light2",         "attrs": ["bold"] },
+    "gitstatus_unmerged":           { "fg": "gruvbox.bright_red",   "bg": "gruvbox.light2",         "attrs": ["bold"] },
+    "gitstatus_changed":            { "fg": "gruvbox.faded_red",    "bg": "gruvbox.light3",         "attrs": ["bold"] },
+    "gitstatus_untracked":          { "fg": "gruvbox.bright_yellow","bg": "gruvbox.light4",         "attrs": ["bold"] },
+    "gitstatus_stashed":            { "fg": "gruvbox.faded_blue",   "bg": "gruvbox.gray",           "attrs": ["bold"] },
+    "gitstatus:divider":            { "fg": "gruvbox.dark0",        "bg": "gruvbox.dark0",          "attrs": [] }
+    },
+
+    "mode_translations": {
+        "vicmd": {
+            "groups": {
+                "mode":             {"fg": "black", "bg": "gruvbox.bright_blue", "attrs": ["bold"]}
+            }
+        }
+    }
+
+}
