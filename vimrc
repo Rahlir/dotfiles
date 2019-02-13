@@ -32,7 +32,7 @@ Plug 'ryanoasis/vim-devicons'
 
 if has('nvim')
 	Plug 'arakashic/chromatica.nvim', {'for': 'cpp', 'do': ':UpdateRemotePlugins'}
-	Plug 'numirias/semshi', {'for': 'python'}
+	Plug 'numirias/semshi', {'for': 'python', 'do': ':UpdateRemotePlugins'}
 	" Plug 'daeyun/vim-matlab', {'for': 'matlab'}
 	Plug 'rahlir/nvim-matlab', {'for': 'matlab'}
 	Plug 'roxma/nvim-yarp'
@@ -48,7 +48,7 @@ call plug#end()
 
 " }}}
 
-"""""""""""""""""""""""""""""General vim settings"""""""""""""""""""""""""""""
+" ---------------------------General Vim Settings-----------------------------
 " Different Vim Versions Compatibility: {{{
 
 if !has('gui_running') && !has('nvim')
@@ -130,7 +130,7 @@ let g:changelog_username = 'Tadeas Uhlir <tadeas.uhlir.19@dartmouth.edu>'
 
 " }}}
 
-""""""""""""""""""""""""""""""""Plugin options""""""""""""""""""""""""""""""""
+" ------------------------------Plugin Options--------------------------------
 " Vimtex Options: {{{
 
 let g:tex_flavor = 'latex'
@@ -261,7 +261,7 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=235
 
 " }}}
 
-"""""""""""""""""""""""""""Filetype Specific Config"""""""""""""""""""""""""""
+" -------------------------Filetype Specific Config---------------------------
 " Python Latex Matlab: {{{
 " Python: 
 
@@ -281,8 +281,9 @@ au FileType matlab setlocal commentstring=%%s
 
 " }}}
 
-""""""""""""""""""""""""""""""""""Functions"""""""""""""""""""""""""""""""""""
+" --------------------------------Functions-----------------------------------
 " Mappable Functions: {{{
+
 function! BlockComment()
 	let a:cmnt_raw = split(&commentstring, '%s')[0]
 	let a:cmnt = substitute(a:cmnt_raw, '^\s*\(.\{-}\)\s*$', '\1', '')
@@ -303,7 +304,10 @@ function! RemLdWs()
 endfunction
 
 function! CenterComment()
-	let a:cmnt = split(&commentstring, '%s')[0]
+	let a:cmnt_raw = split(&commentstring, '%s')[0]
+	let a:cmnt = substitute(a:cmnt_raw, ' ', '', '')
+
+	let a:del_str = '-'
 
   if &tw != 0
     let a:width = &tw
@@ -315,11 +319,12 @@ function! CenterComment()
   let a:header_w = strlen(a:header)
   let a:before_w = (a:width - a:header_w) / 2
   let a:after_w = (a:width - a:header_w - a:before_w)
-  let a:before = repeat(a:cmnt, a:before_w)
-  let a:after = repeat(a:cmnt, a:after_w)
+  let a:before = a:cmnt . ' ' . repeat(a:del_str, a:before_w-2)
+  let a:after = repeat(a:del_str, a:after_w)
 
   call setline(".", a:before . a:header . a:after)
 endfunc
+
 " }}}
 " Debugging Functions: {{{
 
