@@ -1,0 +1,31 @@
+" tridactylrc derived from the given sample
+"
+sanitise tridactyllocal tridactylsync
+
+colors greenmat
+
+set followpagepatterns.next ^(next|newer)\b|>>
+set searchurls.vimaw https://vimawesome.com/?q=
+
+bind f hint -J
+bind q fillcmdline open github
+bind Q fillcmdline tabopen github
+
+bind yg composite js "git clone " + document.location.href.replace(/https?:\/\//,"git@").replace("/",":").replace(/$/,".git") | clipboard yank
+
+bind / fillcmdline find
+bind ? fillcmdline find -?
+bind n findnext 1
+bind N findnext -1
+bind \s nohlsearch
+
+bindurl www.google.com f hint -Jc .rc > .r > a, g-inner-card.cv2VAd > div > a, g-inner-card.cv2VAd > a
+bindurl www.google.com F composite hint -Jpipe .rc>.r>a href | tabopen | buffer #
+bindurl www.google.com ;d hint -J
+
+bindurl rick.dartmouth.edu/mars/notebooks --mode=ignore gt tabnext
+bindurl rick.dartmouth.edu/mars/notebooks --mode=ignore gT tabprev
+bindurl rick.dartmouth.edu/mars/notebooks --mode=ignore u undo
+
+autocmd DocStart rick.dartmouth.edu/mars/notebooks mode ignore
+" vim: set filetype=vim:
