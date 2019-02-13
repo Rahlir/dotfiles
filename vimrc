@@ -97,7 +97,7 @@ endif
 " Set Configurations:
 
 set number lbr laststatus=2 title ruler mouse=a
-set shiftwidth=4 tabstop=4 expandtab " Tab indentation
+set shiftwidth=4 tabstop=4 softtabstop=4 expandtab " Tab indentation
 set noshowmode " Don't show -- INSERT --
 set autochdir " Automatically change directory to file being editted
 set report=0 " Report any line yanked
