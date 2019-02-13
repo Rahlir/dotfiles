@@ -1,0 +1,66 @@
+{
+	"segments": {
+		"above": [{
+			"left": [
+				{
+					"function": "powerline.segments.common.net.hostname",
+					"priority": 10
+				},
+				{
+					"function": "powerline.segments.common.env.user",
+					"priority": 30
+				},
+				{
+					"function": "powerline.segments.common.env.virtualenv",
+					"priority": 50
+				},
+				{
+					"function": "powerline.segments.shell.cwd",
+					"priority": 30,
+					"args": {
+						"dir_limit_depth": 4
+					}
+				},
+				{
+					"function": "powerline.segments.shell.jobnum",
+					"priority": 20
+				}
+			],
+			"right": [
+				{
+					"type": "string",
+					"highlight_groups": ["background"],
+					"draw_soft_divider": false,
+					"draw_hard_divider": false,
+					"width": "auto"
+				},
+				{
+					"function": "powerline_gitstatus.gitstatus"
+				}
+			]
+		}],
+		"left": [
+			{
+				"function": "powerline.segments.common.time.date",
+				"name": "prompt",
+				"args": {
+					"format": "$"
+								}
+			},
+			{
+				"function": "powerline.segments.shell.mode",
+				"args": {
+					"override": {
+						"vicmd": "",
+						"viins": "פֿ"
+					}
+				}
+			}
+		],
+		"right": [
+			{
+					"function": "powerline.segments.shell.last_status"
+			}
+		]
+	}
+}
