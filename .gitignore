@@ -4,3 +4,4 @@ __pycache__
 config/ranger/history
 config/ranger/bookmarks
 config/ranger/tagged
+config/powerline/config.json
