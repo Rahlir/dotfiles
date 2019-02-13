@@ -25,6 +25,7 @@ setopt share_history
 setopt inc_append_history
 
 export POWERLINE_COMMAND=powerline
+powerline-daemon -q
 . $POWERLINEDIR/bindings/zsh/powerline.zsh
 
 bindkey "^[[A" history-beginning-search-backward
