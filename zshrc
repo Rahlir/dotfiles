@@ -1,23 +1,24 @@
 # ---------------------------Sourcing External Files-----------------------------
 # Mac specific file
 if [ -f ~/.bashrc_mac ]; then
-	source ~/.bashrc_mac
+    source ~/.bashrc_mac
 fi
 
 # Redirecting to machine specific settings
 if [ -f ~/.bashrc_local ]; then
-	source ~/.bashrc_local
+    source ~/.bashrc_local
 fi
 
 # Redirecting to aliases file
 if [ -f ~/.bashrc_aliases ]; then
-	source  ~/.bashrc_aliases
+    source  ~/.bashrc_aliases
 fi
 
-
-HISTSIZE=8000               #How many lines of history to keep in memory
-HISTFILE=~/.zsh_history     #Where to save history to disk
-SAVEHIST=8000 							#Number of history entries to save to disk
+# ---------------------------Configuration Options------------------------------
+#
+HISTSIZE=8000               # How many lines of history to keep in memory
+HISTFILE=~/.zsh_history     # Where to save history to disk
+SAVEHIST=8000               # Number of history entries to save to disk
 
 setopt append_history
 setopt share_history
@@ -40,9 +41,9 @@ VISUAL=vim; export VISUAL EDITOR=vim; export EDITOR
 
 # ----------------------------------Functions------------------------------------
 colors-sample() {
-	for col in "$@"; do
-		printf "\x1b[38;5;${col}mxxxxxxx\x1b[0m\n"
-	done
+    for col in "$@"; do
+        printf "\x1b[38;5;${col}mxxxxxxx\x1b[0m\n"
+    done
 }
 
 # ---------------------------------Compinstall-----------------------------------
