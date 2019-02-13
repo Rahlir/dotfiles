@@ -148,33 +148,41 @@ let g:gitgutter_sign_removed = "\u2718"
 
 let g:lightline = {
       \ 'colorscheme': 'gruvbox',
-      \ 'active': {
-      \ 'left': [['mode', 'paste'],
-      \         ['gitadd', 'gitmod', 'gitremoved', 'gitbranch', 'readonly', 'filename', 'modified']]
-      \ },
-      \ 'component_function': {
-      \   'gitbranch': 'LightLineGitBranch',
+			\ 'active': {
+			\ 'left': [['mode', 'paste'],
+			\					['gitadd', 'gitmod', 'gitremoved', 'gitbranch', 'readonly', 'filename', 'modified']]
+			\ },
+			\ 'component_function': {
+			\		'gitbranch': 'LightLineGitBranch',
       \   'filetype': 'MyFiletype',
       \   'fileformat': 'MyFileformat',
-      \ },
-      \ 'component_expand': {
-      \   'gitadd': 'LightLineGitAdd',
-      \   'gitmod': 'LightLineGitMod',
-      \   'gitremoved': 'LightLineGitRemoved'
-      \ },
-      \ 'component_type': {
-      \   'gitadd': 'good',
-      \   'gitmod': 'warning',
-      \   'gitremoved': 'error'
-      \   }
+			\ },
+			\ 'component_expand': {
+			\		'gitadd': 'LightLineGitAdd',
+			\		'gitmod': 'LightLineGitMod',
+			\		'gitremoved': 'LightLineGitRemoved'
+			\	},
+			\ 'component_type': {
+			\		'gitadd': 'good',
+			\		'gitmod': 'warning',
+			\		'gitremoved': 'error'
+			\		}
       \ }
 
 function! MyFiletype()
-  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
+	if exists('*WebDevIconsGetFileTypeSymbol')
+		return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
+	else
+		return &filetype
+	endif
 endfunction
 
 function! MyFileformat()
-  return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
+	if exists('*WebDevIconsGetFileFormatSymbol')
+		return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
+	else
+		return &fileformat
+	endif
 endfunction
 
 function! LightLineGitAdd()
