@@ -109,6 +109,7 @@ set completeopt+=longest
 set fdm=marker
 set modeline
 set cursorline " Highlight the current line of cursor
+set updatetime=1000
 
 " Custom Mappings:
 
