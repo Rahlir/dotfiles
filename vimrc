@@ -29,19 +29,20 @@ Plug 'leafgarland/typescript-vim', {'for': 'typescript'}
 Plug 'majutsushi/tagbar'
 " Plug 'xolox/vim-easytags'
 Plug 'ryanoasis/vim-devicons'
+Plug 'tpope/vim-surround'
 
 if has('nvim')
-	Plug 'arakashic/chromatica.nvim', {'for': 'cpp', 'do': ':UpdateRemotePlugins'}
-	Plug 'numirias/semshi', {'for': 'python', 'do': ':UpdateRemotePlugins'}
-	" Plug 'daeyun/vim-matlab', {'for': 'matlab'}
-	Plug 'rahlir/nvim-matlab', {'for': 'matlab'}
-	Plug 'roxma/nvim-yarp'
+  Plug 'arakashic/chromatica.nvim', {'for': 'cpp', 'do': ':UpdateRemotePlugins'}
+  Plug 'numirias/semshi', {'for': 'python', 'do': ':UpdateRemotePlugins'}
+  " Plug 'daeyun/vim-matlab', {'for': 'matlab'}
+  Plug 'rahlir/nvim-matlab', {'for': 'matlab'}
+  Plug 'roxma/nvim-yarp'
   Plug 'ncm2/ncm2'
-	Plug 'ncm2/ncm2-bufword'
-	Plug 'ncm2/ncm2-path'
-	Plug 'ncm2/ncm2-pyclang', {'for': 'cpp'}
+  Plug 'ncm2/ncm2-bufword'
+  Plug 'ncm2/ncm2-path'
+  Plug 'ncm2/ncm2-pyclang', {'for': 'cpp'}
 else
-	Plug 'ervandew/supertab'
+  Plug 'ervandew/supertab'
 endif
 
 call plug#end()
@@ -52,22 +53,22 @@ call plug#end()
 " Different Vim Versions Compatibility: {{{
 
 if !has('gui_running') && !has('nvim')
-	" set clipboard=exclude:.* " Turn off server for terminal vim
-	let g:vimtex_compiler_latexmk = {'callback' : 0}
-	if &term =~# '^tmux'
-	" Without this setting terminal vim doesn't display true colors with tmux
-		let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-		let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-	endif
+  " set clipboard=exclude:.* " Turn off server for terminal vim
+  let g:vimtex_compiler_latexmk = {'callback' : 0}
+  if &term =~# '^tmux'
+  " Without this setting terminal vim doesn't display true colors with tmux
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  endif
 endif
 
 if !has('nvim')
-	" Fixing python3 setting, only for brew vim
-	if has('python3') && has('mac')
-			command! -nargs=1 Py py3 <args>
-			set pythonthreedll=/usr/local/Frameworks/Python.framework/Versions/3.7/Python
-			set pythonthreehome=/usr/local/Frameworks/Python.framework/Versions/3.7
-	endif
+  " Fixing python3 setting, only for brew vim
+  if has('python3') && has('mac')
+      command! -nargs=1 Py py3 <args>
+      set pythonthreedll=/usr/local/Frameworks/Python.framework/Versions/3.7/Python
+      set pythonthreehome=/usr/local/Frameworks/Python.framework/Versions/3.7
+  endif
 endif
 
 " }}}
@@ -78,16 +79,16 @@ set termguicolors
 syntax on
 
 if g:colorscheme_setup == 'base16'
-	if filereadable(expand("~/.vimrc_background"))
-		let base16colorspace=256
-		source ~/.vimrc_background
-	endif
+  if filereadable(expand("~/.vimrc_background"))
+    let base16colorspace=256
+    source ~/.vimrc_background
+  endif
 elseif g:colorscheme_setup == 'gruvbox'
-	colorscheme gruvbox
-	let g:gruvbox_contrast_dark = 'medium'
-	let g:gruvbox_italic = 1
-	let g:gruvbox_italicize_strings = 1
-	set background=dark
+  colorscheme gruvbox
+  let g:gruvbox_contrast_dark = 'medium'
+  let g:gruvbox_italic = 1
+  let g:gruvbox_italicize_strings = 1
+  set background=dark
 endif
 
 " }}}
@@ -96,7 +97,7 @@ endif
 " Set Configurations:
 
 set number lbr laststatus=2 title ruler mouse=a
-set shiftwidth=2 tabstop=2 " Tab indentation
+set shiftwidth=4 tabstop=4 expandtab " Tab indentation
 set noshowmode " Don't show -- INSERT --
 set autochdir " Automatically change directory to file being editted
 set report=0 " Report any line yanked
@@ -147,29 +148,29 @@ let g:gitgutter_sign_removed = "\u2718"
 
 let g:lightline = {
       \ 'colorscheme': 'gruvbox',
-			\ 'active': {
-			\ 'left': [['mode', 'paste'],
-			\					['gitadd', 'gitmod', 'gitremoved', 'gitbranch', 'readonly', 'filename', 'modified']]
- 			\ },
-			\ 'component_function': {
-			\ 	'gitbranch': 'LightLineGitBranch',
+      \ 'active': {
+      \ 'left': [['mode', 'paste'],
+      \         ['gitadd', 'gitmod', 'gitremoved', 'gitbranch', 'readonly', 'filename', 'modified']]
+      \ },
+      \ 'component_function': {
+      \   'gitbranch': 'LightLineGitBranch',
       \   'filetype': 'MyFiletype',
       \   'fileformat': 'MyFileformat',
-			\ },
-			\ 'component_expand': {
-			\		'gitadd': 'LightLineGitAdd',
-			\  	'gitmod': 'LightLineGitMod',
- 			\ 	'gitremoved': 'LightLineGitRemoved'
-			\	},
-			\ 'component_type': {
-			\		'gitadd': 'good',
-			\ 	'gitmod': 'warning',
-			\ 	'gitremoved': 'error'
-			\		}
+      \ },
+      \ 'component_expand': {
+      \   'gitadd': 'LightLineGitAdd',
+      \   'gitmod': 'LightLineGitMod',
+      \   'gitremoved': 'LightLineGitRemoved'
+      \ },
+      \ 'component_type': {
+      \   'gitadd': 'good',
+      \   'gitmod': 'warning',
+      \   'gitremoved': 'error'
+      \   }
       \ }
 
 function! MyFiletype()
-	return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
+  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
 endfunction
 
 function! MyFileformat()
@@ -203,7 +204,7 @@ endfunction
 function! LightLineGitBranch()
   if exists('*fugitive#head')
     let branch = fugitive#head()
-		return branch !=# '' ? '⭠ '.branch : ''
+    return branch !=# '' ? '⭠ '.branch : ''
   endif
   return ''
 endfunction
@@ -224,16 +225,16 @@ let g:SuperTabCrMapping = 0
 let g:SuperTabCompletionContexts = ['s:ContextText', 's:ContextDiscover']
 let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&completefunc']
 let g:SuperTabContextDiscoverDiscovery =
-		\ ["&omnifunc:<c-x><c-o>", "&completefunc:<c-x><c-u>"]
+    \ ["&omnifunc:<c-x><c-o>", "&completefunc:<c-x><c-u>"]
 let g:SuperTabMappingBackward = '<s-c-space>'
 
 " }}}
 " ALE Options: {{{
 
 let g:ale_linters = {
-			\   'python': ['autopep8', 'flake8'],
-			\		'cpp': ['gcc']
-			\}
+      \   'python': ['autopep8', 'flake8'],
+      \   'cpp': ['gcc']
+      \}
 let g:ale_c_parse_compile_commands = '1'
 let g:ale_cpp_clang_options = '-std=c++14 -Wall -isystem /Applications/XCode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1'
 let g:ale_cpp_gcc_options = '-std=c++14 -Wall -isystem /Applications/XCode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1'
@@ -285,29 +286,29 @@ au FileType matlab setlocal commentstring=%%s
 " Mappable Functions: {{{
 
 function! BlockComment()
-	let a:cmnt_raw = split(&commentstring, '%s')[0]
-	let a:cmnt = substitute(a:cmnt_raw, '^\s*\(.\{-}\)\s*$', '\1', '')
-	exe ':silent s/^\(\s*\)/\1' . a:cmnt . ' /'
-	nohlsearch
+  let a:cmnt_raw = split(&commentstring, '%s')[0]
+  let a:cmnt = substitute(a:cmnt_raw, '^\s*\(.\{-}\)\s*$', '\1', '')
+  exe ':silent s/^\(\s*\)/\1' . a:cmnt . ' /'
+  nohlsearch
 endfunction
 
 function! UnBlockComment()
-	let a:cmnt_raw = split(&commentstring, '%s')[0]
-	let a:cmnt = substitute(a:cmnt_raw, '^\s*\(.\{-}\)\s*$', '\1', '')
-	exe ':silent s/^\(\s*\)' . a:cmnt .  ' /\1/e'
-	nohlsearch
+  let a:cmnt_raw = split(&commentstring, '%s')[0]
+  let a:cmnt = substitute(a:cmnt_raw, '^\s*\(.\{-}\)\s*$', '\1', '')
+  exe ':silent s/^\(\s*\)' . a:cmnt .  ' /\1/e'
+  nohlsearch
 endfunction
 
 function! RemLdWs()
-	exe 's/\s\+$//e'
-	nohlsearch
+  exe 's/\s\+$//e'
+  nohlsearch
 endfunction
 
 function! CenterComment()
-	let a:cmnt_raw = split(&commentstring, '%s')[0]
-	let a:cmnt = substitute(a:cmnt_raw, ' ', '', '')
+  let a:cmnt_raw = split(&commentstring, '%s')[0]
+  let a:cmnt = substitute(a:cmnt_raw, ' ', '', '')
 
-	let a:del_str = '-'
+  let a:del_str = '-'
 
   if &tw != 0
     let a:width = &tw
