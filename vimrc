@@ -244,7 +244,8 @@ let g:SuperTabCompletionContexts = ['s:ContextText', 's:ContextDiscover']
 let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&completefunc']
 let g:SuperTabContextDiscoverDiscovery =
     \ ["&omnifunc:<c-x><c-o>", "&completefunc:<c-x><c-u>"]
-let g:SuperTabMappingBackward = '<s-c-space>'
+let g:SuperTabMappingBackward = '<M-Tab>'
+let g:SuperTabClosePreviewOnPopupClose = 1
 
 " }}}
 " ALE Options: {{{
