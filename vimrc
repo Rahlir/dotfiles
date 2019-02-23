@@ -276,8 +276,23 @@ let g:jedi#use_splits_not_buffers = "top"
 
 let g:indent_guides_auto_colors = 0
 let g:indent_guides_guide_size = 1
-autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=240
-autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=235
+let g:indent_guides_exclude_filetypes = ['help', 'nerdtree', 'vim', 'tagbar']
+
+" }}}
+" NERDTree Options: {{{
+
+" }}}
+" NERDTreeSyntasHl Options: {{{
+
+" }}}
+" Startify Options: {{{
+
+    let g:startify_bookmarks = [
+            \ { 'v': '~/.vimrc' },
+            \ { 'n': '~/.config/nvim/init.vim' },
+            \ { 'z': '~/.zshrc' },
+            \ { 't': '~/.config/kitty/kitty.conf' },
+            \ ]
 
 " }}}
 
