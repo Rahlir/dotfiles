@@ -15,37 +15,52 @@ if [ -f ~/.bashrc_aliases ]; then
 fi
 
 # ---------------------------Configuration Options------------------------------
-#
 HISTSIZE=8000               # How many lines of history to keep in memory
 HISTFILE=~/.zsh_history     # Where to save history to disk
 SAVEHIST=8000               # Number of history entries to save to disk
+# Set default editor
+VISUAL=vim; export VISUAL EDITOR=vim; export EDITOR
 
 setopt append_history
 setopt share_history
 setopt inc_append_history
 
+
+# -------------------------Loading Zshcontrib Widgets---------------------------
+autoload -U edit-command-line
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N edit-command-line
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+
+
+bindkey -v
+export KEYTIMEOUT=1
+bindkey -M vicmd 'v' edit-command-line
+
 export POWERLINE_COMMAND=powerline
 powerline-daemon -q
 . $POWERLINEDIR/bindings/zsh/powerline.zsh
 
-bindkey "^[[A" history-beginning-search-backward
-bindkey "^[[B" history-beginning-search-forward
-
-export KEYTIMEOUT=1
-bindkey -v
+export LDFLAGS="-L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib"
+export CPPFLAGS="-I/usr/local/opt/llvm/include -I/usr/local/include $CPPFLAGS"
 
 # Add colors
 test -r $DIRCOLORSDIR && eval "$(dircolors $DIRCOLORSDIR)"
 
-# Set default editor
-VISUAL=vim; export VISUAL EDITOR=vim; export EDITOR
 
 # ----------------------------------Functions------------------------------------
-colors-sample() {
+function precmd() {
+    echo -ne "\033]0;zsh\007"
+}
+
+function colors-sample() {
     for col in "$@"; do
         printf "\x1b[38;5;${col}mxxxxxxx\x1b[0m\n"
     done
 }
+
 
 # ---------------------------------Compinstall-----------------------------------
 zstyle ':completion:*' completer _complete _ignored _approximate
@@ -58,4 +73,11 @@ zstyle :compinstall filename '/Users/rahlir/.zshrc'
 
 autoload -Uz compinit
 compinit
+
+bindkey "^[[A" up-line-or-beginning-search
+bindkey "^[[B" down-line-or-beginning-search
+
 # End of lines added by compinstall
+
+
+export PATH="/usr/local/opt/llvm/bin:$PATH"
