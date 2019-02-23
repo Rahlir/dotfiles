@@ -255,8 +255,18 @@ let g:ale_linters = {
       \   'cpp': ['gcc']
       \}
 let g:ale_c_parse_compile_commands = '1'
-let g:ale_cpp_clang_options = '-std=c++14 -Wall -isystem /Applications/XCode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1'
-let g:ale_cpp_gcc_options = '-std=c++14 -Wall -isystem /Applications/XCode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1'
+let g:ale_cpp_clang_options = '-std=c++14 -I/usr/local/include/eigen3'
+let g:ale_cpp_gcc_options = '-std=c++14 -I/usr/local/include/eigen3'
+
+" }}}
+" Clang_complete Options: {{{
+
+let g:clang_library_path = '/usr/local/opt/llvm/lib'
+let g:clang_user_options = '-std=c++14 -I/usr/local/include/eigen3'
+let g:clang_complete_macros = 1
+" let g:clang_debug = 1
+let g:clang_close_preview = 1
+let g:clang_jumpto_declaration_key = "æ"
 
 " }}}
 " UltiSnips Options: {{{
