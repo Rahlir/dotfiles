@@ -14,35 +14,40 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'w0rp/ale'
 Plug 'raimondi/delimitmate'
 Plug 'chriskempson/base16-vim'
-Plug 'rizzatti/dash.vim'
 Plug 'morhetz/gruvbox'
+Plug 'rizzatti/dash.vim'
 " Plug 'yggdroot/indentline'
 " Plug 'jeetsukumaran/vim-indentwise'
-" Plug 'nathanaelkane/vim-indent-guides'
+Plug 'nathanaelkane/vim-indent-guides'
 Plug 'Vimjas/vim-python-pep8-indent', {'for': 'python'}
 Plug 'SirVer/ultisnips'
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle'  }
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle', 'for': 'cpp' }
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'dearrrfish/vim-applescript', {'for': 'applescript' }
 Plug 'davidoc/taskpaper.vim', {'for': 'taskpaper'}
 Plug 'leafgarland/typescript-vim', {'for': 'typescript'}
-" Plug 'rip-rip/clang_complete', {'for': 'cpp'}
 Plug 'majutsushi/tagbar'
 " Plug 'xolox/vim-easytags'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tpope/vim-surround'
+Plug 'kien/ctrlp.vim'
+Plug 'mhinz/vim-startify'
+Plug 'rip-rip/clang_complete', {'for': 'cpp'}
 
 if has('nvim')
-  Plug 'arakashic/chromatica.nvim', {'for': 'cpp', 'do': ':UpdateRemotePlugins'}
+  Plug 'ervandew/supertab'
   Plug 'numirias/semshi', {'for': 'python', 'do': ':UpdateRemotePlugins'}
+  Plug 'arakashic/chromatica.nvim', {'for': 'cpp', 'do': ':UpdateRemotePlugins'}
   " Plug 'daeyun/vim-matlab', {'for': 'matlab'}
   Plug 'rahlir/nvim-matlab', {'for': 'matlab'}
   Plug 'roxma/nvim-yarp'
-  Plug 'ncm2/ncm2'
-  Plug 'ncm2/ncm2-bufword'
-  Plug 'ncm2/ncm2-path'
-  Plug 'ncm2/ncm2-pyclang', {'for': 'cpp'}
+
+  " Plug 'ncm2/ncm2'
+  " Plug 'ncm2/ncm2-bufword'
+  " Plug 'ncm2/ncm2-path'
+  " Plug 'ncm2/ncm2-pyclang', {'for': 'cpp'}
 else
-  Plug 'ervandew/supertab'
+  Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
 endif
 
 call plug#end()
