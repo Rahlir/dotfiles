@@ -108,13 +108,16 @@ set autochdir " Automatically change directory to file being editted
 set report=0 " Report any line yanked
 set spelllang=en_us " Set spelling language
 set splitright splitbelow " More natural splits
-set guioptions-=rL
 set hidden
 set completeopt+=longest
 set fdm=marker
 set modeline
 set cursorline " Highlight the current line of cursor
 set updatetime=1000
+set exrc
+set secure
+set guioptions-=rL
+set guifont=HackNerdFontComplete-Regular:h11
 
 " Custom Mappings:
 
