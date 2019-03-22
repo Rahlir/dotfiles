@@ -1,0 +1,20 @@
+snippet header "header snippet"
+// --------------------------------Tadeas Uhlir----------------------------------
+// $1
+// `date +%Y-%m-%d`
+// $2
+// ------------------------------------------------------------------------------
+$0
+endsnippet
+
+snippet for "for loop" m
+for(int ${1:i}=${2:0}; $1<$3; $1++) {
+	$0
+}
+endsnippet
+
+snippet vfn "virtual function declaration"
+virtual $1 ${VISUAL:name}($2) {
+	$0
+}
+endsnippet
