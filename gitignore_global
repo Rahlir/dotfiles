@@ -1,4 +1,7 @@
 *.swp
 .DS_Store
 tags
-.clang
+.clang*
+.idea
+compile_commands.json
+.nvimrc
