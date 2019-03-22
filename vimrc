@@ -16,8 +16,6 @@ Plug 'raimondi/delimitmate'
 Plug 'chriskempson/base16-vim'
 Plug 'morhetz/gruvbox'
 Plug 'rizzatti/dash.vim'
-" Plug 'yggdroot/indentline'
-" Plug 'jeetsukumaran/vim-indentwise'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'Vimjas/vim-python-pep8-indent', {'for': 'python'}
 Plug 'SirVer/ultisnips'
@@ -32,10 +30,11 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'tpope/vim-surround'
 Plug 'kien/ctrlp.vim'
 Plug 'mhinz/vim-startify'
-Plug 'rip-rip/clang_complete', {'for': 'cpp'}
+" Plug 'rip-rip/clang_complete', {'for': 'cpp'}
+Plug 'justmao945/vim-clang', {'for': 'cpp'}
+Plug 'ervandew/supertab'
 
 if has('nvim')
-  Plug 'ervandew/supertab'
   Plug 'numirias/semshi', {'for': 'python', 'do': ':UpdateRemotePlugins'}
   Plug 'arakashic/chromatica.nvim', {'for': 'cpp', 'do': ':UpdateRemotePlugins'}
   " Plug 'daeyun/vim-matlab', {'for': 'matlab'}
@@ -47,7 +46,8 @@ if has('nvim')
   " Plug 'ncm2/ncm2-path'
   " Plug 'ncm2/ncm2-pyclang', {'for': 'cpp'}
 else
-  Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
+  Plug 'octol/vim-cpp-enhanced-highlight', {'for': 'cpp'}
+  " Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
 endif
 
 call plug#end()
@@ -139,6 +139,12 @@ nnoremap <leader>b :b #<CR>
 
 let g:changelog_username = 'Tadeas Uhlir <tadeas.uhlir.19@dartmouth.edu>'
 
+function! GetGruvColor(group)
+  let guiColor = synIDattr(hlID(a:group), "fg", "gui") 
+  let termColor = synIDattr(hlID(a:group), "fg", "cterm") 
+  return [ guiColor, termColor ]
+endfunction
+
 " }}}
 
 " ------------------------------Plugin Options--------------------------------
@@ -147,6 +153,9 @@ let g:changelog_username = 'Tadeas Uhlir <tadeas.uhlir.19@dartmouth.edu>'
 let g:tex_flavor = 'latex'
 let g:vimtex_view_method = 'skim'
 let g:tex_comment_nospell = 1
+let g:vimtex_quickfix_open_on_warning = 0
+let g:vimtex_fold_manual = 1
+
 
 " }}}
 " GitGutter Options: {{{
@@ -267,6 +276,13 @@ let g:clang_complete_macros = 1
 " let g:clang_debug = 1
 let g:clang_close_preview = 1
 let g:clang_jumpto_declaration_key = "æ"
+let g:clang_snippets = 1
+let g:clang_snippets_engine = 'ultisnips'
+let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
+let g:clang_dotfile = '.clang_complete'
+let g:clang_cpp_completeopt = 'longest,menuone'
+let g:clang_diagsopt = ''
+" let g:clang_compilation_database = '..'
 
 " }}}
 " UltiSnips Options: {{{
@@ -305,7 +321,11 @@ let g:indent_guides_exclude_filetypes = ['help', 'nerdtree', 'vim', 'tagbar']
             \ ]
 
 " }}}
+" Tagbar Options: {{{
 
+autocmd FileType cpp nested :call tagbar#autoopen(0)
+
+" }}}
 " -------------------------Filetype Specific Config---------------------------
 " Python Latex Matlab: {{{
 " Python: 
@@ -349,25 +369,31 @@ function! RemLdWs()
 endfunction
 
 function! CenterComment()
-  let a:cmnt_raw = split(&commentstring, '%s')[0]
-  let a:cmnt = substitute(a:cmnt_raw, ' ', '', '')
-
-  let a:del_str = '-'
-
-  if &tw != 0
-    let a:width = &tw
+  if &ft == 'cpp'
+    let l:cmnt_raw = split(&commentstring, '%s')[0]
+    let l:cmnt_better = substitute(l:cmnt_raw, ' ', '', '')
+    let l:cmnt = substitute(l:cmnt_better, '\*', '/', '')
   else
-    let a:width = 80
+    let l:cmnt_raw_other = split(&commentstring, '%s')[0]
+    let l:cmnt = substitute(l:cmnt_raw_other, ' ', '', '')
   endif
 
-  let a:header = getline(".")
-  let a:header_w = strlen(a:header)
-  let a:before_w = (a:width - a:header_w) / 2
-  let a:after_w = (a:width - a:header_w - a:before_w)
-  let a:before = a:cmnt . ' ' . repeat(a:del_str, a:before_w-2)
-  let a:after = repeat(a:del_str, a:after_w)
+  let l:del_str = '-'
 
-  call setline(".", a:before . a:header . a:after)
+  if &tw != 0
+    let l:width = &tw
+  else
+    let l:width = 80
+  endif
+
+  let l:header = getline(".")
+  let l:header_w = strlen(l:header)
+  let l:before_w = (l:width - l:header_w) / 2
+  let l:after_w = (l:width - l:header_w - l:before_w)
+  let l:before = l:cmnt . ' ' . repeat(l:del_str, l:before_w-2)
+  let l:after = repeat(l:del_str, l:after_w)
+
+  call setline(".", l:before . l:header . l:after)
 endfunc
 
 " }}}
