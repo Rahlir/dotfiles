@@ -18,8 +18,9 @@ fi
 HISTSIZE=8000               # How many lines of history to keep in memory
 HISTFILE=~/.zsh_history     # Where to save history to disk
 SAVEHIST=8000               # Number of history entries to save to disk
+
 # Set default editor
-VISUAL=vim; export VISUAL EDITOR=vim; export EDITOR
+VISUAL=nvim; export VISUAL EDITOR=nvim; export EDITOR
 
 setopt append_history
 setopt share_history
