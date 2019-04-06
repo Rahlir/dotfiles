@@ -16,29 +16,33 @@ Plug 'raimondi/delimitmate'
 Plug 'chriskempson/base16-vim'
 Plug 'morhetz/gruvbox'
 Plug 'rizzatti/dash.vim'
-Plug 'nathanaelkane/vim-indent-guides'
+
+"Plug 'nathanaelkane/vim-indent-guides'
+Plug 'yggdroot/indentline'
+
 Plug 'Vimjas/vim-python-pep8-indent', {'for': 'python'}
 Plug 'SirVer/ultisnips'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle', 'for': 'cpp' }
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'dearrrfish/vim-applescript', {'for': 'applescript' }
 Plug 'davidoc/taskpaper.vim', {'for': 'taskpaper'}
 Plug 'leafgarland/typescript-vim', {'for': 'typescript'}
 Plug 'majutsushi/tagbar'
 " Plug 'xolox/vim-easytags'
-Plug 'ryanoasis/vim-devicons'
 Plug 'tpope/vim-surround'
 Plug 'kien/ctrlp.vim'
 Plug 'mhinz/vim-startify'
 " Plug 'rip-rip/clang_complete', {'for': 'cpp'}
 Plug 'justmao945/vim-clang', {'for': 'cpp'}
 Plug 'ervandew/supertab'
+Plug 'ryanoasis/vim-devicons'
 
 if has('nvim')
   Plug 'numirias/semshi', {'for': 'python', 'do': ':UpdateRemotePlugins'}
   Plug 'arakashic/chromatica.nvim', {'for': 'cpp', 'do': ':UpdateRemotePlugins'}
   " Plug 'daeyun/vim-matlab', {'for': 'matlab'}
-  Plug 'rahlir/nvim-matlab', {'for': 'matlab'}
+  " Plug 'rahlir/nvim-matlab', {'for': 'matlab'}
   Plug 'roxma/nvim-yarp'
 
   " Plug 'ncm2/ncm2'
@@ -119,22 +123,6 @@ set secure
 set guioptions-=rL
 set guifont=HackNerdFontComplete-Regular:h11
 
-" Custom Mappings:
-
-nmap <C-p> O<Esc>
-nmap <CR> o<Esc>
-nmap <silent> <leader>j <Plug>(ale_next)
-nmap <silent> <leader>k <Plug>(ale_previous)
-nnoremap ÷ :call CenterComment()<CR>
-nnoremap <leader>s :set hlsearch!<CR>
-nnoremap <leader>w :call RemLdWs()<CR>
-nnoremap <leader>a :setlocal spell!<CR>
-nnoremap ]a }kA
-nnoremap [a {jI
-noremap + :call BlockComment()<CR>
-noremap - :call UnBlockComment()<CR>
-nnoremap <leader>b :b #<CR>
-
 " Other:
 
 let g:changelog_username = 'Tadeas Uhlir <tadeas.uhlir.19@dartmouth.edu>'
@@ -144,6 +132,27 @@ function! GetGruvColor(group)
   let termColor = synIDattr(hlID(a:group), "fg", "cterm") 
   return [ guiColor, termColor ]
 endfunction
+
+" }}}
+" Custom Mappings: {{{
+
+nmap <M-CR> O<Esc>
+nmap <CR> o<Esc>
+nmap <silent> <leader>j <Plug>(ale_next)
+nmap <silent> <leader>k <Plug>(ale_previous)
+nmap <leader>p <C-w>}
+nmap <leader>c <C-w>z
+nmap ÷ :call CenterComment()<CR>
+nmap <leader>s :set hlsearch!<CR>
+nmap <leader>w :call RemLdWs()<CR>
+nmap <leader>W :call RemLdWsGlobally()<CR>
+nmap <leader>a :setlocal spell!<CR>
+nnoremap ]a }kA
+nnoremap [a {jI
+map + :call BlockComment()<CR>
+map - :call UnBlockComment()<CR>
+nnoremap <leader>b :b #<CR>
+nmap <leader>n :NERDTreeToggle<CR>
 
 " }}}
 
@@ -288,6 +297,7 @@ let g:clang_diagsopt = ''
 " UltiSnips Options: {{{
 
 let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips', 'UltiSnips']
+let g:UltiSnipsEditSplit = 'tabdo'
 
 " }}}
 " Jedi Options: {{{
@@ -305,10 +315,53 @@ let g:indent_guides_guide_size = 1
 let g:indent_guides_exclude_filetypes = ['help', 'nerdtree', 'vim', 'tagbar']
 
 " }}}
+" Indentline Options: {{{
+
+let g:indentLine_char= ''
+let g:indentLine_fileTypeExclude = ['startify', 'help']
+
+" }}}
 " NERDTree Options: {{{
+
+let g:NERDTreeCaseSensitiveSort = 1
 
 " }}}
 " NERDTreeSyntasHl Options: {{{
+
+let s:nerd_brown = "905532"
+let s:nerd_aqua =  "3AFFDB"
+let s:nerd_blue = "689FB6"
+let s:nerd_darkBlue = "44788E"
+let s:nerd_purple = "834F79"
+let s:nerd_lightPurple = "834F79"
+let s:nerd_red = "AE403F"
+let s:nerd_beige = "F5C06F"
+let s:nerd_yellow = "F09F17"
+let s:nerd_orange = "D4843E"
+let s:nerd_darkOrange = "F16529"
+let s:nerd_pink = "CB6F6F"
+let s:nerd_salmon = "EE6E73"
+let s:nerd_green = "8FAA54"
+let s:nerd_lightGreen = "31B53E"
+let s:nerd_white = "FFFFFF"
+let s:nerd_rspec_red = 'FE405F'
+let s:nerd_git_orange = 'F54D27'
+
+let g:NERDTreeExtensionHighlightColor = {} " this line is needed to avoid error
+let g:NERDTreeExtensionHighlightColor['m'] = s:nerd_blue
+let g:NERDTreeExtensionHighlightColor['hpp'] = s:nerd_green
+
+" }}}
+" WebDevIcons Options: {{{
+
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {} " needed
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['m'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['mat'] = ''
+
+if exists('g:loaded_webdevicons')
+  call webdevicons#refresh()
+endif
+
 
 " }}}
 " Startify Options: {{{
@@ -326,6 +379,7 @@ let g:indent_guides_exclude_filetypes = ['help', 'nerdtree', 'vim', 'tagbar']
 autocmd FileType cpp nested :call tagbar#autoopen(0)
 
 " }}}
+
 " -------------------------Filetype Specific Config---------------------------
 " Python Latex Matlab: {{{
 " Python: 
@@ -365,6 +419,11 @@ endfunction
 
 function! RemLdWs()
   exe 's/\s\+$//e'
+  nohlsearch
+endfunction
+
+function! RemLdWsGlobally()
+  exe '%s/\s\+$//e'
   nohlsearch
 endfunction
 
