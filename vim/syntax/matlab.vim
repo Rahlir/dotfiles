@@ -24,6 +24,7 @@ syn keyword matlabExceptions		try catch rethrow throw
 syn keyword matlabTodo			contained  TODO NOTE FIXME XXX
 syn keyword matlabImport		import
 
+syn match matlabArguments contained 	"[a-zA-Z0-9_.,]*[-+]*[*/\\^]*" contains=matlabNumber,matlabFloat,matlabConstant
 
 " If you do not want these operators lit, uncommment them and the "hi link" below
 syn match  matlabRelationalOperator	"\(==\|\~=\|>=\|<=\|=\~\|>\|<\|=\)"
@@ -56,13 +57,12 @@ syn keyword matlabConstant	eps Inf NaN pi
 syn match matlabTransposeOperator	"[])a-zA-Z0-9.]'"lc=1
 
 syn match matlabSemicolon		";"
-syn match matlabArguments contained 	"\I[a-zA-Z_.,]*"
 
 syn match matlabComment			"%.*$"	contains=matlabTodo,matlabTab
 syn region matlabBlockComment        start=+%{+    end=+%}+ contains=matlabBlockComment
 syn region matlabOperParen matchgroup=matlabParenSep 		start="(" end=")" contains=matlabOperParen,matlabParenSep,matlabFunction,matlabString
 " Transpose character and delimiters: Either use just [...] or (...) aswell
-syn region matlabInDelimit matchgroup=matlabDelimiter 		start="\[" end="\]" contains=matlabFunction,matlabParenSep,matlabOperParen,matlabArguments
+syn region matlabInDelimit matchgroup=matlabDelimiter 		start="\[" end="\]" contains=matlabArguments,matlabFunction,matlabParenSep,matlabOperParen,matlabString
 
 syn keyword matlabOption contained 			on off
 
@@ -232,7 +232,7 @@ syn keyword matlabFunc contained bvp4c bvp5c bvpget bvpinit bvpset bvpxtend
 "Partial Differential Equations
 syn keyword matlabFunc contained pdepe pdeval 
 "Optimization
-syn keyword matlabFunc contained fminbnd fminsearch fzero optimget optimset
+syn keyword matlabFunc contained fminbnd fminsearch fzero optimget optimset fmincon optimoptions
 "Numerical Integration (Quadrature)
 syn keyword matlabFunc contained dblquad quad quadgk quadl quadv triplequad
 "Specialized Math
@@ -314,7 +314,7 @@ syn keyword matlabFunc contained hdf hdf5 hdf5info hdf5read hdf5write hdfinfo hd
 "Band-Interleaved Data
 syn keyword matlabFunc contained multibandread multibandwrite 
 
-syn region matlabCell matchgroup=matlabCellIdents start="%%" end="%%" contains=ALLBUT,matlabCell,matlabStatement,matlabComment,matlabBlockComment,matlabArguments,@Spell keepend
+syn region matlabCell matchgroup=matlabCellIdents start="%%" end="%%" contains=ALLBUT,matlabCell,matlabStatement,matlabArguments,@Spell keepend
 
 " Define the default highlighting.
 " For version 5.7 and earlier: only when not done already
@@ -349,7 +349,6 @@ if version >= 508 || !exists("did_matlab_syntax_inits")
   HiLink matlabImport			Include
   HiLink matlabBoolean			Boolean
   HiLink matlabStorageClass		StorageClass
-  HiLink matlabArguments 		Identifier
 
   HiLink matlabArithmeticOperator	matlabOperator
   HiLink matlabRelationalOperator	matlabOperator
@@ -361,6 +360,7 @@ if version >= 508 || !exists("did_matlab_syntax_inits")
   HiLink matlabOption 			PreProc
   HiLink matlabCell 			Special
   HiLink matlabCellIdents 		matlabCell
+  HiLink matlabArguments 		Identifier
 
 
 "optional highlighting
