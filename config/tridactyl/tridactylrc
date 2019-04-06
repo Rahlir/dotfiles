@@ -23,9 +23,9 @@ bindurl www.google.com f hint -Jc .rc > .r > a, g-inner-card.cv2VAd > div > a, g
 bindurl www.google.com F composite hint -Jpipe .rc>.r>a href | tabopen | buffer #
 bindurl www.google.com ;d hint -J
 
-bindurl rick.dartmouth.edu/mars/notebooks --mode=ignore gt tabnext
-bindurl rick.dartmouth.edu/mars/notebooks --mode=ignore gT tabprev
-bindurl rick.dartmouth.edu/mars/notebooks --mode=ignore u undo
-
 autocmd DocStart rick.dartmouth.edu/mars/notebooks mode ignore
+
+" Prevent stealing focus
+" autocmd TabEnter .* unfocus
+
 " vim: set filetype=vim:
