@@ -51,8 +51,8 @@
 				"function": "powerline.segments.shell.mode",
 				"args": {
 					"override": {
-						"vicmd": "",
-						"viins": "פֿ"
+						"vicmd": "",
+						"viins": ""
 					}
 				}
 			}

@@ -58,8 +58,8 @@
 			"args": {
 				"full_heart": "♥",
 				"empty_heart": "♥",
-				"online": "ﮣ ",
-				"offline": "ﮤ "
+				"online": " ",
+				"offline": " "
 			}
 		},
 		"powerline.segments.common.sys.uptime": {
