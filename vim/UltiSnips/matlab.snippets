@@ -1,11 +1,31 @@
-snippet header "header snippet"
-% Tadeas Uhlir
+snippet "(sc(ript)?|fun(ction)?)\.header" "header snippet" r
+% ------------------------------------------------------------------------------
+% `!p if match.group(1) == "sc" or match.group(1) == "script":
+	typevar = "script"
+else:
+	typevar = "function"
+snip.rv = typevar + " " + snip.basename` - $1
+% `!p
+if typevar == "function":
+	snip.rv = "\n% Inputs:\n%   "
+else:
+	snip.rv = ""`$2
+% `!p
+if typevar == "function":
+	snip.rv = "Outputs:\n%   "
+else:
+	snip.rv = ""`$3
+`!p
+if typevar == "function":
+	snip.rv = "%\n"
+else:
+	snip.rv = ""`% Tadeáš Uhlíř
 % `date +%m/%d/%Y`
-% `!p snip.rv = snip.basename` $1
+% ------------------------------------------------------------------------------
 endsnippet
 
 snippet func "function definition"
 function[$1] = `!p snip.rv = snip.basename`($2)
 
-$3
+	$3
 endsnippet
