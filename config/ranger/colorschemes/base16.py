@@ -33,7 +33,7 @@ class Base16(ColorScheme):
             if context.empty or context.error:
                 bg = red
             if context.border:
-                fg = default
+                fg = 245
             if context.media:
                 if context.image:
                     fg = magenta
