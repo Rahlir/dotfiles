@@ -215,25 +215,37 @@ function! MyFileformat()
 endfunction
 
 function! LightLineGitAdd()
-  if exists('*GitGutterGetHunkSummary') && !empty(LightLineGitBranch())
+  if exists('*GitGutterGetHunkSummary')
     let [ added, modified, removed ] = GitGutterGetHunkSummary()
-    return printf('%s %d', g:gitgutter_sign_added, added)
+    if added == 0
+      return ''
+    else
+      return printf('%s %d', g:gitgutter_sign_added, added)
+    endif
   endif
   return ''
 endfunction
 
 function! LightLineGitMod()
-  if exists('*GitGutterGetHunkSummary') && !empty(LightLineGitBranch())
+  if exists('*GitGutterGetHunkSummary')
     let [ added, modified, removed ] = GitGutterGetHunkSummary()
-    return printf('%s %d', g:gitgutter_sign_modified, modified)
+    if modified == 0
+      return ''
+    else
+      return printf('%s %d', g:gitgutter_sign_modified, modified)
+    endif
   endif
   return ''
 endfunction
 
 function! LightLineGitRemoved() 
-  if exists('*GitGutterGetHunkSummary') && !empty(LightLineGitBranch())
+  if exists('*GitGutterGetHunkSummary')
     let [ added, modified, removed ] = GitGutterGetHunkSummary()
-    return printf('%s %d', g:gitgutter_sign_removed, removed)
+    if removed == 0
+      return ''
+    else
+      return printf('%s %d', g:gitgutter_sign_removed, removed)
+    endif
   endif
   return ''
 endfunction
@@ -241,7 +253,7 @@ endfunction
 function! LightLineGitBranch()
   if exists('*fugitive#head')
     let branch = fugitive#head()
-    return branch !=# '' ? '⭠ '.branch : ''
+    return branch !=# '' ? ' '.branch : ''
   endif
   return ''
 endfunction
