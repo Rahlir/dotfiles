@@ -152,7 +152,8 @@ nnoremap [a {jI
 map + :call BlockComment()<CR>
 map - :call UnBlockComment()<CR>
 nnoremap <leader>b :b #<CR>
-nmap <leader>n :NERDTreeToggle<CR>
+nmap <leader>N :NERDTreeToggle<CR>
+nmap <leader>t :Tagbar<CR>
 
 " }}}
 
@@ -269,7 +270,7 @@ let g:SuperTabClosePreviewOnPopupClose = 1
 " ALE Options: {{{
 
 let g:ale_linters = {
-      \   'python': ['autopep8', 'flake8'],
+      \   'python': ['pylint'],
       \   'cpp': ['gcc']
       \}
 let g:ale_c_parse_compile_commands = '1'
