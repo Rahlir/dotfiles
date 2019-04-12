@@ -38,7 +38,12 @@ zle -N down-line-or-beginning-search
 
 bindkey -v
 export KEYTIMEOUT=1
-bindkey -M vicmd 'v' edit-command-line
+bindkey -M vicmd '^v' edit-command-line
+
+# Powerline on Linux when not part of path
+if [ -d "$HOME/.local/bin" ] && ! [[ :$PATH: == *:"$HOME/.local/bin":* ]]; then
+	PATH="$HOME/.local/bin:$PATH"
+fi
 
 export POWERLINE_COMMAND=powerline
 powerline-daemon -q
