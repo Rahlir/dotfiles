@@ -282,7 +282,7 @@ let g:SuperTabClosePreviewOnPopupClose = 1
 " ALE Options: {{{
 
 let g:ale_linters = {
-      \   'python': ['pylint'],
+      \   'python': ['flake8'],
       \   'cpp': ['gcc']
       \}
 let g:ale_c_parse_compile_commands = '1'
