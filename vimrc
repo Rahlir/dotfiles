@@ -12,6 +12,7 @@ Plug 'davidhalter/jedi-vim', {'for': 'python'}
 " Plug 'ericpruitt/tmux.vim', {'rtp': 'vim/'}
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'w0rp/ale'
+Plug 'maximbaz/lightline-ale'
 Plug 'raimondi/delimitmate'
 Plug 'chriskempson/base16-vim'
 Plug 'morhetz/gruvbox'
@@ -29,7 +30,6 @@ Plug 'dearrrfish/vim-applescript', {'for': 'applescript' }
 Plug 'davidoc/taskpaper.vim', {'for': 'taskpaper'}
 Plug 'leafgarland/typescript-vim', {'for': 'typescript'}
 Plug 'majutsushi/tagbar'
-" Plug 'xolox/vim-easytags'
 Plug 'tpope/vim-surround'
 Plug 'kien/ctrlp.vim'
 Plug 'mhinz/vim-startify'
@@ -51,7 +51,6 @@ if has('nvim')
   " Plug 'ncm2/ncm2-pyclang', {'for': 'cpp'}
 else
   Plug 'octol/vim-cpp-enhanced-highlight', {'for': 'cpp'}
-  " Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
 endif
 
 call plug#end()
