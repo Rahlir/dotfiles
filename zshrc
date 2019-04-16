@@ -4,6 +4,10 @@ if [ -f ~/.bashrc_mac ]; then
     source ~/.bashrc_mac
 fi
 
+if [ -f ~/.bashrc_linux ]; then
+    source ~/.bashrc_linux
+fi
+
 # Redirecting to machine specific settings
 if [ -f ~/.bashrc_local ]; then
     source ~/.bashrc_local
@@ -34,7 +38,9 @@ autoload -U down-line-or-beginning-search
 zle -N edit-command-line
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
+zle -N clear-screen
 
+bindkey "^e" clear-screen
 
 bindkey -v
 export KEYTIMEOUT=1
@@ -79,9 +85,6 @@ zstyle :compinstall filename '/Users/rahlir/.zshrc'
 
 autoload -Uz compinit
 compinit
-
-bindkey "^[[A" up-line-or-beginning-search
-bindkey "^[[B" down-line-or-beginning-search
 
 # End of lines added by compinstall
 
