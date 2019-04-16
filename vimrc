@@ -176,41 +176,53 @@ let g:gitgutter_sign_removed = "\u2718"
 
 let g:lightline = {
       \ 'colorscheme': 'gruvbox',
-			\ 'active': {
-			\ 'left': [['mode', 'paste'],
-			\					['gitadd', 'gitmod', 'gitremoved', 'gitbranch', 'readonly', 'filename', 'modified']]
-			\ },
-			\ 'component_function': {
-			\		'gitbranch': 'LightLineGitBranch',
-      \   'filetype': 'MyFiletype',
-      \   'fileformat': 'MyFileformat',
-			\ },
-			\ 'component_expand': {
-			\		'gitadd': 'LightLineGitAdd',
-			\		'gitmod': 'LightLineGitMod',
-			\		'gitremoved': 'LightLineGitRemoved'
-			\	},
-			\ 'component_type': {
-			\		'gitadd': 'good',
-			\		'gitmod': 'warning',
-			\		'gitremoved': 'error'
-			\		}
-      \ }
+      \ 'separator': { 'left': '', 'right': '' },
+      \ 'subseparator': { 'left': '', 'right': '' },
+      \ 'active': {
+      \ 'left': [['mode', 'paste'],
+      \                   ['gitadd', 'gitmod', 'gitremoved', 'gitbranch', 'readonly', 'filename', 'modified']],
+      \ 'right': [[ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok'],
+      \                   ['lineinfo', 'percent'], [ 'fileformat', 'fileencoding', 'filetype' ]]
+      \ },
+      \ 'component_function': {
+      \       'gitbranch': 'LightLineGitBranch',
+      \       'filetype': 'MyFiletype',
+      \       'fileformat': 'MyFileformat',
+      \ },
+      \ 'component_expand': {
+      \       'gitadd': 'LightLineGitAdd',
+      \       'gitmod': 'LightLineGitMod',
+      \       'gitremoved': 'LightLineGitRemoved',
+      \       'linter_checking': 'lightline#ale#checking',
+      \       'linter_warnings': 'lightline#ale#warnings',
+      \       'linter_errors': 'lightline#ale#errors',
+      \       'linter_ok': 'lightline#ale#ok',
+      \   },
+      \ 'component_type': {
+      \       'gitadd': 'good',
+      \       'gitmod': 'warning',
+      \       'gitremoved': 'error',
+      \       'linter_checking': 'left',
+      \       'linter_warnings': 'warning',
+      \       'linter_errors': 'error',
+      \       'linter_ok': 'left',
+      \       }
+\ }
 
 function! MyFiletype()
-	if exists('*WebDevIconsGetFileTypeSymbol')
-		return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
-	else
-		return &filetype
-	endif
+    if exists('*WebDevIconsGetFileTypeSymbol')
+        return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
+    else
+        return &filetype
+    endif
 endfunction
 
 function! MyFileformat()
-	if exists('*WebDevIconsGetFileFormatSymbol')
-		return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
-	else
-		return &fileformat
-	endif
+    if exists('*WebDevIconsGetFileFormatSymbol')
+        return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
+    else
+        return &fileformat
+    endif
 endfunction
 
 function! LightLineGitAdd()
