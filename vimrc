@@ -24,7 +24,6 @@ Plug 'yggdroot/indentline'
 Plug 'Vimjas/vim-python-pep8-indent', {'for': 'python'}
 Plug 'SirVer/ultisnips'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle', 'for': 'cpp' }
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'dearrrfish/vim-applescript', {'for': 'applescript' }
 Plug 'davidoc/taskpaper.vim', {'for': 'taskpaper'}
@@ -37,6 +36,7 @@ Plug 'mhinz/vim-startify'
 Plug 'justmao945/vim-clang', {'for': 'cpp'}
 Plug 'ervandew/supertab'
 Plug 'ryanoasis/vim-devicons'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 if has('nvim')
   Plug 'numirias/semshi', {'for': 'python', 'do': ':UpdateRemotePlugins'}
@@ -152,7 +152,9 @@ map + :call BlockComment()<CR>
 map - :call UnBlockComment()<CR>
 nnoremap <leader>b :b #<CR>
 nmap <leader>N :NERDTreeToggle<CR>
+nmap <leader>f :NERDTreeFocus<CR>
 nmap <leader>t :Tagbar<CR>
+nmap <leader>T :TagbarOpen fj<CR>
 
 " }}}
 
