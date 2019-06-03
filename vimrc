@@ -37,6 +37,7 @@ Plug 'justmao945/vim-clang', {'for': 'cpp'}
 Plug 'ervandew/supertab'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'will133/vim-dirdiff'
 
 if has('nvim')
   Plug 'numirias/semshi', {'for': 'python', 'do': ':UpdateRemotePlugins'}
@@ -296,9 +297,11 @@ let g:SuperTabClosePreviewOnPopupClose = 1
 
 let g:ale_linters = {
       \   'python': ['flake8'],
-      \   'cpp': ['gcc']
+      \   'cpp': ['gcc'],
+      \   'c': ['clang']
       \}
 let g:ale_c_parse_compile_commands = '1'
+let g:ale_c_clang_options = '-std=c17 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk -I /anaconda3/lib/python3.6/site-packages/numpy/core/include -I /anaconda3/include/python3.6m/'
 let g:ale_cpp_clang_options = '-std=c++14 -I/usr/local/include/eigen3'
 let g:ale_cpp_gcc_options = '-std=c++14 -I/usr/local/include/eigen3'
 
