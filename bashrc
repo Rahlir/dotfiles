@@ -64,10 +64,6 @@ POWERLINE_BASH_SELECT=1
 export PYTHONPATH="$PYTHONPATH:$HOME/Development/python-tools"
 
 #---Functions---
-things() {
-	open "things:///add?title=$1"
-}
-
 colortestfc() {
 	IFS=:
 	for ls_color in ${LS_COLORS[@]}; do # For all colors
