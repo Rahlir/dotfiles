@@ -86,7 +86,7 @@ if has('nvim') && g:colorscheme_setup == 'gruvbox'
 	call s:HL('semshiUnresolved', s:fg2, s:none, s:underline)
 	call s:HL('semshiSelected', s:fg1, s:bg4)
 
-	hi semshiErrorSign       ctermfg=231 guifg=#ffffff ctermbg=160 guibg=#d70000
-	call s:HL('semshiErrorSign', s:fg0, s:red)
-	call s:HL('semshiErrorChar', s:fg0, s:red)
+	" hi semshiErrorSign       ctermfg=231 guifg=#ffffff ctermbg=160 guibg=#d70000
+	" call s:HL('semshiErrorSign', s:fg0, s:red)
+	" call s:HL('semshiErrorChar', s:fg0, s:red)
 endif
