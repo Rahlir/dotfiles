@@ -46,10 +46,6 @@ cmd() {
 		elif [ "$1" == "ln" ]; then
 			echo "Symlink: "$3" > "$4""
 		fi
-		# echo "RUN1: "$1""
-		# echo "RUN2: "$2""
-		# echo "RUN3: "$3""
-		# echo "RUN4: "$4""
 	else
 		"${@}"
 	fi
