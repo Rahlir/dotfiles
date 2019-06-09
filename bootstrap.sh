@@ -2,13 +2,25 @@
 
 set -e
 
-usage="$(basename "$0") [-ht] 
+shellfilter='bashrc'
+sysname=$(uname)
+case "${sysname}" in
+    Linux*) sysfilter='bashrc_mac';;
+    Darwin*) sysfilter='bashrc_linux';;
+    *) echo "Unknown system: "$sysname""
+        exit 1
+        ;;
+esac
+
+usage="$(basename "$0") [-htcb]
 
 where:
-	-h         show this help and exit
-	-t         test mode"
+    -h         show this help and exit
+    -t         test mode
+    -c         run test mode before bootstrapping
+    -b         bootstrap for bash, default is zshell"
 
-while getopts ':htc' option; do
+while getopts ':htcb' option; do
 	case "$option" in
 		h) 	echo "$usage"
 				exit
@@ -27,6 +39,8 @@ while getopts ':htc' option; do
 				fi 
 				exit 0
 				;;
+        b)  shellfilter='zshrc'
+            ;;
 		\?) printf "illegal option: -%s\n" "$OPTARG" >&2
 			  echo "$usage" >&2
 				exit 1
@@ -52,7 +66,7 @@ cmd() {
 }
 
 
-filelist=$(find . -maxdepth 1 -mindepth 1 | grep -Ev '(\.bootignore|\.git)' | grep -v -f <(sed 's/\([.|]\)/\\\1/g; s/\?/./g ; s/\*/.*/g' .bootignore))
+filelist=$(find . -maxdepth 1 -mindepth 1 | grep -Ev '(\.bootignore|\.git)' | grep -v -f <(sed 's/\([.|]\)/\\\1/g; s/\?/./g ; s/\*/.*/g' .bootignore) | grep -v "$sysfilter" | grep -v "$shellfilter")
 
 for file in $filelist; do
 	filename=$(basename "$file")
