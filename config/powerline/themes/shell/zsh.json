@@ -35,7 +35,12 @@
 					"width": "auto"
 				},
 				{
-					"function": "powerline_gitstatus.gitstatus"
+					"function": "powerline_gitstatus.gitstatus",
+                    "args": {
+                        "formats": {
+                            "branch": " {}"
+                        }
+                    }
 				}
 			]
 		}],
