@@ -84,7 +84,7 @@ for file in $filelist; do
 		done
 	else
 		if [ -a ~/."$filename" ] && ! [ -L ~/."$filename" ]; then
-			cmd mv -v ~/."$file" ~/.origdot/
+			cmd mv -v ~/."$filename" ~/.origdot/
 		fi
 		cmd ln -vfsn "$filepath" ~/."$filename"
 	fi
