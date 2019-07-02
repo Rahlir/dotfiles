@@ -108,7 +108,7 @@ endif
 set number lbr laststatus=2 title ruler mouse=a
 set shiftwidth=4 tabstop=4 softtabstop=4 expandtab " Tab indentation
 set noshowmode " Don't show -- INSERT --
-set autochdir " Automatically change directory to file being editted
+" set autochdir " Automatically change directory to file being editted
 set report=0 " Report any line yanked
 set spelllang=en_us " Set spelling language
 set splitright splitbelow " More natural splits
@@ -300,6 +300,7 @@ let g:ale_linters = {
       \   'cpp': ['gcc'],
       \   'c': ['clang']
       \}
+let g:ale_pattern_options = {'__init__\.py$': {'ale_enabled': 0}}
 let g:ale_c_parse_compile_commands = '1'
 let g:ale_c_clang_options = '-std=c17 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk -I /anaconda3/lib/python3.6/site-packages/numpy/core/include -I /anaconda3/include/python3.6m/'
 let g:ale_cpp_clang_options = '-std=c++14 -I/usr/local/include/eigen3'
