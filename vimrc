@@ -290,6 +290,8 @@ let g:ale_linters = {
       \   'c': ['clang']
       \}
 let g:ale_pattern_options = {'__init__\.py$': {'ale_enabled': 0}}
+let g:ale_lint_delay = 800
+
 let g:ale_c_parse_compile_commands = '1'
 let g:ale_cpp_ccls_init_options = {
 \   'cache': {
@@ -327,13 +329,15 @@ let g:indent_guides_exclude_filetypes = ['help', 'nerdtree', 'vim', 'tagbar']
 " }}}
 " Indentline Options: {{{
 
-let g:indentLine_char= ''
+let g:indentLine_char= ''
 let g:indentLine_fileTypeExclude = ['startify', 'help', 'json', 'text']
 
 " }}}
 " NERDTree Options: {{{
 
 let g:NERDTreeCaseSensitiveSort = 1
+let g:NERDTreeWinSize = 40
+let NERDTreeIgnore=['__pycache__$', '\~$']
 
 " }}}
 " NERDTreeSyntasHl Options: {{{
