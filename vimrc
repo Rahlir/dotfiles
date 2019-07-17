@@ -338,7 +338,8 @@ let g:indentLine_fileTypeExclude = ['startify', 'help', 'json', 'text']
 let g:NERDTreeCaseSensitiveSort = 1
 let g:NERDTreeWinSize = 40
 let NERDTreeIgnore=['__pycache__$', '\~$']
-au FileType nerdtree setlocal scl=auto
+autocmd FileType nerdtree setlocal scl=auto
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 " }}}
 " NERDTreeSyntasHl Options: {{{
