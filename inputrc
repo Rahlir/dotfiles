@@ -3,3 +3,4 @@
 "\e[1;5D": backward-word
 "\e[A": history-search-backward
 "\e[B": history-search-forward
+Control-e: clear-screen
