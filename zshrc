@@ -18,6 +18,7 @@ if [ -f ~/.bashrc_aliases ]; then
     source  ~/.bashrc_aliases
 fi
 
+
 # ---------------------------Configuration Options------------------------------
 HISTSIZE=8000               # How many lines of history to keep in memory
 HISTFILE=~/.zsh_history     # Where to save history to disk
@@ -25,6 +26,9 @@ SAVEHIST=8000               # Number of history entries to save to disk
 
 # Set default editor
 VISUAL=nvim; export VISUAL EDITOR=nvim; export EDITOR
+
+# Add to fpath variable
+fpath=($fpath $HOME/.zsh_completions)
 
 setopt append_history
 setopt share_history
@@ -73,6 +77,20 @@ function colors-sample() {
     done
 }
 
+function rsync-short() {
+    rsync -ahv --partial --progress --timeout=5 "$@"
+}
+
+function start-barrier() {
+    /Applications/Barrier.app/Contents/MacOS/barrierc --name Laptop wall-e.karlov.mff.cuni.cz:1352
+}
+
+function end-barrier() {
+    while pgrep -q barrierc; do
+        killall barrierc
+    done
+}
+
 
 # ---------------------------------Compinstall-----------------------------------
 zstyle ':completion:*' completer _complete _ignored _approximate
@@ -89,4 +107,9 @@ compinit
 # End of lines added by compinstall
 
 
-export PATH="/usr/local/opt/llvm/bin:$PATH"
+# ------------------------Environment Variables Setup---------------------------
+# My python modules 
+export PYTHONPATH="/Users/rahlir/Development/Libraries/python-tools:/Users/rahlir/Development/Libraries/rahlir_vibrations"
+
+# Add to PATH variable
+export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/2.6.0/bin:$PATH"
