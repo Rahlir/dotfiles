@@ -45,6 +45,8 @@ zle -N down-line-or-beginning-search
 zle -N clear-screen
 
 bindkey "^e" clear-screen
+bindkey "^[OA" up-line-or-beginning-search # Up
+bindkey "^[OB" down-line-or-beginning-search # Down
 
 bindkey -v
 export KEYTIMEOUT=1
@@ -106,10 +108,6 @@ compinit
 
 # End of lines added by compinstall
 
-
 # ------------------------Environment Variables Setup---------------------------
 # My python modules 
-export PYTHONPATH="/Users/rahlir/Development/Libraries/python-tools:/Users/rahlir/Development/Libraries/rahlir_vibrations"
-
-# Add to PATH variable
-export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/2.6.0/bin:$PATH"
+export PYTHONPATH="$HOME/Development/Libraries/python-tools:$HOME/Development/Libraries/rahlir_vibrations"
