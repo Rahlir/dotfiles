@@ -444,16 +444,16 @@ autocmd FileType json syntax match Comment +\/\/.\+$+
 " Mappable Functions: {{{
 
 function! BlockComment()
-  let a:cmnt_raw = split(&commentstring, '%s')[0]
-  let a:cmnt = substitute(a:cmnt_raw, '^\s*\(.\{-}\)\s*$', '\1', '')
-  exe ':silent s/^\(\s*\)/\1' . a:cmnt . ' /'
+  let l:cmnt_raw = split(&commentstring, '%s')[0]
+  let l:cmnt = substitute(l:cmnt_raw, '^\s*\(.\{-}\)\s*$', '\1', '')
+  exe ':silent s/^\(\s*\)/\1' . l:cmnt . ' /'
   nohlsearch
 endfunction
 
 function! UnBlockComment()
-  let a:cmnt_raw = split(&commentstring, '%s')[0]
-  let a:cmnt = substitute(a:cmnt_raw, '^\s*\(.\{-}\)\s*$', '\1', '')
-  exe ':silent s/^\(\s*\)' . a:cmnt .  ' /\1/e'
+  let l:cmnt_raw = split(&commentstring, '%s')[0]
+  let l:cmnt = substitute(l:cmnt_raw, '^\s*\(.\{-}\)\s*$', '\1', '')
+  exe ':silent s/^\(\s*\)' . l:cmnt .  ' /\1/e'
   nohlsearch
 endfunction
 
