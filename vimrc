@@ -329,7 +329,7 @@ let g:indent_guides_exclude_filetypes = ['help', 'nerdtree', 'vim', 'tagbar']
 " }}}
 " Indentline Options: {{{
 
-let g:indentLine_char= ''
+let g:indentLine_char = ''
 let g:indentLine_fileTypeExclude = ['startify', 'help', 'json', 'text']
 
 " }}}
