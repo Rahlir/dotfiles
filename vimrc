@@ -111,6 +111,7 @@ set secure
 set guioptions-=rL
 set guifont=HackNerdFontComplete-Regular:h11
 set wildmode=longest,full
+set scl=yes
 
 " Other:
 
