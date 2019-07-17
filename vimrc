@@ -30,7 +30,6 @@ Plug 'majutsushi/tagbar'
 Plug 'tpope/vim-surround'
 Plug 'kien/ctrlp.vim'
 Plug 'mhinz/vim-startify'
-" Plug 'ervandew/supertab'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
@@ -41,6 +40,7 @@ if has('nvim')
 
 else
   Plug 'octol/vim-cpp-enhanced-highlight', {'for': 'cpp'}
+  Plug 'ervandew/supertab'
 endif
 
 call plug#end()
