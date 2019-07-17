@@ -8,8 +8,7 @@ Plug 'lervag/vimtex', {'for': 'latex'}
 Plug 'itchyny/lightline.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
-Plug 'davidhalter/jedi-vim', {'for': 'python'}
-" Plug 'ericpruitt/tmux.vim', {'rtp': 'vim/'}
+" Plug 'davidhalter/jedi-vim', {'for': 'python'}
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'w0rp/ale'
 Plug 'maximbaz/lightline-ale'
@@ -18,11 +17,10 @@ Plug 'chriskempson/base16-vim'
 Plug 'morhetz/gruvbox'
 Plug 'rizzatti/dash.vim'
 
-"Plug 'nathanaelkane/vim-indent-guides'
 Plug 'yggdroot/indentline'
 
 Plug 'Vimjas/vim-python-pep8-indent', {'for': 'python'}
-Plug 'SirVer/ultisnips'
+" Plug 'SirVer/ultisnips'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle', 'for': 'cpp' }
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'dearrrfish/vim-applescript', {'for': 'applescript' }
@@ -32,24 +30,15 @@ Plug 'majutsushi/tagbar'
 Plug 'tpope/vim-surround'
 Plug 'kien/ctrlp.vim'
 Plug 'mhinz/vim-startify'
-" Plug 'rip-rip/clang_complete', {'for': 'cpp'}
-Plug 'justmao945/vim-clang', {'for': 'cpp'}
-Plug 'ervandew/supertab'
+" Plug 'ervandew/supertab'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-Plug 'will133/vim-dirdiff'
 
 if has('nvim')
   Plug 'numirias/semshi', {'for': 'python', 'do': ':UpdateRemotePlugins'}
-  Plug 'arakashic/chromatica.nvim', {'for': 'cpp', 'do': ':UpdateRemotePlugins'}
-  " Plug 'daeyun/vim-matlab', {'for': 'matlab'}
-  " Plug 'rahlir/nvim-matlab', {'for': 'matlab'}
-  Plug 'roxma/nvim-yarp'
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'jackguo380/vim-lsp-cxx-highlight'
 
-  " Plug 'ncm2/ncm2'
-  " Plug 'ncm2/ncm2-bufword'
-  " Plug 'ncm2/ncm2-path'
-  " Plug 'ncm2/ncm2-pyclang', {'for': 'cpp'}
 else
   Plug 'octol/vim-cpp-enhanced-highlight', {'for': 'cpp'}
 endif
@@ -106,9 +95,8 @@ endif
 " Set Configurations:
 
 set number lbr laststatus=2 title ruler mouse=a
-set shiftwidth=4 tabstop=4 softtabstop=4 expandtab " Tab indentation
+set tabstop=8 softtabstop=4 shiftwidth=4 expandtab " Tab indentation
 set noshowmode " Don't show -- INSERT --
-" set autochdir " Automatically change directory to file being editted
 set report=0 " Report any line yanked
 set spelllang=en_us " Set spelling language
 set splitright splitbelow " More natural splits
@@ -122,6 +110,7 @@ set exrc
 set secure
 set guioptions-=rL
 set guifont=HackNerdFontComplete-Regular:h11
+set wildmode=longest,full
 
 " Other:
 
@@ -297,32 +286,22 @@ let g:SuperTabClosePreviewOnPopupClose = 1
 
 let g:ale_linters = {
       \   'python': ['flake8'],
-      \   'cpp': ['gcc'],
+      \   'cpp': [''],
       \   'c': ['clang']
       \}
 let g:ale_pattern_options = {'__init__\.py$': {'ale_enabled': 0}}
 let g:ale_c_parse_compile_commands = '1'
-let g:ale_c_clang_options = '-std=c17 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk -I /anaconda3/lib/python3.6/site-packages/numpy/core/include -I /anaconda3/include/python3.6m/'
-let g:ale_cpp_clang_options = '-std=c++14 -I/usr/local/include/eigen3'
-let g:ale_cpp_gcc_options = '-std=c++14 -I/usr/local/include/eigen3'
+let g:ale_cpp_ccls_init_options = {
+\   'cache': {
+\       'directory': '/tmp/ccls'
+\   }
+\ }
+" let g:ale_c_build_dir = '/Users/rahlir/Development/ProjectA/unix-build/'
+" " let g:ale_c_build_dir_names = ['build', 'bin', 'unix-build']
+" let g:ale_c_clang_options = '-std=c17 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk -I /anaconda3/lib/python3.6/site-packages/numpy/core/include -I /anaconda3/include/python3.6m/'
+" let g:ale_cpp_clang_options = '-std=c++11 ' . $CPPFLAGS
+" let g:ale_cpp_gcc_options = '-std=c++11 ' . $CPPFLAGS
 let g:ale_lint_delay = 800
-
-" }}}
-" Clang_complete Options: {{{
-
-let g:clang_library_path = '/usr/local/opt/llvm/lib'
-let g:clang_user_options = '-std=c++14 -I/usr/local/include/eigen3'
-let g:clang_complete_macros = 1
-" let g:clang_debug = 1
-let g:clang_close_preview = 1
-let g:clang_jumpto_declaration_key = "æ"
-let g:clang_snippets = 1
-let g:clang_snippets_engine = 'ultisnips'
-let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
-let g:clang_dotfile = '.clang_complete'
-let g:clang_cpp_completeopt = 'longest,menuone'
-let g:clang_diagsopt = ''
-" let g:clang_compilation_database = '..'
 
 " }}}
 " UltiSnips Options: {{{
@@ -402,12 +381,34 @@ endif
             \ { 'n': '~/.config/nvim/init.vim' },
             \ { 'z': '~/.zshrc' },
             \ { 't': '~/.config/kitty/kitty.conf' },
+            \ { 'c': '~/.config/nvim/coc-settings.json' }
             \ ]
 
 " }}}
 " Tagbar Options: {{{
 
 autocmd FileType cpp nested :call tagbar#autoopen(0)
+let g:tagbar_width = 35
+let g:tagbar_foldlevel = 0
+
+" }}}
+" CtrlP Options: {{{
+
+let g:ctrlp_extensions = ['tag']
+
+" }}}
+" Coc Options: {{{
+
+" use <tab> for trigger completion and navigate to the next complete item
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <Tab>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<Tab>" :
+      \ coc#refresh()
 
 " }}}
 
@@ -426,8 +427,11 @@ au FileType tex setlocal tw=79
 
 " Matlab
 
-au FileType matlab inoremap <buffer> <C-p> <C-o>A;
 au FileType matlab setlocal commentstring=%%s 
+
+" JSON
+
+autocmd FileType json syntax match Comment +\/\/.\+$+
 
 " }}}
 
@@ -484,6 +488,14 @@ function! CenterComment()
   let l:after = repeat(l:del_str, l:after_w)
 
   call setline(".", l:before . l:header . l:after)
+endfunc
+
+function! OpenHeader()
+  let l:fnwithoutext = expand('%:r') 
+  let l:fnwithext = l:fnwithoutext . '.h'
+  if filereadable(l:fnwithext)
+    execute "sp " . fnameescape(l:fnwithext)
+  endif
 endfunc
 
 " }}}
