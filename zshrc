@@ -45,8 +45,6 @@ zle -N down-line-or-beginning-search
 zle -N clear-screen
 
 bindkey "^e" clear-screen
-bindkey "^[OA" up-line-or-beginning-search # Up
-bindkey "^[OB" down-line-or-beginning-search # Down
 
 bindkey -v
 export KEYTIMEOUT=1
