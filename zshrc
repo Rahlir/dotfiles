@@ -8,11 +8,6 @@ if [ -f ~/.bashrc_linux ]; then
     source ~/.bashrc_linux
 fi
 
-# Redirecting to machine specific settings
-if [ -f ~/.bashrc_local ]; then
-    source ~/.bashrc_local
-fi
-
 # Redirecting to aliases file
 if [ -f ~/.bashrc_aliases ]; then
     source  ~/.bashrc_aliases
@@ -109,3 +104,8 @@ compinit
 # ------------------------Environment Variables Setup---------------------------
 # My python modules 
 export PYTHONPATH="$HOME/Development/Libraries/python-tools:$HOME/Development/Libraries/rahlir_vibrations"
+#
+# Redirecting to machine specific settings
+if [ -f ~/.bashrc_local ]; then
+    source ~/.bashrc_local
+fi
