@@ -13,14 +13,13 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'w0rp/ale'
 Plug 'maximbaz/lightline-ale'
 Plug 'raimondi/delimitmate'
+Plug 'yggdroot/indentline'
 Plug 'chriskempson/base16-vim'
 Plug 'morhetz/gruvbox'
 Plug 'rizzatti/dash.vim'
 
-Plug 'yggdroot/indentline'
-
 Plug 'Vimjas/vim-python-pep8-indent', {'for': 'python'}
-" Plug 'SirVer/ultisnips'
+Plug 'SirVer/ultisnips'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle', 'for': 'cpp' }
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'dearrrfish/vim-applescript', {'for': 'applescript' }
@@ -81,11 +80,11 @@ if g:colorscheme_setup == 'base16'
     source ~/.vimrc_background
   endif
 elseif g:colorscheme_setup == 'gruvbox'
+  set background=dark
   colorscheme gruvbox
   let g:gruvbox_contrast_dark = 'medium'
   let g:gruvbox_italic = 1
   let g:gruvbox_italicize_strings = 1
-  set background=dark
 endif
 
 " }}}
