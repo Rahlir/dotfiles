@@ -1,13 +1,10 @@
 {
-  "diagnostic.displayByAle": true,
+  "diagnostic.displayByAle": false,
   "suggest.autoTrigger": "trigger",
-  "python.pythonPath": "/anaconda3/bin/python",
-  "python.linting.enabled": true,
-  "python.linting.flake8Enabled": true,
-  "python.linting.pylintEnabled": false,
-  "python.linting.lintOnSave": true,
+  "python.pythonPath": "/home/rahlir/anaconda3/bin/python3",
+  "python.linting.enabled": false,
   "diagnostic.refreshOnInsertMode": true,
-  "diagnostic.enable": true,
+  "diagnostic.enable": false,
 
   "languageserver": {
     "ccls": {
