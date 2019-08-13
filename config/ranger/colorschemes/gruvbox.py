@@ -10,33 +10,38 @@ from ranger.gui.color import (
     default_colors,
 )
 
-GRUV_DARK0 = 235
+GRUV_DARK0 = 0
 GRUV_DARK1 = 237
 GRUV_DARK2 = 239
 GRUV_DARK3 = 241
 GRUV_DARK4 = 243
-GRUV_GRAY = 245
+GRUV_GRAY = 8
 
-GRUV_RED = 124
-GRUV_GREEN = 106
-GRUV_YELLOW = 172
-GRUV_BLUE = 66
-GRUV_PURPLE = 132
-GRUV_AQUA = 72
+GRUV_RED_FADED = 88
+
+GRUV_RED = 1
+GRUV_GREEN = 2
+GRUV_YELLOW = 3
+GRUV_BLUE = 4
+GRUV_PURPLE = 5
+GRUV_AQUA = 6
 GRUV_ORANGE = 166
 
-GRUV_RED_BRIGHT = 167
-GRUV_GREEN_BRIGHT = 142
-GRUV_YELLOW_BRIGHT = 214
-GRUV_BLUE_BRIGHT = 109
-GRUV_PURPLE_BRIGHT = 175
-GRUV_AQUA_BRIGHT = 108
+GRUV_RED_BRIGHT = 9
+GRUV_GREEN_BRIGHT = 10
+GRUV_YELLOW_BRIGHT = 11
+GRUV_BLUE_BRIGHT = 12
+GRUV_PURPLE_BRIGHT = 13
+GRUV_AQUA_BRIGHT = 14
 GRUV_ORANGE_BRIGHT = 208
 
-GRUV_LIGHT1 = 223
+GRUV_LIGHT0_S = 228
+GRUV_LIGHT0 = 229
+GRUV_LIGHT0_H = 230
+GRUV_LIGHT1 = 15
 GRUV_LIGHT2 = 250
 GRUV_LIGHT3 = 248
-GRUV_LIGHT4 = 246
+GRUV_LIGHT4 = 7
 
 
 class Gruvbox(ColorScheme):
@@ -49,7 +54,7 @@ class Gruvbox(ColorScheme):
             return default_colors
 
         elif context.in_browser:
-            fg = GRUV_YELLOW
+            fg = GRUV_LIGHT1
             if context.selected:
                 attr = reverse
             else:
@@ -57,10 +62,10 @@ class Gruvbox(ColorScheme):
             if context.empty or context.error:
                 bg = GRUV_RED
             if context.border:
-                fg = GRUV_DARK2
+                fg = GRUV_LIGHT0
             if context.media:
                 if context.image:
-                    fg = GRUV_YELLOW
+                    fg = GRUV_RED
                 else:
                     fg = GRUV_PURPLE
             if context.container:
@@ -88,6 +93,10 @@ class Gruvbox(ColorScheme):
                     fg = GRUV_LIGHT1
                 else:
                     fg = GRUV_RED_BRIGHT
+            if context.python:
+                fg = GRUV_YELLOW
+            if context.rcfile:
+                attr |= bold
             if not context.selected and (context.cut or context.copied):
                 attr |= bold
                 fg = GRUV_DARK0
@@ -114,11 +123,12 @@ class Gruvbox(ColorScheme):
                 fg = GRUV_AQUA
 
         elif context.in_titlebar:
-            bg = GRUV_DARK2
+            bg = GRUV_DARK0
             if context.hostname:
-                fg = GRUV_RED_BRIGHT if context.bad else GRUV_ORANGE_BRIGHT
+                fg = GRUV_RED_BRIGHT if context.bad else GRUV_GREEN_BRIGHT
+                bg = GRUV_DARK2
             elif context.directory:
-                fg = GRUV_AQUA
+                fg = GRUV_BLUE_BRIGHT
             elif context.tab:
                 if context.good:
                     fg = GRUV_RED
@@ -128,11 +138,11 @@ class Gruvbox(ColorScheme):
             attr |= bold
 
         elif context.in_statusbar:
-            bg = GRUV_DARK1
-            fg = GRUV_LIGHT2
+            bg = GRUV_DARK0
+            fg = GRUV_LIGHT1
             if context.permissions:
                 if context.good:
-                    fg = GRUV_LIGHT4
+                    fg = GRUV_AQUA
                 elif context.bad:
                     fg = GRUV_PURPLE
             if context.marked:
