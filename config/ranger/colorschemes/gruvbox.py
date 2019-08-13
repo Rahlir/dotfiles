@@ -66,6 +66,8 @@ class Gruvbox(ColorScheme):
             if context.media:
                 if context.image:
                     fg = GRUV_RED
+                elif context.vector:
+                    fg = GRUV_RED_BRIGHT
                 else:
                     fg = GRUV_PURPLE
             if context.container:
@@ -87,13 +89,15 @@ class Gruvbox(ColorScheme):
                     attr |= bold
             if context.link:
                 fg = GRUV_AQUA if context.good else GRUV_PURPLE
+            if context.textfile:
+                fg = GRUV_GREEN
             if context.tag_marker and not context.selected:
                 attr |= bold
                 if fg in (GRUV_RED, GRUV_PURPLE):
                     fg = GRUV_LIGHT1
                 else:
                     fg = GRUV_RED_BRIGHT
-            if context.python:
+            if context.python and not context.executable:
                 fg = GRUV_YELLOW
             if context.rcfile:
                 attr |= bold
@@ -125,14 +129,14 @@ class Gruvbox(ColorScheme):
         elif context.in_titlebar:
             bg = GRUV_DARK0
             if context.hostname:
-                fg = GRUV_RED_BRIGHT if context.bad else GRUV_GREEN_BRIGHT
+                fg = GRUV_RED_BRIGHT if context.bad else GRUV_ORANGE_BRIGHT
                 bg = GRUV_DARK2
             elif context.directory:
                 fg = GRUV_BLUE_BRIGHT
             elif context.tab:
                 if context.good:
-                    fg = GRUV_RED
-                    bg = GRUV_LIGHT1
+                    fg = GRUV_ORANGE_BRIGHT
+                    bg = GRUV_DARK2
             elif context.link:
                 fg = GRUV_AQUA_BRIGHT
             attr |= bold
