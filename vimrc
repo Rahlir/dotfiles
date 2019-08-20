@@ -309,6 +309,7 @@ let g:ale_lint_delay = 800
 
 let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips', 'UltiSnips']
 let g:UltiSnipsEditSplit = 'tabdo'
+let g:UltiSnipsExpandTrigger = '<M-tab>'
 
 " }}}
 " Jedi Options: {{{
