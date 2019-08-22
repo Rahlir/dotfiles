@@ -110,6 +110,7 @@ set guioptions-=rL
 set guifont=HackNerdFontComplete-Regular:h11
 set wildmode=longest,full
 set scl=yes
+autocmd FileType nerdtree,tagbar,help setlocal scl=auto
 
 " Other:
 
@@ -267,6 +268,7 @@ autocmd User GitGutter call lightline#update()
 
 let g:delimitMate_expand_cr = 1
 let g:delimitMate_expand_space = 1
+autocmd FileType python let b:delimitMate_smart_quotes = '\%(\%(\w\&[^fr]\)\|[^[:punct:][:space:]fr]\|\%(\\\\\)*\\\)\%#\|\%#\%(\w\|[^[:space:][:punct:]]\)'
 
 " }}}
 " SuperTab Options: {{{
@@ -337,8 +339,7 @@ let g:indentLine_fileTypeExclude = ['startify', 'help', 'json', 'text']
 
 let g:NERDTreeCaseSensitiveSort = 1
 let g:NERDTreeWinSize = 40
-let NERDTreeIgnore=['__pycache__$', '\~$']
-autocmd FileType nerdtree setlocal scl=auto
+let NERDTreeIgnore=['__pycache__$', '\~$', '.DS_Store$']
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 " }}}
