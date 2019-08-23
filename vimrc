@@ -269,6 +269,8 @@ autocmd User GitGutter call lightline#update()
 let g:delimitMate_expand_cr = 1
 let g:delimitMate_expand_space = 1
 autocmd FileType python let b:delimitMate_smart_quotes = '\%(\%(\w\&[^fr]\)\|[^[:punct:][:space:]fr]\|\%(\\\\\)*\\\)\%#\|\%#\%(\w\|[^[:space:][:punct:]]\)'
+au FileType tex let b:delimitMate_quotes = "\" ' ` $"
+au FileType tex let b:delimitMate_smart_matchpairs = '^\%(\w\|\!\|£\|[^[:space:][:punct:]]\)'
 
 " }}}
 " SuperTab Options: {{{
@@ -287,23 +289,22 @@ let g:SuperTabClosePreviewOnPopupClose = 1
 
 let g:ale_linters = {
       \   'python': ['flake8'],
-      \   'cpp': [''],
+      \   'cpp': ['clang'],
       \   'c': ['clang']
       \}
 let g:ale_pattern_options = {'__init__\.py$': {'ale_enabled': 0}}
 let g:ale_lint_delay = 800
-
 let g:ale_c_parse_compile_commands = '1'
 let g:ale_cpp_ccls_init_options = {
 \   'cache': {
-\       'directory': '/tmp/ccls'
+\       'directory': '.ccls-cache'
 \   }
 \ }
 " let g:ale_c_build_dir = '/Users/rahlir/Development/ProjectA/unix-build/'
 " " let g:ale_c_build_dir_names = ['build', 'bin', 'unix-build']
 " let g:ale_c_clang_options = '-std=c17 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk -I /anaconda3/lib/python3.6/site-packages/numpy/core/include -I /anaconda3/include/python3.6m/'
-" let g:ale_cpp_clang_options = '-std=c++11 ' . $CPPFLAGS
-" let g:ale_cpp_gcc_options = '-std=c++11 ' . $CPPFLAGS
+let g:ale_cpp_clang_options = '-std=c++11 ' . $CPPFLAGS
+let g:ale_cpp_gcc_options = '-std=c++11 ' . $CPPFLAGS
 let g:ale_lint_delay = 800
 
 " }}}
@@ -405,29 +406,6 @@ let g:ctrlp_extensions = ['tag']
 
 " }}}
 
-" -------------------------Filetype Specific Config---------------------------
-" Python Latex Matlab: {{{
-" Python: 
-
-" autocmd FileType python setlocal completeopt-=preview
-
-
-" Latex
-
-au FileType tex let b:delimitMate_quotes = "\" ' ` $"
-au FileType tex let b:delimitMate_smart_matchpairs = '^\%(\w\|\!\|£\|[^[:space:][:punct:]]\)'
-au FileType tex setlocal tw=79
-
-" Matlab
-
-au FileType matlab setlocal commentstring=%%s 
-
-" JSON
-
-autocmd FileType json syntax match Comment +\/\/.\+$+
-
-" }}}
-
 " --------------------------------Functions-----------------------------------
 " Mappable Functions: {{{
 
@@ -486,8 +464,32 @@ endfunc
 function! OpenHeader()
   let l:fnwithoutext = expand('%:r') 
   let l:fnwithext = l:fnwithoutext . '.h'
-  if filereadable(l:fnwithext)
+  if filereadable(l:fnwithext) && l:fnwithext != @%
     execute "sp " . fnameescape(l:fnwithext)
+  endif
+endfunc
+
+function! OpenHeaderVertically()
+  let l:fnwithoutext = expand('%:r') 
+  let l:fnwithext = l:fnwithoutext . '.h'
+  if filereadable(l:fnwithext) && l:fnwithext != @%
+    execute "vsp " . fnameescape(l:fnwithext)
+  endif
+endfunc
+
+function! OpenImplementation()
+  let l:fnwithoutext = expand('%:r') 
+  let l:fnwithext = l:fnwithoutext . '.cpp'
+  if filereadable(l:fnwithext) && l:fnwithext != @%
+    execute "sp " . fnameescape(l:fnwithext)
+  endif
+endfunc
+
+function! OpenImplementationVertically()
+  let l:fnwithoutext = expand('%:r') 
+  let l:fnwithext = l:fnwithoutext . '.cpp'
+  if filereadable(l:fnwithext) && l:fnwithext != @%
+    execute "vsp " . fnameescape(l:fnwithext)
   endif
 endfunc
 
