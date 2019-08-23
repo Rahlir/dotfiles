@@ -141,10 +141,11 @@ nnoremap [a {jI
 map + :call BlockComment()<CR>
 map - :call UnBlockComment()<CR>
 nnoremap <leader>b :b #<CR>
-nmap <leader>N :NERDTreeToggle<CR>
-nmap <leader>f :NERDTreeFocus<CR>
+nmap <leader>n :NERDTreeToggle<CR>
+nmap <leader>N :NERDTreeFocus<CR>
 nmap <leader>t :Tagbar<CR>
 nmap <leader>T :TagbarOpen fj<CR>
+nnoremap <silent> <leader><Space> :call FindTodo()<CR>
 
 " }}}
 
@@ -491,6 +492,8 @@ function! OpenImplementationVertically()
   if filereadable(l:fnwithext) && l:fnwithext != @%
     execute "vsp " . fnameescape(l:fnwithext)
   endif
+function! FindTodo()
+  execute "normal /\\<TODO\\>\<CR>$"
 endfunc
 
 " }}}
