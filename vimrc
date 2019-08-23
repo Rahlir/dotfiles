@@ -492,6 +492,8 @@ function! OpenImplementationVertically()
   if filereadable(l:fnwithext) && l:fnwithext != @%
     execute "vsp " . fnameescape(l:fnwithext)
   endif
+endfunc
+
 function! FindTodo()
   execute "normal /\\<TODO\\>\<CR>$"
 endfunc
