@@ -44,6 +44,8 @@ bindkey "^e" clear-screen
 bindkey -v
 export KEYTIMEOUT=1
 bindkey -M vicmd '^v' edit-command-line
+bindkey -M vicmd 'k' up-line-or-beginning-search
+bindkey -M vicmd 'j' down-line-or-beginning-search
 
 # Powerline on Linux when not part of path
 if [ -d "$HOME/.local/bin" ] && ! [[ :$PATH: == *:"$HOME/.local/bin":* ]]; then
