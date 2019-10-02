@@ -5,3 +5,4 @@ tags
 .idea
 compile_commands.json
 .nvimrc
+.ipynb_checkpoints
