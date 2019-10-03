@@ -4,6 +4,10 @@
 # ConnectionFileMixin(LoggingConfigurable) configuration
 #------------------------------------------------------------------------------
 
+c = get_config()
+c.InlineBackend.rc = {'figure.subplot.bottom': 0.125}
+c.InlineBackend.figure_format = "retina"
+
 ## Mixin for configurable classes that work with connection files
 
 ## JSON file in which to store connection info [default: kernel-<pid>.json]
