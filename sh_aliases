@@ -17,6 +17,7 @@ alias ....='cd ../../..'
 alias gcom='git commit -m'
 alias gst='git status'
 alias gmod='git add -u'
+alias gac='git add -u && git commit'
 
 alias powerlinedir='cd $POWERLINEDIR'
 alias tmux-reload='tmux source $HOME/.tmux.conf'
