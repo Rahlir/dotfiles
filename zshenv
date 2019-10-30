@@ -16,10 +16,10 @@ fpath=($fpath $HOME/.zsh_completions)
 
 # ------------------------------------path--------------------------------------
 if [ -d "$HOME/.local/bin" ]; then
-    path=(~/.local/bin $path)
+    path=($HOME/.local/bin $path)
 fi
 
 export PATH
 
 # -----------------------------------Other--------------------------------------
-DIRCOLORSDIR=$HOME/.dircolors/dircolors.base16
+DIRCOLORSDIR="$HOME/.dircolors/dircolors.base16"
