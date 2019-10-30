@@ -9,8 +9,8 @@ if [ -f ~/.bashrc_linux ]; then
 fi
 
 # Redirecting to aliases file
-if [ -f ~/.bashrc_aliases ]; then
-    source  ~/.bashrc_aliases
+if [ -f ~/.sh_aliases ]; then
+    source  ~/.sh_aliases
 fi
 
 
@@ -18,12 +18,6 @@ fi
 HISTSIZE=8000               # How many lines of history to keep in memory
 HISTFILE=~/.zsh_history     # Where to save history to disk
 SAVEHIST=8000               # Number of history entries to save to disk
-
-# Set default editor
-VISUAL=nvim; export VISUAL EDITOR=nvim; export EDITOR
-
-# Add to fpath variable
-fpath=($fpath $HOME/.zsh_completions)
 
 setopt append_history
 setopt share_history
@@ -46,18 +40,6 @@ export KEYTIMEOUT=1
 bindkey -M vicmd '^v' edit-command-line
 bindkey -M vicmd 'k' up-line-or-beginning-search
 bindkey -M vicmd 'j' down-line-or-beginning-search
-
-# Powerline on Linux when not part of path
-if [ -d "$HOME/.local/bin" ] && ! [[ :$PATH: == *:"$HOME/.local/bin":* ]]; then
-	PATH="$HOME/.local/bin:$PATH"
-fi
-
-export POWERLINE_COMMAND=powerline
-powerline-daemon -q
-. $POWERLINEDIR/bindings/zsh/powerline.zsh
-
-export LDFLAGS="-L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib"
-export CPPFLAGS="-I/usr/local/opt/llvm/include -I/usr/local/include $CPPFLAGS"
 
 # Add colors
 test -r $DIRCOLORSDIR && eval "$(dircolors $DIRCOLORSDIR)"
@@ -111,3 +93,22 @@ export PYTHONPATH="$HOME/Development/Libraries/python-tools:$HOME/Development/Li
 if [ -f ~/.bashrc_local ]; then
     source ~/.bashrc_local
 fi
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+# __conda_setup="$('/home/rahlir/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+# if [ $? -eq 0 ]; then
+#     eval "$__conda_setup"
+# else
+#     if [ -f "/home/rahlir/anaconda3/etc/profile.d/conda.sh" ]; then
+#         . "/home/rahlir/anaconda3/etc/profile.d/conda.sh"
+#     else
+#         export PATH="/home/rahlir/anaconda3/bin:$PATH"
+#     fi
+# fi
+# unset __conda_setup
+# <<< conda initialize <<<
+
+export POWERLINE_COMMAND=powerline
+powerline-daemon -q
+. $POWERLINEDIR/bindings/zsh/powerline.zsh

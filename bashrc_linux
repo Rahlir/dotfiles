@@ -1,4 +1,4 @@
-COMPLETIONDIR="/usr/share/bash-completion"
+# COMPLETIONDIR="/usr/share/bash-completion"
 DIRCOLORSDIR=$HOME/.dircolors/dircolors.base16
 export POWERLINEDIR=$HOME/anaconda3/lib/python3.6/site-packages/powerline
 
@@ -10,7 +10,6 @@ alias bashrcl='vim ~/.bashrc_linux'
 alias grep='grep --color'
 
 # Added by Anaconda3 5.0.0 installer
-export PATH="$HOME/anaconda3/bin:$PATH"
 
 # Custom functions
 # vim: ft=sh
