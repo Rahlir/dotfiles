@@ -46,6 +46,16 @@ bindkey -M vicmd 'j' down-line-or-beginning-search
 
 bindkey "^e" clear-screen
 
+# Up/down key search in history
+# Uncomment the correct OS
+# -----------------------------------MACOS--------------------------------------
+# bindkey "^[[A" up-line-or-beginning-search # Up
+# bindkey "^[[B" down-line-or-beginning-search # Down
+# -----------------------------------LINUX--------------------------------------
+# bindkey "^[OA" up-line-or-beginning-search # Up
+# bindkey "^[OB" down-line-or-beginning-search # Down
+
+
 # Add colors
 test -r $DIRCOLORSDIR && eval "$(dircolors $DIRCOLORSDIR)"
 
