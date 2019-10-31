@@ -4,13 +4,9 @@ if [ -f ~/.zshenv ]; then
     source ~/.zshenv
 fi
 
-# Mac specific file
-if [ -f ~/.bashrc_mac ]; then
-    source ~/.bashrc_mac
-fi
-
-if [ -f ~/.bashrc_linux ]; then
-    source ~/.bashrc_linux
+# Any machine specific settings should be placed here
+if [ -f ~/.zshrc_local ]; then
+    source ~/.zshrc_local
 fi
 
 # Redirecting to aliases file
@@ -107,11 +103,6 @@ compinit
 # ------------------------Environment Variables Setup---------------------------
 # My python modules 
 export PYTHONPATH="$HOME/Development/Libraries/python-tools:$HOME/Development/Libraries/rahlir_vibrations"
-#
-# Redirecting to machine specific settings
-if [ -f ~/.bashrc_local ]; then
-    source ~/.bashrc_local
-fi
 
 # -----------------------------------Conda--------------------------------------
 # >>> conda initialize >>>
