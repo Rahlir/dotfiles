@@ -6,3 +6,4 @@ tags
 compile_commands.json
 .nvimrc
 .ipynb_checkpoints
+.ccls-cache
