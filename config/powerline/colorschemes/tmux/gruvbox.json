@@ -1,6 +1,6 @@
 {
 	"groups": {
-		"background":           { "fg": "gruvbox.dark2", "bg": "gruvbox.dark1", "attrs": [] },
+		"background":           { "fg": "gruvbox.light2", "bg": "gruvbox.dark1", "attrs": [] },
 		"active_window_status": {"fg": "gruvbox.aqua",   "bg": "gruvbox.dark1",    "attrs": []},
 		"window_status":        {"fg": "gruvbox.light2",     "bg": "gruvbox.dark1",    "attrs": []},
 		"activity_status":      {"fg": "gruvbox.dark1",     "bg": "gruvbox.dark1",    "attrs": []},
