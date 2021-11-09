@@ -6,4 +6,12 @@ tags
 compile_commands.json
 .nvimrc
 .ipynb_checkpoints
-.ccls-cache
+.ccls*
+
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.fdb_latexmk
+*.fls
