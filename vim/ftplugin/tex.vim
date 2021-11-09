@@ -1,2 +1,2 @@
 " --------------------------Settings for tex files----------------------------
-setlocal tw=79
+set cocu=c
