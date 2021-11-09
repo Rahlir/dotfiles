@@ -4,7 +4,8 @@ snippet "(sc(ript)?|fun(ction)?)\.header" "header snippet" r
 	typevar = "script"
 else:
 	typevar = "function"
-snip.rv = typevar + " " + snip.basename` - $1
+snip.rv = snip.basename + " " + typevar`
+% $1
 % `!p
 if typevar == "function":
 	snip.rv = "\n% Inputs:\n%   "

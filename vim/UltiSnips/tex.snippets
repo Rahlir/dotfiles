@@ -1,12 +1,14 @@
-snippet \preamble "Default Preamble"
+snippet %preamble "Default preamble"
 % -----------------------------Class and Packages-------------------------------
 \documentclass[12pt]{article}
 \usepackage{amsmath}
 \usepackage{xcolor}
 \usepackage[labelfont=bf]{caption}
 \usepackage{graphicx}
+$0
+endsnippet
 
-
+snippet %widetall "Wide and tall pages"
 % --------------------------------Page Layout-----------------------------------
 % wide and tall pages
 \setlength{\topmargin}{-0.5in}
@@ -14,11 +16,13 @@ snippet \preamble "Default Preamble"
 \setlength{\textheight}{9in}
 \setlength{\evensidemargin}{-.1in}
 \setlength{\oddsidemargin}{-.1in}
+\renewcommand{\baselinestretch}{1.3} % more space between lines
+
 % \setlength{\parindent}{10pt} % Default is 15pt - this sets no indent
-% more space between lines
-\renewcommand{\baselinestretch}{1.3}
+$0
+endsnippet
 
-
+snippet %physcmds
 % ------------------------------Custom Commands---------------------------------
 \newcommand{\bra}[1]{\langle#1\vert}
 \newcommand{\ket}[1]{\vert#1\rangle}
@@ -27,8 +31,10 @@ snippet \preamble "Default Preamble"
 \newcommand{\braopket}[3]{\langle#1\vert#2\vert#3\rangle}
 \newcommand{\norm}[1]{\vert\vert#1\vert\vert}
 \newcommand{\half}{\frac{1}{2}}
+$0
+endsnippet
 
-
+snippet %begin
 \title{$1}
 \author{Tadeas Uhlir}
 
@@ -67,10 +73,9 @@ endsnippet
 snippet \fgr "figure environment"
 \begin{figure}[$1]
 	\centering
-	\includegraphics$5{$4}
-	\caption{$2}\label{$3}
+	\includegraphics$3{$2}
+	\caption{$5}\label{$4}
 \end{figure}
-
 $0
 endsnippet
 
@@ -86,4 +91,12 @@ endsnippet
 
 snippet \fra "fraction" i
 \frac{$1}{$2}
+endsnippet
+
+snippet \bs "boldsymbol" i
+\boldsymbol{$1}
+endsnippet
+
+snippet \vb "verbatim" i
+\verb|$1|$0
 endsnippet

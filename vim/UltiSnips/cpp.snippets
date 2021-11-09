@@ -6,7 +6,6 @@ snippet header "header snippet"
 // ------------------------------------------------------------------------------
 $0
 endsnippet
-
 snippet for "for loop" m
 for(int ${1:i}=${2:0}; $1<$3; $1++) {
 	$0
@@ -17,4 +16,24 @@ snippet vfn "virtual function declaration"
 virtual $1 ${VISUAL:name}($2) {
 	$0
 }
+endsnippet
+
+snippet hguard "Include header once only guard"
+#ifndef ${1:`!p
+if not snip.c:
+	name = re.sub(r'[^A-Za-z0-9]+','_', snip.fn).upper()
+	snip.rv = "_" + name + "_"
+else:
+	snip.rv = snip.c`}
+#define $1
+
+${VISUAL}$0
+
+#endif /* end of include guard: $1 */
+endsnippet
+
+snippet ifdebug "If COCOS2D debug"
+#if COCOS2D_DEBUG
+    ${VISUAL}$0
+#endif
 endsnippet
