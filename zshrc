@@ -32,7 +32,6 @@ autoload -U down-line-or-beginning-search
 zle -N edit-command-line
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
-zle -N clear-screen
 
 bindkey -v
 export KEYTIMEOUT=1
@@ -100,9 +99,8 @@ compinit
 
 # End of lines added by compinstall
 
-# ------------------------Environment Variables Setup---------------------------
-# My python modules 
-export PYTHONPATH="$HOME/Development/Libraries/python-tools:$HOME/Development/Libraries/rahlir_vibrations"
+# -----------------------------------Other--------------------------------------
+source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # -----------------------------------Conda--------------------------------------
 # >>> conda initialize >>>
