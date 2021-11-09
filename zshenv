@@ -20,6 +20,9 @@ EDITOR=nvim; export EDITOR
 # Add to fpath variable
 fpath=($fpath $HOME/.zsh_completions)
 
+# -------------------------------python modules---------------------------------
+export PYTHONPATH="$HOME/Development/Libraries/python-tools:$HOME/Development/Libraries/rahlir_vibrations"
+
 # -----------------------------------Other--------------------------------------
 DIRCOLORSDIR="$HOME/.dircolors/dircolors.base16"
 export POWERLINEDIR="$HOME/anaconda3/lib/python3.6/site-packages/powerline"
