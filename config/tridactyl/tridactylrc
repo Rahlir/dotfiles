@@ -1,8 +1,8 @@
 " tridactylrc derived from the given sample
-"
+
 sanitise tridactyllocal tridactylsync
 
-colors greenmat
+colors dark
 
 set followpagepatterns.next ^(next|newer)\b|>>
 set searchurls.vimaw https://vimawesome.com/?q=
@@ -19,8 +19,8 @@ bind n findnext 1
 bind N findnext -1
 bind \s nohlsearch
 
-bindurl www.google.com f hint -Jc .rc > .r > a, g-inner-card.cv2VAd > div > a, g-inner-card.cv2VAd > a
-bindurl www.google.com F composite hint -Jpipe .rc>.r>a href | tabopen | buffer #
+bindurl www.google.com f hint -Jc #search div:not(.action-menu) > a
+bindurl www.google.com F hint -Jbc #search div:not(.action-menu) > a
 bindurl www.google.com ;d hint -J
 
 autocmd DocStart rick.dartmouth.edu/mars/notebooks mode ignore
