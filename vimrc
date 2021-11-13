@@ -8,34 +8,37 @@ Plug 'lervag/vimtex', {'for': 'latex'}
 Plug 'itchyny/lightline.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
-" Plug 'davidhalter/jedi-vim', {'for': 'python'}
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'w0rp/ale'
 Plug 'maximbaz/lightline-ale'
 Plug 'raimondi/delimitmate'
 Plug 'yggdroot/indentline'
-Plug 'chriskempson/base16-vim'
 Plug 'morhetz/gruvbox'
-Plug 'rizzatti/dash.vim'
-
 Plug 'Vimjas/vim-python-pep8-indent', {'for': 'python'}
 Plug 'SirVer/ultisnips'
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle', 'for': 'cpp' }
-Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'dearrrfish/vim-applescript', {'for': 'applescript' }
-Plug 'davidoc/taskpaper.vim', {'for': 'taskpaper'}
 Plug 'leafgarland/typescript-vim', {'for': 'typescript'}
 Plug 'majutsushi/tagbar'
 Plug 'tpope/vim-surround'
 Plug 'kien/ctrlp.vim'
 Plug 'mhinz/vim-startify'
+Plug 'ericcurtin/CurtineIncSw.vim'
+
+" No longer using, consider deleting soon:
+" Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle', 'for': 'cpp' }
+" Plug 'Xuyuanp/nerdtree-git-plugin'
+" Plug 'chriskempson/base16-vim'
+" Plug 'davidoc/taskpaper.vim', {'for': 'taskpaper'}
+" Plug 'davidhalter/jedi-vim', {'for': 'python'}
 
 if has('nvim')
   Plug 'ryanoasis/vim-devicons'
-  Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
   Plug 'numirias/semshi', {'for': 'python', 'do': ':UpdateRemotePlugins'}
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'jackguo380/vim-lsp-cxx-highlight'
+
+  " No longer using, consider deleting soon
+  " Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 else
   Plug 'octol/vim-cpp-enhanced-highlight', {'for': 'cpp'}
   Plug 'ervandew/supertab'
@@ -58,15 +61,6 @@ if !has('gui_running') && !has('nvim')
   endif
 endif
 
-if !has('nvim')
-  " Fixing python3 setting, only for brew vim
-  if has('python3') && has('mac')
-      command! -nargs=1 Py py3 <args>
-      set pythonthreedll=/usr/local/Frameworks/Python.framework/Versions/3.7/Python
-      set pythonthreehome=/usr/local/Frameworks/Python.framework/Versions/3.7
-  endif
-endif
-
 " }}}
 " Syntax And Colors: {{{
 
@@ -81,10 +75,10 @@ if g:colorscheme_setup == 'base16'
   endif
 elseif g:colorscheme_setup == 'gruvbox'
   set background=dark
-  colorscheme gruvbox
-  let g:gruvbox_contrast_dark = 'medium'
   let g:gruvbox_italic = 1
   let g:gruvbox_italicize_strings = 1
+  let g:gruvbox_contrast_dark = 'medium'
+  colorscheme gruvbox
 endif
 
 " }}}
@@ -157,6 +151,7 @@ let g:vimtex_view_method = 'skim'
 let g:tex_comment_nospell = 1
 let g:vimtex_quickfix_open_on_warning = 0
 let g:vimtex_fold_manual = 1
+let g:vimtex_format_enabled = 1
 
 
 " }}}
@@ -272,6 +267,7 @@ let g:delimitMate_expand_space = 1
 autocmd FileType python let b:delimitMate_smart_quotes = '\%(\%(\w\&[^fr]\)\|[^[:punct:][:space:]fr]\|\%(\\\\\)*\\\)\%#\|\%#\%(\w\|[^[:space:][:punct:]]\)'
 au FileType tex let b:delimitMate_quotes = "\" ' ` $"
 au FileType tex let b:delimitMate_smart_matchpairs = '^\%(\w\|\!\|£\|[^[:space:][:punct:]]\)'
+au FileType markdown let b:delimitMate_nesting_quotes = ['`']
 
 " }}}
 " SuperTab Options: {{{
@@ -296,6 +292,7 @@ let g:ale_linters = {
 let g:ale_pattern_options = {'__init__\.py$': {'ale_enabled': 0}}
 let g:ale_lint_delay = 800
 let g:ale_c_parse_compile_commands = '1'
+let g:ale_c_parse_makefile = '1'
 let g:ale_cpp_ccls_init_options = {
 \   'cache': {
 \       'directory': '.ccls-cache'
@@ -334,45 +331,48 @@ let g:indent_guides_exclude_filetypes = ['help', 'nerdtree', 'vim', 'tagbar']
 " Indentline Options: {{{
 
 let g:indentLine_char = ''
-let g:indentLine_fileTypeExclude = ['startify', 'help', 'json', 'text']
+let g:indentLine_fileTypeExclude = ['startify', 'help', 'json', 'text', 'tex', 'markdown']
 
 " }}}
 " NERDTree Options: {{{
 
-let g:NERDTreeCaseSensitiveSort = 1
-let g:NERDTreeWinSize = 40
-let NERDTreeIgnore=['__pycache__$', '\~$', '.DS_Store$']
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+" No longer using NERDTree, options commented out, consider deleting soon
+" let g:NERDTreeCaseSensitiveSort = 1
+" let g:NERDTreeWinSize = 35
+" let NERDTreeIgnore=['__pycache__$', '\~$', '.DS_Store$']
+" autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 " }}}
 " NERDTreeSyntasHl Options: {{{
 
-let s:nerd_brown = "905532"
-let s:nerd_aqua =  "3AFFDB"
-let s:nerd_blue = "689FB6"
-let s:nerd_darkBlue = "44788E"
-let s:nerd_purple = "834F79"
-let s:nerd_lightPurple = "834F79"
-let s:nerd_red = "AE403F"
-let s:nerd_beige = "F5C06F"
-let s:nerd_yellow = "F09F17"
-let s:nerd_orange = "D4843E"
-let s:nerd_darkOrange = "F16529"
-let s:nerd_pink = "CB6F6F"
-let s:nerd_salmon = "EE6E73"
-let s:nerd_green = "8FAA54"
-let s:nerd_lightGreen = "31B53E"
-let s:nerd_white = "FFFFFF"
-let s:nerd_rspec_red = 'FE405F'
-let s:nerd_git_orange = 'F54D27'
-
-let g:NERDTreeExtensionHighlightColor = {} " this line is needed to avoid error
-let g:NERDTreeExtensionHighlightColor['m'] = s:nerd_blue
-let g:NERDTreeExtensionHighlightColor['hpp'] = s:nerd_green
+" No longer using NERDTree, options commented out, consider deleting soon
+" let s:nerd_brown = "905532"
+" let s:nerd_aqua =  "3AFFDB"
+" let s:nerd_blue = "689FB6"
+" let s:nerd_darkBlue = "44788E"
+" let s:nerd_purple = "834F79"
+" let s:nerd_lightPurple = "834F79"
+" let s:nerd_red = "AE403F"
+" let s:nerd_beige = "F5C06F"
+" let s:nerd_yellow = "F09F17"
+" let s:nerd_orange = "D4843E"
+" let s:nerd_darkOrange = "F16529"
+" let s:nerd_pink = "CB6F6F"
+" let s:nerd_salmon = "EE6E73"
+" let s:nerd_green = "8FAA54"
+" let s:nerd_lightGreen = "31B53E"
+" let s:nerd_white = "FFFFFF"
+" let s:nerd_rspec_red = 'FE405F'
+" let s:nerd_git_orange = 'F54D27'
+" 
+" let g:NERDTreeExtensionHighlightColor = {} " this line is needed to avoid error
+" let g:NERDTreeExtensionHighlightColor['m'] = s:nerd_blue
+" let g:NERDTreeExtensionHighlightColor['hpp'] = s:nerd_green
 
 " }}}
-" WebDevIcons Options: {{{
+" Devicons Options: {{{
 
+" vim-devicons uses WebDevIcons as prefix for options
 let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {} " needed
 let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['m'] = ''
 let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['mat'] = ''
@@ -396,7 +396,6 @@ endif
 " }}}
 " Tagbar Options: {{{
 
-autocmd FileType cpp nested :call tagbar#autoopen(0)
 let g:tagbar_width = 35
 let g:tagbar_foldlevel = 0
 
@@ -435,7 +434,7 @@ function! RemLdWsGlobally()
 endfunction
 
 function! CenterComment()
-  if &ft == 'cpp'
+  if &ft == 'cpp' || &ft == 'c'
     let l:cmnt_raw = split(&commentstring, '%s')[0]
     let l:cmnt_better = substitute(l:cmnt_raw, ' ', '', '')
     let l:cmnt = substitute(l:cmnt_better, '\*', '/', '')
@@ -460,38 +459,6 @@ function! CenterComment()
   let l:after = repeat(l:del_str, l:after_w)
 
   call setline(".", l:before . l:header . l:after)
-endfunc
-
-function! OpenHeader()
-  let l:fnwithoutext = expand('%:r') 
-  let l:fnwithext = l:fnwithoutext . '.h'
-  if filereadable(l:fnwithext) && l:fnwithext != @%
-    execute "sp " . fnameescape(l:fnwithext)
-  endif
-endfunc
-
-function! OpenHeaderVertically()
-  let l:fnwithoutext = expand('%:r') 
-  let l:fnwithext = l:fnwithoutext . '.h'
-  if filereadable(l:fnwithext) && l:fnwithext != @%
-    execute "vsp " . fnameescape(l:fnwithext)
-  endif
-endfunc
-
-function! OpenImplementation()
-  let l:fnwithoutext = expand('%:r') 
-  let l:fnwithext = l:fnwithoutext . '.cpp'
-  if filereadable(l:fnwithext) && l:fnwithext != @%
-    execute "sp " . fnameescape(l:fnwithext)
-  endif
-endfunc
-
-function! OpenImplementationVertically()
-  let l:fnwithoutext = expand('%:r') 
-  let l:fnwithext = l:fnwithoutext . '.cpp'
-  if filereadable(l:fnwithext) && l:fnwithext != @%
-    execute "vsp " . fnameescape(l:fnwithext)
-  endif
 endfunc
 
 function! FindTodo()
