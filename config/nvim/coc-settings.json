@@ -1,7 +1,7 @@
 {
   "diagnostic.displayByAle": false,
   "suggest.autoTrigger": "trigger",
-  "python.pythonPath": "/home/rahlir/anaconda3/bin/python3",
+  "python.pythonPath": "~/anaconda3/bin/python3",
   "python.linting.enabled": false,
   "diagnostic.refreshOnInsertMode": true,
   "diagnostic.enable": false,
