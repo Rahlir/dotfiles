@@ -11,8 +11,6 @@ set nohlsearch
 
 let g:python3_host_prog = '$HOME/anaconda3/bin/python3'
 
-autocmd TabNewEntered * Startify
-
 
 " -----------------------NeoVim Plugin Configurations-------------------------
 " Nvim Matlab Options:
