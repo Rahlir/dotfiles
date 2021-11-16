@@ -5,9 +5,6 @@ typeset -U fpath
 if [ -d "$HOME/.local/bin" ]; then
     path=("$HOME/.local/bin" $path)
 fi
-if [ -d "$HOME/anaconda3/bin" ]; then
-    path=("$HOME/anaconda3/bin" $path)
-fi
 
 export PATH
 
