@@ -35,6 +35,12 @@ if has('nvim')
   Plug 'numirias/semshi', {'for': 'python', 'do': ':UpdateRemotePlugins'}
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'jackguo380/vim-lsp-cxx-highlight'
+  if has('nvim-0.7.0')
+    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    Plug 'nvim-treesitter/nvim-treesitter-textobjects', {'do': ':TSUpdate'}
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'nvim-telescope/telescope.nvim'
+  endif
 else
   Plug 'octol/vim-cpp-enhanced-highlight', {'for': 'cpp'}
   Plug 'ervandew/supertab'
