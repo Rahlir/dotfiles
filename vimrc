@@ -28,13 +28,11 @@ Plug 'majutsushi/tagbar'
 Plug 'tpope/vim-surround'
 Plug 'kien/ctrlp.vim'
 Plug 'mhinz/vim-startify'
-Plug 'ericcurtin/CurtineIncSw.vim'
+Plug 'ericcurtin/CurtineIncSw.vim', {'for': 'c'}
 
 if has('nvim')
   Plug 'ryanoasis/vim-devicons'
-  Plug 'numirias/semshi', {'for': 'python', 'do': ':UpdateRemotePlugins'}
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  Plug 'jackguo380/vim-lsp-cxx-highlight'
   if has('nvim-0.7.0')
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'nvim-treesitter/nvim-treesitter-textobjects', {'do': ':TSUpdate'}
@@ -329,21 +327,6 @@ let g:ale_lint_delay = 800
 let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips']
 let g:UltiSnipsEditSplit = 'tabdo'
 let g:UltiSnipsExpandTrigger = '<M-tab>'
-
-" }}}
-" Jedi Options: {{{
-
-let g:jedi#popup_select_first = 0
-let g:jedi#popup_on_dot = 0
-let g:jedi#show_call_signatures = "2"
-let g:jedi#use_splits_not_buffers = "top"
-
-" }}}
-" Indent_guides  Options: {{{
-
-let g:indent_guides_auto_colors = 0
-let g:indent_guides_guide_size = 1
-let g:indent_guides_exclude_filetypes = ['help', 'nerdtree', 'vim', 'tagbar']
 
 " }}}
 " Indentline Options: {{{
