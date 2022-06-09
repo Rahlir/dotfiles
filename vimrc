@@ -1,10 +1,16 @@
 " Plug Section: {{{
 
+" Install vim-plug if not found
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+endif
+
 " Plugins will be downloaded under the specified directory.
 call plug#begin('~/.vim/plugged')
  
 Plug 'tpope/vim-sensible'
-Plug 'lervag/vimtex', {'for': 'latex'}
+Plug 'lervag/vimtex', {'for': 'tex'}
 Plug 'itchyny/lightline.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
@@ -24,21 +30,11 @@ Plug 'kien/ctrlp.vim'
 Plug 'mhinz/vim-startify'
 Plug 'ericcurtin/CurtineIncSw.vim'
 
-" No longer using, consider deleting soon:
-" Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle', 'for': 'cpp' }
-" Plug 'Xuyuanp/nerdtree-git-plugin'
-" Plug 'chriskempson/base16-vim'
-" Plug 'davidoc/taskpaper.vim', {'for': 'taskpaper'}
-" Plug 'davidhalter/jedi-vim', {'for': 'python'}
-
 if has('nvim')
   Plug 'ryanoasis/vim-devicons'
   Plug 'numirias/semshi', {'for': 'python', 'do': ':UpdateRemotePlugins'}
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'jackguo380/vim-lsp-cxx-highlight'
-
-  " No longer using, consider deleting soon
-  " Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 else
   Plug 'octol/vim-cpp-enhanced-highlight', {'for': 'cpp'}
   Plug 'ervandew/supertab'
@@ -54,7 +50,7 @@ call plug#end()
 if !has('gui_running') && !has('nvim')
   " set clipboard=exclude:.* " Turn off server for terminal vim
   let g:vimtex_compiler_latexmk = {'callback' : 0}
-  if &term =~# '^tmux'
+  if &term =~# '^tmux' || &term =~# 'alacritty'
   " Without this setting terminal vim doesn't display true colors with tmux
     let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
@@ -78,6 +74,7 @@ elseif g:colorscheme_setup == 'gruvbox'
   let g:gruvbox_italic = 1
   let g:gruvbox_italicize_strings = 1
   let g:gruvbox_contrast_dark = 'medium'
+  let g:gruvbox_contrast_light = 'soft'
   colorscheme gruvbox
 endif
 
@@ -162,13 +159,22 @@ let g:gitgutter_sign_removed = "\u2718"
 " }}}
 " Lightline Options: {{{
 
+let s:separator_def = {
+      \ 'separator': {'left': '', 'right': '' },
+      \ 'subseparator': { 'left': '', 'right': '' }
+  \ }
+let s:separator_bubbles = {
+      \ 'separator': { 'left': '', 'right': '' },
+      \ 'subseparator': { 'left': '', 'right': '' },
+  \ }
+
 let g:lightline = {
       \ 'colorscheme': 'gruvbox',
-      \ 'separator': { 'left': '', 'right': '' },
-      \ 'subseparator': { 'left': '', 'right': '' },
+      \ 'separator': s:separator_bubbles['separator'],
+      \ 'subseparator': s:separator_bubbles['subseparator'],
       \ 'active': {
       \ 'left': [['mode', 'paste'],
-      \                   ['gitadd', 'gitmod', 'gitremoved', 'gitbranch', 'readonly', 'filename', 'modified']],
+      \                   ['gitadd', 'gitmod', 'gitremoved', 'gitbranch', 'cocstatus', 'readonly', 'filename', 'modified', 'currentfunction']],
       \ 'right': [[ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok'],
       \                   ['lineinfo', 'percent'], [ 'fileformat', 'fileencoding', 'filetype' ]]
       \ },
@@ -176,6 +182,8 @@ let g:lightline = {
       \       'gitbranch': 'LightLineGitBranch',
       \       'filetype': 'MyFiletype',
       \       'fileformat': 'MyFileformat',
+      \       'cocstatus': 'coc#status',
+      \       'currentfunction': 'CocCurrentFunction'
       \ },
       \ 'component_expand': {
       \       'gitadd': 'LightLineGitAdd',
@@ -184,7 +192,7 @@ let g:lightline = {
       \       'linter_checking': 'lightline#ale#checking',
       \       'linter_warnings': 'lightline#ale#warnings',
       \       'linter_errors': 'lightline#ale#errors',
-      \       'linter_ok': 'lightline#ale#ok',
+      \       'linter_ok': 'lightline#ale#ok'
       \   },
       \ 'component_type': {
       \       'gitadd': 'good',
@@ -196,6 +204,10 @@ let g:lightline = {
       \       'linter_ok': 'left',
       \       }
 \ }
+
+function! CocCurrentFunction()
+  return get(b:, 'coc_current_function', '')
+endfunction
 
 function! MyFiletype()
     if exists('*WebDevIconsGetFileTypeSymbol')
@@ -285,7 +297,7 @@ let g:SuperTabClosePreviewOnPopupClose = 1
 " ALE Options: {{{
 
 let g:ale_linters = {
-      \   'python': ['flake8'],
+      \   'python': ['flake8', 'mypy'],
       \   'cpp': ['clang'],
       \   'c': ['clang']
       \}
@@ -299,7 +311,7 @@ let g:ale_cpp_ccls_init_options = {
 \   }
 \ }
 " let g:ale_c_build_dir = '/Users/rahlir/Development/ProjectA/unix-build/'
-" " let g:ale_c_build_dir_names = ['build', 'bin', 'unix-build']
+" let g:ale_c_build_dir_names = ['build', 'bin', 'unix-build']
 " let g:ale_c_clang_options = '-std=c17 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk -I /anaconda3/lib/python3.6/site-packages/numpy/core/include -I /anaconda3/include/python3.6m/'
 let g:ale_cpp_clang_options = '-std=c++11 ' . $CPPFLAGS
 let g:ale_cpp_gcc_options = '-std=c++11 ' . $CPPFLAGS
@@ -308,7 +320,7 @@ let g:ale_lint_delay = 800
 " }}}
 " UltiSnips Options: {{{
 
-let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips', 'UltiSnips']
+let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips']
 let g:UltiSnipsEditSplit = 'tabdo'
 let g:UltiSnipsExpandTrigger = '<M-tab>'
 
@@ -332,42 +344,6 @@ let g:indent_guides_exclude_filetypes = ['help', 'nerdtree', 'vim', 'tagbar']
 
 let g:indentLine_char = ''
 let g:indentLine_fileTypeExclude = ['startify', 'help', 'json', 'text', 'tex', 'markdown']
-
-" }}}
-" NERDTree Options: {{{
-
-" No longer using NERDTree, options commented out, consider deleting soon
-" let g:NERDTreeCaseSensitiveSort = 1
-" let g:NERDTreeWinSize = 35
-" let NERDTreeIgnore=['__pycache__$', '\~$', '.DS_Store$']
-" autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
-" }}}
-" NERDTreeSyntasHl Options: {{{
-
-" No longer using NERDTree, options commented out, consider deleting soon
-" let s:nerd_brown = "905532"
-" let s:nerd_aqua =  "3AFFDB"
-" let s:nerd_blue = "689FB6"
-" let s:nerd_darkBlue = "44788E"
-" let s:nerd_purple = "834F79"
-" let s:nerd_lightPurple = "834F79"
-" let s:nerd_red = "AE403F"
-" let s:nerd_beige = "F5C06F"
-" let s:nerd_yellow = "F09F17"
-" let s:nerd_orange = "D4843E"
-" let s:nerd_darkOrange = "F16529"
-" let s:nerd_pink = "CB6F6F"
-" let s:nerd_salmon = "EE6E73"
-" let s:nerd_green = "8FAA54"
-" let s:nerd_lightGreen = "31B53E"
-" let s:nerd_white = "FFFFFF"
-" let s:nerd_rspec_red = 'FE405F'
-" let s:nerd_git_orange = 'F54D27'
-" 
-" let g:NERDTreeExtensionHighlightColor = {} " this line is needed to avoid error
-" let g:NERDTreeExtensionHighlightColor['m'] = s:nerd_blue
-" let g:NERDTreeExtensionHighlightColor['hpp'] = s:nerd_green
 
 " }}}
 " Devicons Options: {{{
