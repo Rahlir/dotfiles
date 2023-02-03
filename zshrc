@@ -1,5 +1,5 @@
 # ---------------------------Sourcing External Files-----------------------------
-# Needs to happen as mac overrides path in profile (don't ask mne why...)
+# Needs to happen as mac overrides path in profile (don't ask me why...)
 if [ -f ~/.zshenv ]; then
     source ~/.zshenv
 fi
@@ -52,7 +52,9 @@ bindkey "^e" clear-screen
 
 
 # Add colors
-test -r $DIRCOLORSDIR && eval "$(dircolors $DIRCOLORSDIR)"
+if [ $TERM != "alacritty" ]; then
+    test -r $DIRCOLORSDIR && eval "$(dircolors $DIRCOLORSDIR)"
+fi
 
 # ------------------------------Powerline setup---------------------------------
 export POWERLINE_COMMAND=powerline
@@ -84,6 +86,8 @@ function end-barrier() {
     done
 }
 
+# Command not found function for zsh (Linux only?)
+test -f /etc/zsh_command_not_found && . /etc/zsh_command_not_found
 
 # ---------------------------------Compinstall-----------------------------------
 zstyle ':completion:*' completer _complete _ignored _approximate
@@ -92,12 +96,19 @@ zstyle ':completion:*' insert-unambiguous true
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' matcher-list '' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 zstyle ':completion:*' original false
-zstyle :compinstall filename '/Users/rahlir/.zshrc'
+zstyle :compinstall filename '$HOME/.zshrc'
 
+autoload -U bashcompinit
+bashcompinit
 autoload -Uz compinit
 compinit
 
 # End of lines added by compinstall
+
+# Register pipx command completion (is register-python-argcomplete available by default?)
+if (( $+commands[pipx] )); then  # zsh check whether 'pipx' command is available
+    eval "$(register-python-argcomplete pipx)"
+fi
 
 # -----------------------------------Other--------------------------------------
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

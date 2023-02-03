@@ -6,6 +6,10 @@ if [ -d "$HOME/.local/bin" ]; then
     path=("$HOME/.local/bin" $path)
 fi
 
+if [ -d "$HOME/anaconda3/bin" ]; then
+    path=("$HOME/anaconda3/bin" $path)
+fi
+
 export PATH
 
 # -----------------------------------editor-------------------------------------
@@ -21,11 +25,9 @@ fpath=($fpath $HOME/.zsh_completions)
 export PYTHONPATH="$HOME/Development/Libraries/python-tools:$HOME/Development/Libraries/rahlir_vibrations"
 
 # -----------------------------------Other--------------------------------------
-DIRCOLORSDIR="$HOME/.dircolors/dircolors.base16"
+export DIRCOLORSDIR="$HOME/.dircolors/dircolors.base16"
 export POWERLINEDIR="$HOME/anaconda3/lib/python3.6/site-packages/powerline"
 
-# docbrown specific
+# docbrown specific (is this still needed?)
 export TERMINFO="/usr/local/opt/ncurses/share/terminfo"
-export LDFLAGS="-L/usr/local/opt/ncurses/lib -L/usr/local/opt/llvm/lib -Wl"
-export CPPFLAGS="-I/usr/local/opt/ncurses/include -I/usr/local/opt/llvm/include -I/usr/local/include"
 export PKG_CONFIG_PATH="/usr/local/opt/ncurses/lib/pkgconfig"
