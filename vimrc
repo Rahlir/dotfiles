@@ -15,8 +15,6 @@ Plug 'itchyny/lightline.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'w0rp/ale'
-Plug 'maximbaz/lightline-ale'
 Plug 'raimondi/delimitmate'
 Plug 'yggdroot/indentline'
 Plug 'morhetz/gruvbox'
@@ -24,24 +22,30 @@ Plug 'Vimjas/vim-python-pep8-indent', {'for': 'python'}
 Plug 'SirVer/ultisnips'
 Plug 'dearrrfish/vim-applescript', {'for': 'applescript' }
 Plug 'leafgarland/typescript-vim', {'for': 'typescript'}
-Plug 'majutsushi/tagbar'
 Plug 'tpope/vim-surround'
-Plug 'kien/ctrlp.vim'
 Plug 'mhinz/vim-startify'
-Plug 'ericcurtin/CurtineIncSw.vim', {'for': 'c'}
 
 if has('nvim')
   Plug 'ryanoasis/vim-devicons'
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'nvim-tree/nvim-web-devicons'
   if has('nvim-0.7.0')
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'nvim-treesitter/nvim-treesitter-textobjects', {'do': ':TSUpdate'}
+    Plug 'nvim-treesitter/playground', {'do': ':TSUpdate'}
+
+    Plug 'neovim/nvim-lspconfig'
+
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim'
+
+    Plug 'hrsh7th/cmp-nvim-lsp'
+    Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+    Plug 'hrsh7th/nvim-cmp'
   endif
 else
   Plug 'octol/vim-cpp-enhanced-highlight', {'for': 'cpp'}
   Plug 'ervandew/supertab'
+  Plug 'kien/ctrlp.vim'
 endif
 
 call plug#end()
@@ -74,11 +78,16 @@ if g:colorscheme_setup == 'base16'
     source ~/.vimrc_background
   endif
 elseif g:colorscheme_setup == 'gruvbox'
+  autocmd ColorScheme gruvbox highlight! link DiagnosticError GruvboxRedBold
+  autocmd ColorScheme gruvbox highlight! link DiagnosticWarn GruvboxYellowBold
+  autocmd ColorScheme gruvbox highlight! link @namespace GruvboxFg3
+  autocmd ColorScheme gruvbox highlight! link TelescopeBorder GruvboxFg4
   set background=dark
   let g:gruvbox_italic = 1
   let g:gruvbox_italicize_strings = 1
   let g:gruvbox_contrast_dark = 'medium'
   let g:gruvbox_contrast_light = 'soft'
+  let g:gruvbox_invert_selection = 0
   colorscheme gruvbox
 endif
 
@@ -98,7 +107,7 @@ set completeopt+=longest
 set fdm=marker
 set modeline
 set cursorline " Highlight the current line of cursor
-set updatetime=1000
+set updatetime=750
 set exrc
 set secure
 set guioptions-=rL
@@ -122,8 +131,6 @@ endfunction
 
 nmap <M-CR> O<Esc>
 nmap <CR> o<Esc>
-nmap <silent> <leader>j <Plug>(ale_next)
-nmap <silent> <leader>k <Plug>(ale_previous)
 nmap <leader>p <C-w>}
 nmap <leader>c <C-w>z
 nmap ÷ :call CenterComment()<CR>
@@ -157,30 +164,31 @@ let g:vimtex_format_enabled = 1
 
 " }}}
 " GitGutter Options: {{{
-let g:gitgutter_sign_added = "\u271a"
-let g:gitgutter_sign_modified = "\u279c"
-let g:gitgutter_sign_removed = "\u2718"
+let g:gitgutter_sign_added = "\uf918"
+let g:gitgutter_sign_modified = "\uf876 "
+let g:gitgutter_sign_removed = "\uf659 "
 " }}}
 " Lightline Options: {{{
 
-let s:separator_def = {
+let g:separator_def = {
       \ 'separator': {'left': '', 'right': '' },
       \ 'subseparator': { 'left': '', 'right': '' }
   \ }
-let s:separator_bubbles = {
+let g:separator_bubbles = {
       \ 'separator': { 'left': '', 'right': '' },
       \ 'subseparator': { 'left': '', 'right': '' },
   \ }
 
 let g:lightline = {
       \ 'colorscheme': 'gruvbox',
-      \ 'separator': s:separator_bubbles['separator'],
-      \ 'subseparator': s:separator_bubbles['subseparator'],
+      \ 'separator': g:separator_bubbles['separator'],
+      \ 'subseparator': g:separator_bubbles['subseparator'],
       \ 'active': {
       \ 'left': [['mode', 'paste'],
-      \                   ['gitadd', 'gitmod', 'gitremoved', 'gitbranch', 'cocstatus', 'readonly', 'filename', 'modified', 'currentfunction']],
-      \ 'right': [[ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok'],
-      \                   ['lineinfo', 'percent'], [ 'fileformat', 'fileencoding', 'filetype' ]]
+      \          ['readonly', 'filename', 'modified', 'gitbranch'],
+      \          ['gitsummary']],
+      \ 'right': [[],
+      \           ['lineinfo', 'percent'], [ 'fileformat', 'fileencoding', 'filetype' ]]
       \ },
       \ 'component_function': {
       \       'gitbranch': 'LightLineGitBranch',
@@ -190,27 +198,31 @@ let g:lightline = {
       \       'currentfunction': 'CocCurrentFunction'
       \ },
       \ 'component_expand': {
-      \       'gitadd': 'LightLineGitAdd',
-      \       'gitmod': 'LightLineGitMod',
-      \       'gitremoved': 'LightLineGitRemoved',
-      \       'linter_checking': 'lightline#ale#checking',
-      \       'linter_warnings': 'lightline#ale#warnings',
-      \       'linter_errors': 'lightline#ale#errors',
-      \       'linter_ok': 'lightline#ale#ok'
+      \       'gitsummary': 'LightLineGitGutter',
       \   },
-      \ 'component_type': {
-      \       'gitadd': 'good',
-      \       'gitmod': 'warning',
-      \       'gitremoved': 'error',
-      \       'linter_checking': 'left',
-      \       'linter_warnings': 'warning',
-      \       'linter_errors': 'error',
-      \       'linter_ok': 'left',
-      \       }
+      \ 'component_type': {}
 \ }
 
-function! CocCurrentFunction()
-  return get(b:, 'coc_current_function', '')
+function! LightLineGitGutter()
+  if exists('*GitGutterGetHunkSummary')
+    let [ added, modified, removed ] = GitGutterGetHunkSummary()
+    if added == 0
+      let added_s = ''
+    else
+      let added_s = printf('%s %d', g:gitgutter_sign_added, added)
+    endif
+    if modified == 0
+      let modified_s = ''
+    else
+      let modified_s = printf('%s %d', g:gitgutter_sign_modified, modified)
+    endif
+    if removed == 0
+      let removed_s = ''
+    else
+      let removed_s = printf('%s %d', g:gitgutter_sign_removed, removed)
+    endif
+  endif
+  return [added_s, modified_s, removed_s]
 endfunction
 
 function! MyFiletype()
@@ -229,45 +241,9 @@ function! MyFileformat()
     endif
 endfunction
 
-function! LightLineGitAdd()
-  if exists('*GitGutterGetHunkSummary')
-    let [ added, modified, removed ] = GitGutterGetHunkSummary()
-    if added == 0
-      return ''
-    else
-      return printf('%s %d', g:gitgutter_sign_added, added)
-    endif
-  endif
-  return ''
-endfunction
-
-function! LightLineGitMod()
-  if exists('*GitGutterGetHunkSummary')
-    let [ added, modified, removed ] = GitGutterGetHunkSummary()
-    if modified == 0
-      return ''
-    else
-      return printf('%s %d', g:gitgutter_sign_modified, modified)
-    endif
-  endif
-  return ''
-endfunction
-
-function! LightLineGitRemoved() 
-  if exists('*GitGutterGetHunkSummary')
-    let [ added, modified, removed ] = GitGutterGetHunkSummary()
-    if removed == 0
-      return ''
-    else
-      return printf('%s %d', g:gitgutter_sign_removed, removed)
-    endif
-  endif
-  return ''
-endfunction
-
 function! LightLineGitBranch()
-  if exists('*fugitive#head')
-    let branch = fugitive#head()
+  if exists('*FugitiveHead')
+    let branch = FugitiveHead()
     return branch !=# '' ? ' '.branch : ''
   endif
   return ''
@@ -298,30 +274,7 @@ let g:SuperTabMappingBackward = '<M-Tab>'
 let g:SuperTabClosePreviewOnPopupClose = 1
 
 " }}}
-" ALE Options: {{{
 
-let g:ale_linters = {
-      \   'python': ['flake8', 'mypy'],
-      \   'cpp': ['clang'],
-      \   'c': ['clang']
-      \}
-let g:ale_pattern_options = {'__init__\.py$': {'ale_enabled': 0}}
-let g:ale_lint_delay = 800
-let g:ale_c_parse_compile_commands = '1'
-let g:ale_c_parse_makefile = '1'
-let g:ale_cpp_ccls_init_options = {
-\   'cache': {
-\       'directory': '.ccls-cache'
-\   }
-\ }
-" let g:ale_c_build_dir = '/Users/rahlir/Development/ProjectA/unix-build/'
-" let g:ale_c_build_dir_names = ['build', 'bin', 'unix-build']
-" let g:ale_c_clang_options = '-std=c17 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk -I /anaconda3/lib/python3.6/site-packages/numpy/core/include -I /anaconda3/include/python3.6m/'
-let g:ale_cpp_clang_options = '-std=c++11 ' . $CPPFLAGS
-let g:ale_cpp_gcc_options = '-std=c++11 ' . $CPPFLAGS
-let g:ale_lint_delay = 800
-
-" }}}
 " UltiSnips Options: {{{
 
 let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips']

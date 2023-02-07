@@ -1,39 +1,90 @@
-snippet header "header snippet"
-// --------------------------------Tadeas Uhlir----------------------------------
-// $1
-// `date +%Y-%m-%d`
-// $2
-// ------------------------------------------------------------------------------
-$0
-endsnippet
-snippet for "for loop" m
-for(int ${1:i}=${2:0}; $1<$3; $1++) {
-	$0
-}
-endsnippet
+global !p
 
-snippet vfn "virtual function declaration"
-virtual $1 ${VISUAL:name}($2) {
-	$0
-}
-endsnippet
+def write_docstring_args(arglist, snip):
+	args = str(arglist).split(',')
+	if len(args) > 1:
+		c = 0
+		for arg in args:
+			if c == 0:
+				snip.rv += arg
+				c = 1
+			else:
+				snip += '*       : %s' % arg.strip()
+	else:
+		snip.rv = args[0]
 
-snippet hguard "Include header once only guard"
+def class_name(snip):
+	name_words = snip.basename.split('_')
+	class_name = ''.join([word.capitalize() for word in name_words])
+	snip.rv = class_name
+
+endglobal
+
+snippet iifndef "Include header once only guard"
 #ifndef ${1:`!p
 if not snip.c:
 	name = re.sub(r'[^A-Za-z0-9]+','_', snip.fn).upper()
-	snip.rv = "_" + name + "_"
+	snip.rv = name + "_"
 else:
 	snip.rv = snip.c`}
 #define $1
 
 ${VISUAL}$0
 
-#endif /* end of include guard: $1 */
+#endif // $1
 endsnippet
 
-snippet ifdebug "If COCOS2D debug"
-#if COCOS2D_DEBUG
-    ${VISUAL}$0
-#endif
+snippet ttemplate_memfun1 "template member function implementation, 1 template arg"
+template<${1:typename} ${2:val}>
+${3:void} ${4:`!p class_name(snip)`}<$2>::${5:function_name}($6)
+{
+	$0
+}
+endsnippet
+
+snippet nnamespace "namespace definition"
+namespace $1 {
+
+$0
+
+} // namespace $1
+endsnippet
+
+snippet doxygen "Basic c++ doxygen function template" b
+/**
+* @brief ${4:brief}
+*
+* @param `!p write_docstring_args(t[3],snip)`
+*
+* @return `!p snip.rv = t[1]`
+*/
+${1:ReturnType} ${2:FunctionName}(${3:param})
+{
+	${0:FunctionBody}
+}
+endsnippet
+
+snippet cclass "class declaration"
+class ${1:`!p class_name(snip)`} {
+	$0
+};
+endsnippet
+
+snippet ttemplate_class "templated class declaration"
+template<${1:typename} ${2:val}>
+class ${3:`!p class_name(snip)`} {
+	$0
+};
+endsnippet
+
+snippet === "Surround comment with ==="
+/* ==============================================================================
+ * ${VISUAL:Section/\/\///g}
+ * ============================================================================*/
+endsnippet
+
+snippet --- "Surround comment with ---"
+/* ==============================================================================
+ * ${VISUAL:Section/\/\///g}
+ * ============================================================================*/
 endsnippet
