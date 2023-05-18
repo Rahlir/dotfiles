@@ -82,6 +82,7 @@ elseif g:colorscheme_setup == 'gruvbox'
   autocmd ColorScheme gruvbox highlight! link DiagnosticWarn GruvboxYellowBold
   autocmd ColorScheme gruvbox highlight! link @namespace GruvboxFg3
   autocmd ColorScheme gruvbox highlight! link TelescopeBorder GruvboxFg4
+  autocmd ColorScheme gruvbox highlight! link @variable GruvboxFg1
   set background=dark
   let g:gruvbox_italic = 1
   let g:gruvbox_italicize_strings = 1
