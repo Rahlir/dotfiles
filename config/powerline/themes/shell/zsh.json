@@ -41,7 +41,15 @@
                             "branch": " {}"
                         }
                     }
-				}
+				},
+                                {
+                                    "function": "powerline_svnstatus.svnstatus",
+                                    "args": {
+                                        "branch_format": " %s"
+                                    },
+                                    "priority": 10
+                                }
+                                
 			]
 		}],
 		"left": [

@@ -32,7 +32,7 @@
 
         "hostname":                   { "fg": "gruvbox.dark1", "bg": "gruvbox.light1", "attrs": ["bold"] },
 
-        "user":                       { "fg": "gruvbox.light1", "bg": "gruvbox.faded_blue", "attrs": ["bold"] },
+        "user":                       { "fg": "gruvbox.light1", "bg": "gruvbox.faded_orange", "attrs": ["bold"] },
         "cwd":                        "information:additional",
         "cwd:current_folder":         "information:regular",
         "cwd:divider":                { "fg": "gruvbox.light2", "bg": "gruvbox.dark3", "attrs": [] },
