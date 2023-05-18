@@ -19,7 +19,20 @@
     "gitstatus_changed":            { "fg": "gruvbox.faded_red",    "bg": "gruvbox.light3",         "attrs": ["bold"] },
     "gitstatus_untracked":          { "fg": "gruvbox.bright_yellow","bg": "gruvbox.light4",         "attrs": ["bold"] },
     "gitstatus_stashed":            { "fg": "gruvbox.faded_blue",   "bg": "gruvbox.gray",           "attrs": ["bold"] },
-    "gitstatus:divider":            { "fg": "gruvbox.dark0",        "bg": "gruvbox.dark0",          "attrs": [] }
+    "gitstatus:divider":            { "fg": "gruvbox.dark0",        "bg": "gruvbox.dark0",          "attrs": [] },
+    "svnstatus_clean":           { "bg": "gruvbox.light2", "fg": "gruvbox.faded_green", "attrs": ["bold"] },
+    "svnstatus_dirty":           { "bg": "gruvbox.light2", "fg": "gruvbox.dark0", "attrs": ["bold"] },
+    "svnstatus_unknown":         { "bg": "brightred", "fg": "white", "attrs": [] },
+    "svnstatus_A":               { "bg": "brightgreen", "fg": "black", "attrs": [] },
+    "svnstatus_A+":              { "bg": "mediumgreen", "fg": "black", "attrs": [] },
+    "svnstatus_C":               { "bg": "brightestred", "fg": "black", "attrs": [] },
+    "svnstatus_D":               { "bg": "mediumorange", "fg": "white", "attrs": [] },
+    "svnstatus_I":               { "bg": "gray9", "fg": "black", "attrs": [] },
+    "svnstatus_M":               { "bg": "brightyellow", "fg": "black", "attrs": [] },
+    "svnstatus_R":               { "bg": "mediumgreen", "fg": "black", "attrs": [] },
+    "svnstatus_S":               { "bg": "mediumcyan", "fg": "black", "attrs": [] },
+    "svnstatus_X":               { "bg": "mediumpurple", "fg": "black", "attrs": [] },
+    "svnstatus_?":               { "bg": "gruvbox.light4", "fg": "gruvbox.bright_yellow", "attrs": ["bold"] }
     },
 
     "mode_translations": {
