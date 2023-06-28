@@ -1,0 +1,557 @@
+#!/usr/bin/env bash
+
+set -e
+
+shopt -s extglob
+shopt -s globstar
+shopt -s nullglob
+shopt -s dotglob
+
+trap finish EXIT
+
+SCRIPT_NAME=$(basename "$0")
+DOTFILES_PATH=$( dirname "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )" )
+IGNORED=( ".git" ".gitignore" "scripts" "pacman" "README.md" )
+BOOTSTRAP_FILES=()
+
+print_usage()
+{
+    echo "Usage: $SCRIPT_NAME [ -h | --help ] [ -v | --verbose ] [ -s | --skip-installation ]"
+    echo "       $(printf '%*s' ${#SCRIPT_NAME}) [ -x | --no-xdg ] { filename | directory | all }"
+    echo "Options:"
+    echo "    -h    show this help and exit"
+    echo "    -v    print more messages when bootstrapping"
+    echo "    -s    skip installation of missing packages"
+    echo "    -x    skip checking and creating xdg directories and variables"
+}
+
+print_welcome()
+{
+    echo -ne "\x1b[33m"
+    echo ' ___  ___   ___ _____ ___ _____ ___    _   ___'
+    echo '| _ )/ _ \ / _ \_   _/ __|_   _| _ \  /_\ | _ \'
+    echo '| _ \ (_) | (_) || | \__ \ | | |   / / _ \|  _/'
+    echo '|___/\___/ \___/ |_| |___/ |_| |_|_\/_/ \_\_|'
+    echo -e "\x1b[39;49;00m"
+
+}
+
+confirmation()
+{
+    local _prompt=$1
+    local _msg=$2
+    [[ -n "$_msg" ]] && echo "$_msg"
+    read -p "$_prompt [Y/n] " -n 1 -r
+    echo
+    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+check_requirements()
+{
+    if ! command -v sudo &> /dev/null; then
+        echo "$(echo_styled -e Basic requirement unsatisfied:) missing 'sudo'"
+        exit 1
+    fi
+    if ! command -v git &> /dev/null; then
+        echo "$(echo_styled -e Basic requirement unsatisfied:) missing 'git'"
+        exit 1
+    fi
+
+    if [[ "$(uname -s)" == Linux ]]; then
+        PKG_PREFIX=/usr
+        if command -v pacman &> /dev/null; then
+            PKG_MANAGER=pacman
+        elif command -v apt &> /dev/null; then
+            PKG_MANAGER=apt
+        elif command -v apt-get &> /dev/null; then
+            PKG_MANAGER=apt-get
+        else
+            echo "$(echo_styled -e Warning:) unknown package manager, cannot install additional packages"
+            SKIP_INSTALLATION=1
+        fi
+    elif [[ "$(uname -s)" == Darwin ]]; then
+        if command -v brew &> /dev/null; then
+            PKG_PREFIX=$(brew --prefix)
+            PKG_MANAGER=brew
+        elif [[ -z "$SKIP_INSTALLATION" ]]; then
+            if confirmation "Homebrew $(echo_styled -e not installed), would you like to install it?"; then
+                echo_styled -t "----------HOMEBREW INSTALLATION----------\n"
+                /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+                echo_styled -t "-------HOMEBREW INSTALLATION ENDS--------\n"
+            else
+                echo "$(echo_styled -e Warning:) Homebrew not installed, cannot install additional packages" 
+                SKIP_INSTALLATION=1
+            fi
+        fi
+    else
+        echo "$(echo_styled -e Error:) unknown OS, cannot check requirements"
+        exit 1
+    fi
+}
+
+check_standard_dirs()
+{
+    local _messages=0
+    echo -n "Checking whether standard directories exist... "
+    if [[ ! -d "$HOME/Development" ]]; then
+        echo
+        echo "Creating $(echo_styled -i $HOME/Development)"
+        mkdir "$HOME/Development"
+        _messages+=1
+    fi
+    if [[ ! -d "$HOME/Software" ]]; then
+        (( ! "$_messages" )) && echo
+        echo "Creating $(echo_styled -i $HOME/Software)"
+        mkdir "$HOME/Software"
+        _messages+=1
+    fi
+    echo_styled -s "Success\n\n"
+}
+
+install_pkg()
+{
+    local _brew_pkg
+    local _pacman_pkg
+    local _apt_pkg
+    if [[ "$#" -eq 1 ]]; then
+        _brew_pkg=$1
+        _pacman_pkg=$1
+        _apt_pkg=$1
+    elif [[ "$#" > 1 ]]; then
+        _brew_pkg=$1
+        _pacman_pkg=$2
+        if [[ -n "$3" ]]; then
+            _apt_pkg=$3
+        else
+            _apt_pkg=$2
+        fi
+    else
+        echo "INTERNAL ERROR: function install_pkg() needs 1 or more arguments"
+        exit 1
+    fi
+    if [[ "$PKG_MANAGER" == brew ]]; then
+        $PKG_MANAGER install "$_brew_pkg"
+    elif [[ "$PKG_MANAGER" == pacman ]]; then
+        sudo "$PKG_MANAGER" -S "$_pacman_pkg"
+    elif [[ "$PKG_MANAGER" =~ ^apt(-get)?$ ]]; then
+        sudo "$PKG_MANAGER" install "$_apt_pkg"
+    else
+        return 1
+    fi
+}
+
+check_installation()
+{
+    local _messages=0
+    if ! command -v zsh &> /dev/null; then
+        if confirmation "zsh $(echo_styled -e not installed), would you like to install it?"; then
+            echo_styled -t "----------ZSH INSTALLATION----------\n"
+            install_pkg zsh
+            echo_styled -t "-------ZSH INSTALLATION ENDS--------\n"
+        fi
+        _messages+=1
+    fi
+    local _p10k_paths=(
+        $P10K_PATH
+        $PKG_PREFIX/@(share|opt)/@(zsh-theme-powerlevel10k|powerlevel10k)/powerlevel10k.zsh-theme
+    )
+    if (( ! ${#_p10k_paths[@]} )); then
+        if confirmation "Powerlevel10k $(echo_styled -e not installed), would you like to install it?"; then
+            echo_styled -t "----------POWERLEVEL10K INSTALLATION----------\n"
+            if ! install_pkg romkatv/powerlevel10k/powerlevel10k zsh-theme-powerlevel10k; then
+                echo "Installing using git clone"
+                git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/Software/powerlevel10k
+                echo "Adding \$P10K_PATH override to your $(echo_styled -i .profile_local)"
+                echo "export P10K_PATH=~/Software/powerlevel10k" >> $HOME/.profile_local
+            fi
+            echo_styled -t "-------POWERLEVEL10K INSTALLATION ENDS--------\n"
+        fi
+        _messages+=1
+    fi
+    if ! command -v vim &> /dev/null; then
+        if confirmation "vim $(echo_styled -e not installed), would you like to install it?"; then
+            echo_styled -t "----------VIM INSTALLATION----------\n"
+            install_pkg macvim vim
+            echo_styled -t "-------VIM INSTALLATION ENDS--------\n"
+        fi
+        _messages+=1
+    fi
+    if ! command -v nvim &> /dev/null; then
+        if confirmation "neovim $(echo_styled -e not installed), would you like to install it?"; then
+            echo_styled -t "----------NEOVIM INSTALLATION----------\n"
+            install_pkg neovim
+            echo_styled -t "-------NEOVIM INSTALLATION ENDS--------\n"
+        fi
+        _messages+=1
+    fi
+    if ! command -v python3 &> /dev/null; then
+        if confirmation "python3 $(echo_styled -e not installed), would you like to install it?"; then
+            echo_styled -t "----------PYTHON INSTALLATION----------\n"
+            install_pkg python
+            echo_styled -t "-------PYTHON INSTALLATION ENDS--------\n"
+        fi
+        _messages+=1
+    fi
+    if ! command -v virtualenv &> /dev/null; then
+        if confirmation "virtualenv $(echo_styled -e not installed), would you like to install it?"; then
+            echo_styled -t "----------VIRTUALENV INSTALLATION----------\n"
+            install_pkg virtualenv python-virtualenv
+            echo_styled -t "-------VIRTUALENV INSTALLATION ENDS--------\n"
+        fi
+        _messages+=1
+    fi
+    if [[ ! -r "${VIRTUALENVWRAPPER_PATH:-$PKG_PREFIX/bin/virtualenvwrapper.sh}" ]]; then
+        if confirmation "virtualenvwrapper $(echo_styled -e not installed), would you like to install it?"; then
+            echo_styled -t "----------VIRTUALENVWRAPPER INSTALLATION----------\n"
+            install_pkg virtualenvwrapper python-virtualenvwrapper
+            echo_styled -t "-------VIRTUALENVWRAPPER INSTALLATION ENDS--------\n"
+        fi
+        _messages+=1
+    fi
+    if ! command -v pipx &> /dev/null; then
+        if confirmation "pipx $(echo_styled -e not installed), would you like to install it?"; then
+            echo_styled -t "----------PIPX INSTALLATION----------\n"
+            install_pkg pipx python-pipx
+            echo_styled -t "-------PIPX INSTALLATION ENDS--------\n"
+        fi
+        _messages+=1
+    fi
+
+    (( _messages )) && echo || :
+}
+
+echo_styled()
+{
+    local _style
+    local _style_reset="\x1b[39;49;00m"
+    case $1 in
+        -e)
+            _style="\x1b[31;01m"
+            shift
+            ;;
+        -i)
+            _style="\x1b[36m"
+            shift
+            ;;
+        -s)
+            _style="\x1b[32;01m"
+            shift
+            ;;
+        -t)
+            _style="\x1b[33;01m"
+            shift
+            ;;
+    esac
+    [[ -n "$_style" ]] || _style="\x1b[33;01m"
+    echo -en "$_style$*$_style_reset"
+}
+
+finish()
+{
+    if (( $? == 1 )); then
+        echo
+        [[ -n $VERBOSE ]] && echo_styled -e "ERROR\n"
+        echo "$SCRIPT_NAME is now exitting. The bootstrapping"
+        echo "is probably uncomplete. You should resolve the" 
+        echo "issues and re-run $SCRIPT_NAME"
+    fi
+}
+
+process_args()
+{
+    while (( $# > 0 )); do
+        case $1 in
+            -h|--help)
+                print_usage
+                exit 0
+                ;;
+            -v|--verbose)
+                VERBOSE=1
+                shift
+                ;;
+            -s|--skip-installation)
+                SKIP_INSTALLATION=1
+                shift
+                ;;
+            -x|--no-xdg)
+                SKIP_XDG=1
+                shift
+                ;;
+            -d|--no-standard-dirs)
+                SKIP_STANDARD_DIRS=1
+                shift
+                ;;
+            -*|--*)
+                echo "Unknown option $1"
+                print_usage
+                exit 2
+                ;;
+            all)
+                BOOTSTRAP_FILES=($(ls -A "$DOTFILES_PATH" ${IGNORED[@]/#/-I }))
+                shift
+                ;;
+            *)
+                local _frealpath=$(realpath "$1")
+                local _fbasename=${_frealpath##*/}
+                if [[ -e "$1" && "$(dirname "$_frealpath")" -ef "$DOTFILES_PATH" ]]; then
+                    if [[ " ${IGNORED[*]} " =~ " ${_fbasename} " ]]; then
+                        echo "$1 is marked to be ignored"
+                        echo "ignoring $1"
+                    elif [[ ! " ${BOOTSTRAP_FILES[*]} " =~ " $_fbasename " ]]; then
+                        BOOTSTRAP_FILES+=( "$_fbasename" )
+                    fi
+                else
+                    echo "$1 does not exist or is not located in the dotfiles directory"
+                    echo "ignoring $1"
+                fi
+                shift
+                ;;
+        esac
+    done
+    if (( ${#BOOTSTRAP_FILES[@]} == 0 )); then
+        echo "$(echo_styled -e Error:) specifying no valid file to bootstrap is unsupported, if you want to"
+        echo "bootstrap everything, use 'all' as an argument"
+        exit 1
+    fi
+}
+
+check_xdg_var()
+{
+    local _xdg_var_str=$1
+    local _xdg_var=$2
+
+    local _messages=0
+    if [[ ! -d "$_xdg_var" ]]; then
+        echo && _messages+=1
+        echo -n "Creating \$$_xdg_var_str $(echo_styled -i ${_xdg_var/$HOME/\~})"
+        mkdir -p "$_xdg_var"
+    fi
+
+    local _x_dotfiles=$(grep -o "$_xdg_var_str=[^[:space:]]*" "$DOTFILES_PATH/bash/.profile" \
+        | cut -d '=' -f2 | tr -d '"' | envsubst)
+    if [[ ! "$_xdg_var" -ef "$_x_dotfiles" ]]; then
+        echo
+        echo "Variable $(echo_styled -i $_xdg_var_str) differs from the one in .profile,"
+        echo -n "appending .profile_local with the override"
+        echo "export $_xdg_var_str=$_xdg_var" >> "$HOME/.profile_local"
+        return 1
+    fi
+    (( $_messages )) && return 1 || return 0
+}
+
+prepare_xdg()
+{
+    echo -n "Preparing your XDG Base Dir environment variables... "
+
+    local _messages=0
+    export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+    check_xdg_var XDG_CONFIG_HOME "$XDG_CONFIG_HOME" || _messages+=1
+    export XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
+    check_xdg_var XDG_DATA_HOME "$XDG_DATA_HOME" || _messages+=1
+    export XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
+    check_xdg_var XDG_STATE_HOME "$XDG_STATE_HOME" || _messages+=1
+    export XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
+    check_xdg_var XDG_CACHE_HOME "$XDG_CACHE_HOME" || _messages+=1
+
+    (( $_messages )) && echo
+    echo_styled -s "Success\n\n"
+}
+
+parent_minus_anchor()
+{
+    local _file=$1
+    local _anchor=$2
+    local _parent_folder=${_file%/*}
+    local _res_withslash=${_parent_folder#${_anchor}}
+    echo "${_res_withslash#/}"
+}
+
+safe_symlink()
+{
+    local _to=$1
+    local _from=$2
+    if [[ -e "$_from" && ! -L "$_from" ]]; then
+        if [[ "$(realpath $_from)" = "$DOTFILES_PATH"/* ]]; then
+            echo_styled -e "ERROR: "
+            echo "The file \"$_from\""
+            echo "has realpath \"$(realpath $_from)\""
+            echo "Hence you are are trying to overwrite a file which is"
+            echo "inside the dotfiles directory. It seems that you have"
+            echo "previously bootstrapped an entire folder. Please remove"
+            echo "the symlink and run $SCRIPT_NAME again"
+            exit 1
+        fi
+
+        echo -n "File $(echo_styled -i $_from) already $(echo_styled -e exists). Making a backup... "
+        local _parentfolder=$(parent_minus_anchor "$_from" "$HOME")
+        local _backupdir=${BOOT_BACKUPDIR:-$HOME/dotfiles.backup}/$_parentfolder
+        [[ -d  "$_backupdir" ]] || mkdir -p "$_backupdir"
+        local _fn_tobackup=${_from##*/}
+        mv --backup=numbered "$_from" "$_backupdir/$_fn_tobackup" && echo_styled -s "Success\n"
+    fi
+    if [[ -L "$_from" && "$_from" -ef "$_to" ]]; then
+        [[ -n $VERBOSE ]] && echo "$(echo_styled -i $(basename $_to)) already bootstrapped" || :
+    else
+        if [[ -n $VERBOSE ]]; then
+            local _from_short=${_from/$HOME/\~}
+            local _to_short=${_to/$HOME/\~}
+            echo "Making a symlink $(echo_styled -i $_from_short) -> $(echo_styled -i $_to_short)"
+        fi
+        [[ -d "${_from%/*}" ]] || mkdir -p "${_from%/*}"
+        ln -fsr "$_to" "$_from"
+    fi
+}
+
+bootstrap_folder()
+{
+    local _append_dot
+    local _whole_directory
+    while [[ "$1" = -* ]]; do
+        case $1 in
+            -h)
+                _append_dot=1
+                ;;
+            -d)
+                _whole_directory=1
+                ;;
+        esac
+        shift
+    done
+
+    local _config_filedir=$1
+    local _config_home=$2
+    local _anchor=${3:-$DOTFILES_PATH}
+    if [[ -n "$_whole_directory" ]]; then
+        local _inner_path=$(parent_minus_anchor "$_config_filedir" "$_anchor")
+        local _config_home_inner_path=${_append_dot:+.}$_inner_path${_inner_path:+/}
+        local _symlink_dest="$_config_home/$_config_home_inner_path$(basename $_config_filedir)"
+        safe_symlink "$_config_filedir" "$_symlink_dest"
+    else
+        local _leafs=( $_config_filedir/** )
+        (( ${#_leafs[@]} )) || _leafs=( "$_config_filedir" )
+        for _leaf in ${_leafs[@]}; do
+            if [[ -f "$_leaf" ]]; then
+                local _inner_path=$(parent_minus_anchor "$_leaf" "$_anchor")
+                local _config_home_inner_path=${_append_dot:+.}$_inner_path${_inner_path:+/}
+                local _symlink_dest="$_config_home/$_config_home_inner_path$(basename $_leaf)"
+                safe_symlink "$_leaf" "$_symlink_dest"
+            fi
+        done
+    fi
+}
+
+bootstrap_zsh()
+{
+    local _zshrc="$DOTFILES_PATH/zsh/.zshrc"
+    for _zsh_f in $DOTFILES_PATH/zsh/*; do
+        case $_zsh_f in
+            */.zshrc | */.zprofile | */.zlogin | */.zlogout | */.zshenv)
+                bootstrap_folder "$_zsh_f" "$HOME" "$DOTFILES_PATH/zsh"
+                ;;
+            *)
+                local _inner_path=${_zsh_f#"$DOTFILES_PATH"}
+                local _sourced_path=$(grep -o "source [^[:space:]]*$_inner_path" "$_zshrc" | cut -d ' ' -f2 | envsubst)
+                local _bootstrap_target=${_sourced_path%"$_inner_path"}
+                bootstrap_folder "$_zsh_f" "$_bootstrap_target"
+                ;;
+        esac
+    done
+    if [[ ! " ${BOOTSTRAP_FILES[*]} " =~ " bash " ]]; then
+        if [[ ! "$HOME/.profile" -ef "$DOTFILES_PATH/bash/.profile" ]]; then
+            if confirmation "Would you like to bootstrap it?" "$(echo_styled -t Warning:) zsh dotfiles source bash's .profile and it is not bootstrapped."; then
+                bootstrap_folder "$DOTFILES_PATH/bash/.profile" "$HOME" "$DOTFILES_PATH/bash"
+            else
+                echo_styled -e " Okay...\n"
+            fi
+        fi
+        if [[ ! "$HOME/.bash_aliases" -ef "$DOTFILES_PATH/bash/.bash_aliases" ]]; then
+            if confirmation "Would you like to bootstrap it?" "$(echo_styled -t Warning:) zsh dotfiles source bash's .bash_aliases and it is not bootstrapped."; then
+                bootstrap_folder "$DOTFILES_PATH/bash/.bash_aliases" "$HOME" "$DOTFILES_PATH/bash"
+            else
+                echo " $(echo_styled -e Okay...)"
+            fi
+        fi
+    fi
+}
+
+bootstrap_tmux()
+{
+    local _tmux_conf=$DOTFILES_PATH/tmux/tmux.conf
+    local _plugin_path=$(grep -o "TMUX_PLUGIN_MANAGER_PATH [^[:space:]]*" $_tmux_conf | \
+        cut -d ' ' -f2 | tr -d \" | envsubst)
+    _plugin_path=${_plugin_path%/tmux/plugins}
+    for _tmux_f in $DOTFILES_PATH/tmux/*; do
+        case $_tmux_f in
+            */tmux/plugins)
+                for _plugin in $_tmux_f/*; do
+                    bootstrap_folder -d "$_plugin" "$_plugin_path"
+                done
+                ;;
+            *)
+                bootstrap_folder "$_tmux_f" "$XDG_CONFIG_HOME"
+                ;;
+        esac
+    done
+    if [[ ! -d "$_plugin_path/tmux/plugins/tpm" && -z "$SKIP_INSTALLATION" ]]; then
+        if confirmation "$(echo_styled -t Warning:) TPM is not installed, would you like to install it?"; then
+            echo -n "Cloning $(echo_styled -i tpm)... "
+            git clone -q https://github.com/tmux-plugins/tpm "$_plugin_path/tmux/plugins/tpm" && echo_styled -s "Success\n" || echo_styled -e "Error\n"
+        fi
+    fi
+}
+
+bootstrap_vim()
+{
+    for _vim_fn in $DOTFILES_PATH/vim/*; do
+        case $_vim_fn in
+            */.vimrc)
+                bootstrap_folder "$_vim_fn" "$HOME" "$DOTFILES_PATH/vim"
+                ;;
+            *)
+                bootstrap_folder -h "$_vim_fn" "$HOME"
+                ;;
+        esac
+    done
+}
+
+process_args "$@"
+[[ -n "$VERBOSE" ]] && print_welcome
+check_requirements
+[[ -z "$SKIP_XDG" ]] && prepare_xdg
+[[ -z "$SKIP_STANDARD_DIRS" ]] && check_standard_dirs
+[[ -z "$SKIP_INSTALLATION" ]] && check_installation
+for fn in "${BOOTSTRAP_FILES[@]}"; do
+    [[ -n "$VERBOSE" ]] && echo_styled -t "Bootstrapping $fn\n"
+    case $fn in
+        dircolors) 
+            bootstrap_folder -h "$DOTFILES_PATH/$fn" "$HOME"
+            ;;
+        zsh)
+            bootstrap_zsh
+            ;;
+        bash)
+            for _bash_f in $DOTFILES_PATH/$fn/*; do
+                bootstrap_folder "$_bash_f" "$HOME" "$DOTFILES_PATH/$fn"
+            done
+            ;;
+        tmux)
+            bootstrap_tmux
+            ;;
+        vim)
+            bootstrap_vim
+            ;;
+        *)
+            bootstrap_folder "$DOTFILES_PATH/$fn" "$XDG_CONFIG_HOME"
+            ;;
+    esac
+    if [[ -n $VERBOSE ]]; then
+        echo
+    else
+        echo "$(echo_styled -s $fn) bootstrapped"
+    fi
+done
+[[ -n $VERBOSE ]] && echo_styled -s "Bootstrapping complete\n" || :
