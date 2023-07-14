@@ -9,42 +9,51 @@ endif
 " Plugins will be downloaded under the specified directory.
 call plug#begin('~/.vim/plugged')
  
+" Plugins for all systems and (neo)vims
 Plug 'tpope/vim-sensible'
-Plug 'lervag/vimtex', {'for': 'tex'}
 Plug 'itchyny/lightline.vim'
-Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
-Plug 'christoomey/vim-tmux-navigator'
+Plug 'morhetz/gruvbox'
 Plug 'raimondi/delimitmate'
 Plug 'yggdroot/indentline'
-Plug 'morhetz/gruvbox'
-Plug 'sainnhe/everforest'
-Plug 'Vimjas/vim-python-pep8-indent', {'for': 'python'}
-Plug 'SirVer/ultisnips'
-Plug 'dearrrfish/vim-applescript', {'for': 'applescript' }
-Plug 'leafgarland/typescript-vim', {'for': 'typescript'}
 Plug 'tpope/vim-surround'
+Plug 'christoomey/vim-tmux-navigator'
 Plug 'mhinz/vim-startify'
-" Plug 'vimwiki/vimwiki'
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+Plug 'SirVer/ultisnips'
+Plug 'lervag/vimtex', {'for': 'tex'}
+Plug 'ledger/vim-ledger', {'for': 'ledger'}
 
+" Mac specific plugins. This check should work for any recent
+" vim on macOS
+if has('mac')
+  Plug 'mityu/vim-applescript', {'for': 'applescript' }
+endif
+
+" Neovim specific plugins
 if has('nvim')
+  Plug 'neovim/nvim-lspconfig'
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+  Plug 'nvim-treesitter/nvim-treesitter-textobjects', {'do': ':TSUpdate'}
+  Plug 'nvim-treesitter/playground', {'do': ':TSUpdate'}
+
+  Plug 'hrsh7th/cmp-nvim-lsp'
+  Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+  Plug 'hrsh7th/cmp-omni'
+  Plug 'hrsh7th/nvim-cmp'
+
+  Plug 'nvim-lua/plenary.nvim'
+  Plug 'nvim-telescope/telescope.nvim'
+
+  Plug 'mickael-menu/zk-nvim'
+  " Unfortunately needs both devicons right now: vim-devicons is used by
+  " lightline (and porting is not possible for fileformat) and startify,
+  " while nvim-web-devicons is used by Telescope
   Plug 'ryanoasis/vim-devicons'
   Plug 'nvim-tree/nvim-web-devicons'
-  Plug 'mickael-menu/zk-nvim'
-  if has('nvim-0.7.0')
-    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-    Plug 'nvim-treesitter/nvim-treesitter-textobjects', {'do': ':TSUpdate'}
-    Plug 'nvim-treesitter/playground', {'do': ':TSUpdate'}
 
-    Plug 'neovim/nvim-lspconfig'
-
-    Plug 'nvim-lua/plenary.nvim'
-    Plug 'nvim-telescope/telescope.nvim'
-
-    Plug 'hrsh7th/cmp-nvim-lsp'
-    Plug 'quangnguyen30192/cmp-nvim-ultisnips'
-    Plug 'hrsh7th/nvim-cmp'
-  endif
+" Vim specific plugins (in the future I think I should get rid of this
+" and let vim configuration be as minimal as possible)
 else
   Plug 'octol/vim-cpp-enhanced-highlight', {'for': 'cpp'}
   Plug 'ervandew/supertab'
@@ -52,45 +61,46 @@ else
 endif
 
 call plug#end()
-let g:vimwiki_folding='expr'
-
 " }}}
 
 " ---------------------------General Vim Settings-----------------------------
 " Different Vim Versions Compatibility: {{{
 
-if !has('gui_running') && !has('nvim')
-  " set clipboard=exclude:.* " Turn off server for terminal vim
-  let g:vimtex_compiler_latexmk = {'callback' : 0}
-  if &term =~# '^tmux' || &term =~# 'alacritty'
-  " Without this setting terminal vim doesn't display true colors with tmux
-    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  endif
-endif
-
+" Settings for regular vim
 if !has('nvim')
-  let s:statedir = $XDG_STATE_HOME . '/vim'
+  " Store viminfo in XDG_STATE_HOME directory
+  if !empty($XDG_STATE_HOME)
+    let s:statedir = $XDG_STATE_HOME . '/vim'
+  else
+    let s:statedir = $HOME . '/.local/state/vim'
+  endif
   if !isdirectory(s:statedir)
     call mkdir(s:statedir)
   endif
-  set viminfofile=$XDG_STATE_HOME/vim/viminfo
+  let &viminfofile=s:statedir . '/viminfo'
+
+  " Settings for regular terminal vim
+  if !has('gui_running')
+    let g:vimtex_compiler_latexmk = {'callback' : 0}
+    if &term =~# '^tmux' || &term =~# 'alacritty'
+    " Without this setting terminal vim doesn't display true colors with tmux
+      let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+      let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    endif
+  endif
 endif
 
 " }}}
-" Syntax And Colors: {{{
+" Syntax and Colors: {{{
 
-let g:colorscheme_setup = 'gruvbox'
+" Gruvbox setup with dynamic dark/light switching
 set termguicolors
 syntax on
 
-if g:colorscheme_setup == 'base16'
-  if filereadable(expand("~/.vimrc_background"))
-    let base16colorspace=256
-    source ~/.vimrc_background
-  endif
-elseif g:colorscheme_setup == 'gruvbox'
-  if has('nvim')
+if has('nvim')
+  " Extra colors for diagnostics, telescope, and treesitter
+  augroup vimrc_colorscheme
+    autocmd!
     autocmd ColorScheme gruvbox highlight! link DiagnosticError GruvboxRedBold
     autocmd ColorScheme gruvbox highlight! link DiagnosticWarn GruvboxYellowBold
     autocmd ColorScheme gruvbox highlight! link TelescopeBorder GruvboxFg4
@@ -100,39 +110,48 @@ elseif g:colorscheme_setup == 'gruvbox'
     autocmd ColorScheme gruvbox highlight! link @text.strong markdownBold
     autocmd ColorScheme gruvbox highlight! link @text.emphasis markdownItalic
     autocmd ColorScheme gruvbox highlight! link @text.reference markdownLinkText
-  endif
-  if exists('$THEMEBG') && $THEMEBG == 'light'
-    set background=light
-  else
-    set background=dark
-  endif
-  let g:gruvbox_italic = 1
-  let g:gruvbox_italicize_strings = 1
-  let g:gruvbox_contrast_dark = 'medium'
-  let g:gruvbox_contrast_light = 'soft'
-  let g:gruvbox_invert_selection = 0
-  colorscheme gruvbox
-elseif g:colorscheme_setup == 'everforest'
-    set background=dark
-    colorscheme everforest
+  augroup END
 endif
+
+" Dynamic dark/light switching
+if exists('$THEMEBG') && $THEMEBG == 'light'
+  set background=light
+else
+  set background=dark
+endif
+
+" Gruvbox options
+let g:gruvbox_italic = 1
+let g:gruvbox_italicize_strings = 1
+let g:gruvbox_contrast_dark = 'medium'
+let g:gruvbox_contrast_light = 'soft'
+let g:gruvbox_invert_selection = 0
+
+colorscheme gruvbox
+
+" This function needs to be here since it is used
+" for Indentline options
+function! GetGruvColor(group)
+  let guiColor = synIDattr(hlID(a:group), "fg", "gui") 
+  let termColor = synIDattr(hlID(a:group), "fg", "cterm") 
+  return [ guiColor, termColor ]
+endfunction
 
 " }}}
 " Configurations: {{{
 
-" Set Configurations:
-
+" Setting options:
 set number lbr laststatus=2 title ruler mouse=a
-set tabstop=8 softtabstop=4 shiftwidth=4 expandtab " Tab indentation
-set noshowmode " Don't show -- INSERT --
-set report=0 " Report any line yanked
-set spelllang=en_us " Set spelling language
-set splitright splitbelow " More natural splits
+set tabstop=8 softtabstop=4 shiftwidth=4 expandtab  " indentation with spaces
+set noshowmode  " don't show -- INSERT --
+set report=0  " report any line yanked
+set spelllang=en_us  " set spelling language
+set splitright splitbelow  " more natural splits
 set hidden
 set completeopt+=longest
 set fdm=marker
 set modeline
-set cursorline " Highlight the current line of cursor
+set cursorline  " highlight the current line of cursor
 set updatetime=750
 set exrc
 set secure
@@ -140,17 +159,15 @@ set guioptions-=rL
 set guifont=HackNerdFontComplete-Regular:h11
 set wildmode=longest,full
 set scl=yes
-autocmd FileType nerdtree,tagbar,help setlocal scl=auto
 
-" Other:
+" General autocommands:
+augroup vimrc_general
+  autocmd!
+  autocmd FileType help setlocal scl=auto
+augroup END
 
-let g:changelog_username = 'Tadeas Uhlir <tadeas.uhlir.19@dartmouth.edu>'
-
-function! GetGruvColor(group)
-  let guiColor = synIDattr(hlID(a:group), "fg", "gui") 
-  let termColor = synIDattr(hlID(a:group), "fg", "cterm") 
-  return [ guiColor, termColor ]
-endfunction
+" Other options and variables:
+let g:changelog_username = 'Tadeas Uhlir <tadeas.uhlir@gmail.com>'
 
 " }}}
 " Custom Mappings: {{{
@@ -159,7 +176,11 @@ nmap <M-CR> O<Esc>
 nmap <CR> o<Esc>
 nmap <leader>p <C-w>}
 nmap <leader>c <C-w>z
-nmap ÷ :call CenterComment()<CR>
+if has('mac')
+  nmap ÷ :call CenterComment()<CR>
+else
+  nmap <M-/> :call CenterComment()<CR>
+endif
 nmap <leader>s :set hlsearch!<CR>
 nmap <leader>w :call RemLdWs()<CR>
 nmap <leader>W :call RemLdWsGlobally()<CR>
@@ -169,10 +190,6 @@ nnoremap [a {jI
 map + :call BlockComment()<CR>
 map - :call UnBlockComment()<CR>
 nnoremap <leader>b :b #<CR>
-nmap <leader>n :NERDTreeToggle<CR>
-nmap <leader>N :NERDTreeFocus<CR>
-nmap <leader>t :Tagbar<CR>
-nmap <leader>T :TagbarOpen fj<CR>
 nnoremap <silent> <leader><Space> :call FindTodo()<CR>
 
 " }}}
@@ -181,8 +198,8 @@ nnoremap <silent> <leader><Space> :call FindTodo()<CR>
 " Vimtex Options: {{{
 
 let g:tex_flavor = 'latex'
-let g:vimtex_view_method = 'skim'
 let g:tex_comment_nospell = 1
+let g:vimtex_view_method = 'skim'
 let g:vimtex_quickfix_open_on_warning = 0
 let g:vimtex_fold_manual = 1
 let g:vimtex_format_enabled = 1
@@ -214,14 +231,13 @@ let g:lightline = {
       \          ['readonly', 'filename', 'modified', 'gitbranch'],
       \          ['gitsummary']],
       \ 'right': [[],
-      \           ['lineinfo', 'percent'], [ 'fileformat', 'fileencoding', 'filetype' ]]
+      \           ['lineinfo', 'percent'],
+      \           [ 'fileformat', 'fileencoding', 'filetype' ]]
       \ },
       \ 'component_function': {
       \       'gitbranch': 'LightLineGitBranch',
-      \       'filetype': 'MyFiletype',
-      \       'fileformat': 'MyFileformat',
-      \       'cocstatus': 'coc#status',
-      \       'currentfunction': 'CocCurrentFunction'
+      \       'filetype': 'WebDevFiletype',
+      \       'fileformat': 'WebDevFileformat',
       \ },
       \ 'component_expand': {
       \       'gitsummary': 'LightLineGitGutter',
@@ -251,7 +267,7 @@ function! LightLineGitGutter()
   return [added_s, modified_s, removed_s]
 endfunction
 
-function! MyFiletype()
+function! WebDevFiletype()
     if exists('*WebDevIconsGetFileTypeSymbol')
         return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
     else
@@ -259,7 +275,7 @@ function! MyFiletype()
     endif
 endfunction
 
-function! MyFileformat()
+function! WebDevFileformat()
     if exists('*WebDevIconsGetFileFormatSymbol')
         return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
     else
@@ -275,17 +291,23 @@ function! LightLineGitBranch()
   return ''
 endfunction
 
-autocmd User GitGutter call lightline#update()
+augroup vimrc_lightline
+  autocmd!
+  autocmd User GitGutter call lightline#update()
+augroup END
 
 " }}}
 " DelimitMate Options: {{{
 
 let g:delimitMate_expand_cr = 1
 let g:delimitMate_expand_space = 1
-autocmd FileType python let b:delimitMate_smart_quotes = '\%(\%(\w\&[^fr]\)\|[^[:punct:][:space:]fr]\|\%(\\\\\)*\\\)\%#\|\%#\%(\w\|[^[:space:][:punct:]]\)'
-au FileType tex let b:delimitMate_quotes = "\" ' ` $"
-au FileType tex let b:delimitMate_smart_matchpairs = '^\%(\w\|\!\|£\|[^[:space:][:punct:]]\)'
-au FileType markdown let b:delimitMate_nesting_quotes = ['`']
+augroup vimrc_delimitmate
+  autocmd!
+  autocmd FileType python let b:delimitMate_smart_quotes = '\%(\%(\w\&[^fr]\)\|[^[:punct:][:space:]fr]\|\%(\\\\\)*\\\)\%#\|\%#\%(\w\|[^[:space:][:punct:]]\)'
+  autocmd FileType tex let b:delimitMate_quotes = "\" ' ` $"
+  autocmd FileType tex let b:delimitMate_smart_matchpairs = '^\%(\w\|\!\|£\|[^[:space:][:punct:]]\)'
+  autocmd FileType markdown let b:delimitMate_nesting_quotes = ['`']
+augroup END
 
 " }}}
 " SuperTab Options: {{{
@@ -300,7 +322,6 @@ let g:SuperTabMappingBackward = '<M-Tab>'
 let g:SuperTabClosePreviewOnPopupClose = 1
 
 " }}}
-
 " UltiSnips Options: {{{
 
 let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips']
@@ -310,8 +331,10 @@ let g:UltiSnipsExpandTrigger = '<M-tab>'
 " }}}
 " Indentline Options: {{{
 
-let g:indentLine_char = ''
-let g:indentLine_fileTypeExclude = ['startify', 'help', 'json', 'text', 'tex', 'markdown']
+let g:indentLine_char = '┊'
+let g:indentLine_fileTypeExclude = ['startify', 'help', 'json', 'text', 'tex', 'markdown', 'man']
+let g:indentLine_color_term = GetGruvColor('GruvboxBg2')[1]
+let g:indentLine_color_gui = GetGruvColor('GruvboxBg2')[0]
 
 " }}}
 " Devicons Options: {{{
@@ -325,23 +348,17 @@ if exists('g:loaded_webdevicons')
   call webdevicons#refresh()
 endif
 
-
 " }}}
 " Startify Options: {{{
 
     let g:startify_bookmarks = [
-            \ { 'v': '~/.vimrc' },
-            \ { 'n': '~/.config/nvim/init.vim' },
+            \ { 'c': '~/.vimrc' },
+            \ { 'n': '~/.config/nvim/init.lua' },
             \ { 'z': '~/.zshrc' },
-            \ { 't': '~/.config/kitty/kitty.conf' },
-            \ { 'c': '~/.config/nvim/coc-settings.json' }
+            \ { 'a': '~/.config/alacritty/alacritty.yml' },
             \ ]
-
-" }}}
-" Tagbar Options: {{{
-
-let g:tagbar_width = 35
-let g:tagbar_foldlevel = 0
+    let g:startify_change_to_vcs_root = 1
+    let g:startify_files_number = 5
 
 " }}}
 " CtrlP Options: {{{
@@ -399,13 +416,13 @@ function! CenterComment()
   let l:header_w = strlen(l:header)
   let l:before_w = (l:width - l:header_w) / 2
   let l:after_w = (l:width - l:header_w - l:before_w)
-  let l:before = l:cmnt . ' ' . repeat(l:del_str, l:before_w-2)
-  let l:after = repeat(l:del_str, l:after_w)
+  let l:before = l:cmnt . ' ' . repeat(l:del_str, l:before_w-5) . repeat(' ', 3)
+  let l:after = repeat(' ', 3) . repeat(l:del_str, l:after_w-3)
 
   call setline(".", l:before . l:header . l:after)
 endfunc
 
-function! CenterCommentNew(...)
+function! CenterCommentBig(...)
   let l:cmnt_raw_other = split(&commentstring, '%s')[0]
   let l:cmnt = substitute(l:cmnt_raw_other, ' ', '', '')
 
@@ -432,7 +449,7 @@ function! CenterCommentNew(...)
 endfunc
 
 function! FindTodo()
-  execute "normal /\\<TODO\\>\<CR>$"
+  silent! execute "normal /\\<TODO\\>/;/$\<CR>"
 endfunc
 
 " }}}
@@ -444,5 +461,22 @@ function! SynStack()
   endif
   echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunc
+
+function! SetGruvBackground(bg)
+  if a:bg != 'dark' && a:bg != 'light'
+    return
+  endif
+  if a:bg == &background
+    return
+  endif
+  let &background=a:bg
+  source ~/.vim/plugged/gruvbox/autoload/lightline/colorscheme/gruvbox.vim
+  call lightline#init()
+  call lightline#colorscheme()
+  call lightline#update()
+  let g:indentLine_color_term = GetGruvColor('GruvboxBg2')[1]
+  let g:indentLine_color_gui = GetGruvColor('GruvboxBg2')[0]
+  do ColorScheme
+endfunction
 
 " }}}

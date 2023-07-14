@@ -1,14 +1,26 @@
-" Vim syntax highlight customizations
+" filetype.vim helper file
+"
+" Custom filetype.vim to enhance detection of files with my
+" current setup. Notably this adds detection of files within
+" dotfiles directory.
+"
+" by Tadeas Uhlir <tadeas.uhlir@gmail.com>
+
 if exists("did_load_filetypes")
   finish
 endif
 
+if !empty($DOTDIR)
+  augroup filetypedetect
+    au! BufNewFile,BufRead $DOTDIR/git/config setf gitconfig
+    au! BufNewFile,BufRead $DOTDIR/git/ignore setf gitignore
+
+    au! BufNewFile,BufRead $DOTDIR/dircolors setf dircolors
+  augroup END
+endif
+
 augroup filetypedetect
-  au! BufRead,BufNewFile in.*     setfiletype lammps
-  au! BufRead,BufNewFile *.lmp    setfiletype lammps
-  au! BufRead,BufNewFile *.lammps setfiletype lammps
-  au! BufRead,BufNewFile data.*   setfiletype lammps
-  au! BufRead,BufNewFile *.vmd 		setfiletype tcl
-  au! BufRead,BufNewFile *.plist 	setfiletype xml
-  au! BufRead,BufNewFile *.ipy 		setfiletype python
+  au! BufNewFile,BufRead $XDG_STATE_HOME/vim/viminfo setf viminfo
+
+  au! BufNewFile,BufRead */tridactyl/tridactylrc setf vim
 augroup END
