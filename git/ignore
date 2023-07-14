@@ -1,18 +1,36 @@
-*.swp
+# GIT IGNORE
+#
+# Minimal global git ignore file ignoring operating
+# system files, editor files, logs and  cache files.
+# I purposefully did not ignore any language specific
+# files such as ipynb_checkpoints or pyc
+#
+# by Tadeas Uhlir <tadeas.uhlir@gmail.com>
+
+# macOS
 .DS_Store
+.localized
+
+# Linux
+*~
+
+# Vim & NeoVim
+*.swp
 tags
-.clang*
-.idea
-compile_commands.json
 .nvimrc
-.ipynb_checkpoints
+
+# Editor helper files
+compile_commands.json
+.clang*
 .ccls*
+
+# JetBrains
+.idea
+
+# General
+log/
+*.log
 .cache*
 
-*.aux
-*.log
-*.out
-*.synctex.gz
-*.toc
-*.fdb_latexmk
-*.fls
+# This is useful when stashing away scrap files
+.scraps/

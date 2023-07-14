@@ -20,15 +20,10 @@ alias pfind='find . -name'
 [[ -d ~/Documents ]] && alias doc='cd ~/Documents'
 [[ -d ~/Software ]] && alias soft='cd ~/Software'
 [[ -d "$DOTDIR" ]] && alias dot='cd "$DOTDIR"'
+[[ -n "$ZK_NOTEBOOK_DIR" && -d "$ZK_NOTEBOOK_DIR" ]] && alias notes='cd "$ZK_NOTEBOOK_DIR"'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
-
-# Git aliases
-alias gcom='git commit'
-alias gst='git status'
-alias gmod='git add -u'
-alias gac='git add -u && git commit'
 
 # Shortcuts to rc files
 alias vimrc='$EDITOR ~/.vimrc'

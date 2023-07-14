@@ -1,18 +1,105 @@
-# This is Git's per-user configuration file.
+# GIT CONFIG
+#
+# Basic git config with my user information.
+# Some references:
+# - https://gist.github.com/tdd/470582
+# - https://gist.github.com/rab/4067067
+# - https://github.com/thoughtbot/dotfiles/blob/main/gitconfig
+#
+# by Tadeas Uhlir <tadeas.uhlir@gmail.com>
+
 [user]
-	name = Tadeas Uhlir
-	email = tadeas.uhlir@gmail.com 
+    name = Tadeas Uhlir
+    email = tadeas.uhlir@gmail.com
 
 [alias]
-	tracked = ls-tree -r master --name-only
-	last = cat-file commit HEAD
+    # Basic commands shortcuts
+    a = add
+    ai = add -i
+    ap = add -p
+    co = commit
+    ch = checkout
+    s = status -sb
+    st = status
+    df = diff
+    rst = restore
+    rsti = restore --staged
+    ss = stash
+    ssl = stash list
+    ssa = stash apply
+    ssd = stash drop
+
+    # Nice one commit per line log
+    lg = log --graph --date=relative --pretty=niceoneline
+    # Log and one line log of only local commits
+    log-local = log @{push}..
+    lg-local = lg @{push}..
+    # Log with file changes
+    log-full = log --name-status
+
+    last-remote = log @{push} -1 --name-status
+    last = log -1 --name-status
+
+    # Useful when you have to update your last commit
+    # with staged files without editing the commit message.
+    oops = commit --amend --no-edit
+
+    # Remove file(s) from Git but not from disk
+    untrack = rm --cache --
 
 [core]
-	excludesfile = ~/.gitignore_global
-	autocrlf = input
+    # Using only LF line endings, see core.autocrlf in
+    # https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration
+    autocrlf = input
 
-[url "git@github.com:"]
-	insteadOf = https://github.com/
+[init]
+    # Use main instead of master on git init
+    defaultBranch = main
 
-[pull]
-	rebase = true
+[push]
+    # When pushing submit also tags reachable with the pushed refs,
+    # this can be overriden with --no-follow-tags if you want to
+    # ignore local tags
+    followTags = true
+
+[fetch]
+    # Automatically remove any remote tracking branches that no longer
+    # exist, I think this should always be safe
+    prune = true
+
+[diff]
+    # Use (i)ndex, (c)ommit, (w)orking, and (o)bject in diff
+    mnemonicPrefix = true
+    # Vimdiff tool to use when running git difftool
+    tool = vimdiff
+    # Detect moved lines and display them with different colors
+    colorMoved = zebra
+
+[merge]
+    tool = fugitive
+
+[mergetool "fugitive"]
+    # Use fugitive for merge
+    cmd = "$EDITOR -c 'Gdiff' $MERGED"
+
+[pretty]
+    niceoneline = "tformat:%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%an %ad)%Creset"
+    changelog = "format:%C(magenta)*%Creset %C(brightblue)%h%Creset %s"
+
+[color "status"]
+    # To correspond to prompt setup
+    branch = cyan
+    changed = yellow
+    untracked = cyan
+    remoteBranch = brightblue
+    localBranch = brightgreen
+
+[color "diff"]
+    # Header colors with command
+    meta = brightblue bold
+    # Line number
+    frag = blue
+    # Deleted and moved
+    oldMoved = cyan
+    # Moved and yanked
+    newMoved = brightcyan
