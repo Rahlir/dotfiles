@@ -1,0 +1,69 @@
+# ZK CONFIG
+#
+# by Tadeas Uhlir <tadeas.uhlir@gmail.com>
+
+
+[notebook]
+dir = "$HOME/Documents/rahlir-notes"
+
+
+[format.markdown]
+# Format used to generate links between notes.
+# Either "wiki", "markdown" or a custom template (default markdown).
+link-format = "wiki"
+
+# Indicates whether a link's path file extension will be removed
+# (default true)
+link-drop-extension = true
+
+# Enable support for #hashtags.
+hashtags = true
+# Enable support for :colon:separated:tags:.
+colon-tags = false
+# Enable support for Bear's #multi-word tags#
+# Hashtags must be enabled for multi-word tags to work.
+multiword-tags = false
+
+
+[tool]
+# Command used to preview a note during interactive fzf mode.
+# Set it to an empty string "" to disable preview.
+fzf-preview = "bat -p --color always {-1}"
+
+
+[lsp]
+
+[lsp.diagnostics]
+# Each diagnostic can have for value: none, hint, info, warning, error
+
+# Warn for dead links between notes.
+dead-link = "warning"
+
+
+[filter]
+# Named filters: a named filter is a set of note filtering options
+# used frequently together. For example:
+# To match the notes created in the last two weeks:
+#    $ zk list recents --limit 15
+#    $ zk edit recents --interactive
+recents = "--sort created- --created-after 'last two weeks'"
+
+
+[alias]
+ls = "zk list --sort modified --quiet $@"
+qls = "zk list --sort modified -f oneline $@"
+# Show note with the given title
+shownote = "zk list --match \"title: $@\""
+# Create note with the given title
+newt = "zk new -t \"$*\""
+# Edit the last modified note.
+editlast = "zk edit --limit 1 --sort modified $@"
+# Edit the first note that matches the given title
+editnote = "zk edit --limit 1 --match \"title: $@\""
+# Interactively edit a note
+editi = "zk edit --interactive $@"
+# Edit this configuration file
+confg = '$EDITOR "$XDG_CONFIG_HOME/zk/config.toml"'
+# Returns the Git history for the notes found with the given arguments.
+# Note the use of a pipe and the location of $@.
+hist = "zk list --format path --delimiter0 --quiet $@ | xargs -t -0 git log --patch --"

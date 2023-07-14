@@ -1,0 +1,9 @@
+# NPMRC
+#
+# Just a tiny npm config that sets up
+# NPM to use XDG Base Dirs
+#
+# by Tadeas Uhlir <tadeas.uhlir@gmail.com>
+
+prefix=${HOME}/.local
+cache=${XDG_CACHE_HOME}/npm
