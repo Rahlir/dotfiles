@@ -1,31 +1,81 @@
-" tridactylrc derived from the given sample
+" TRIDACTYLRC
+"
+" Config derived from the given sample in the tridactyl repo. There are some
+" major changes now: improved hinting on google, different behavior of 'f' and
+" 'F' keys, new searchurls...
+"
+" by Tadeas Uhlir <tadeas.uhlir@gmail.com>
 
+" ---------------------   General Config and Options   -----------------------
+" Clear all settings set within the browser
 sanitise tridactyllocal tridactylsync
 
-colors dark
+" Add archwiki search
+set searchurls.archwiki https://wiki.archlinux.org/index.php?search=
 
-set followpagepatterns.next ^(next|newer)\b|>>
-set searchurls.vimaw https://vimawesome.com/?q=
+" Set hintchars to non alphabetic characters. Characters close to the home row
+" are preferred. Non alphabetic characters are used to allow filtering based
+" on link names
+set hintchars ;'23[]\451/.,167890
+" This allows filtering hints based on names
+set hintfiltermode vimperator-reflow
+" The default setting of 300 is a little long
+set hintdelay 150
 
+" ----------------------------   New Commands   ------------------------------
+" Suspend / "discard" all tabs - handy for stretching out battery life /
+" lowering RAM footprint
+command discardall jsb browser.tabs.query({}).then(ts => browser.tabs.discard(ts.map(t=>t.id)))
+" Add a site to buku bookmarks manager
+command add_buku js let url=document.location.href; let title=document.title; tri.native.run("buku -a " + url + " --title " + title + " -w 'alacritty -e nvim'")
+
+" -------------------------------   Binds   ----------------------------------
+" I barely find javascript elements useful
 bind f hint -J
-bind q fillcmdline open github
-bind Q fillcmdline tabopen github
+" I generally want to jump straight into page I open on new tab. Plus there is
+" another bind for background open: ;b
+bind F hint -Jt
 
+" Binds for searching on selected websites
+bind \q fillcmdline open github
+bind \Q fillcmdline tabopen github
+bind \w fillcmdline open wikipedia
+bind \W fillcmdline tabopen wikipedia
+bind \d fillcmdline open duckduckgo
+bind \D fillcmdline tabopen duckduckgo
+bind \a fillcmdline open archwiki
+bind \A fillcmdline tabopen archwiki
+
+" Add current page to buku bookmark manager. Currently there is no way to
+" cancel this operation
+bind \\ add_buku
+
+" Table of contents for the current page. Note that the space at the end of
+" line is not an error: it makes autocompletion start
+bind gc fillcmdline goto 
+
+" Git{Hub,Lab} git clone via SSH yank
 bind yg composite js "git clone " + document.location.href.replace(/https?:\/\//,"git@").replace("/",":").replace(/$/,".git") | clipboard yank
 
-bind / fillcmdline find
-bind ? fillcmdline find -?
-bind n findnext 1
-bind N findnext -1
-bind \s nohlsearch
-
-bindurl www.google.com f hint -Jc #search div:not(.action-menu) > a
-bindurl www.google.com F hint -Jbc #search div:not(.action-menu) > a
+" The selector behind ',' ensures we can also select search results on the
+" pages beyond the first
+bindurl www.google.com f hint -Jc #search div:not(.action-menu) > a, #botstuff div:not(.action-menu) > a
+bindurl www.google.com F hint -Jtc #search div:not(.action-menu) > a, #botstuff div:not(.action-menu) > a
+" In case you need to click on something other than search results
 bindurl www.google.com ;d hint -J
+bindurl www.google.com ;D hint -Jt
 
-autocmd DocStart rick.dartmouth.edu/mars/notebooks mode ignore
+" Comment toggler for Reddit, Hacker News and Lobste.rs
+bind ;c hint -Jc [class*="expand"],[class*="togg"],[class="comment_folder"]
 
-" Prevent stealing focus
-" autocmd TabEnter .* unfocus
+" Ctrl-e moves to the end of line, useful for current google's focusinput
+" quirk
+bind --mode=input <C-e> text.end_of_line
 
-" vim: set filetype=vim:
+" Handy multiwindow/multitasking binds
+bind gd tabdetach
+bind gD composite tabduplicate; tabdetach
+
+" Binds for new reader mode
+bind gr reader
+bind gR reader --tab
