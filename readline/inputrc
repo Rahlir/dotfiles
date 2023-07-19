@@ -1,6 +1,19 @@
-# User defined inputrc
-"\e[1;5C": forward-word
-"\e[1;5D": backward-word
+# INPUTRC
+#
+# Basic inputrc allowing history search with arrow keys and with small
+# enhancements to completion
+#
+# by Tadeas Uhlir <tadeas.uhlir@gmail.com>
+
+# Clear screen with Ctrl-e to not clash with tmux's
+# Ctrl-l bind
+Control-e: clear-screen
+
+# For xterm based terminals
 "\e[A": history-search-backward
 "\e[B": history-search-forward
-Control-e: clear-screen
+
+# Use LS_COLORS for completions
+set colored-stats On
+# For completionx, append '*', '@', etc. for executable, symlinks respectively
+set visible-stats On
