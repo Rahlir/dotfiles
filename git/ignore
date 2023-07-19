@@ -4,6 +4,8 @@
 # system files, editor files, logs and  cache files.
 # I purposefully did not ignore any language specific
 # files such as ipynb_checkpoints or pyc
+# References:
+# - https://github.com/alrra/dotfiles/blob/main/src/git/gitignore
 #
 # by Tadeas Uhlir <tadeas.uhlir@gmail.com>
 

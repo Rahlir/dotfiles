@@ -4,6 +4,8 @@
 # generally makes no assumptions. It doesn't modify $PATH variable - that
 # is done by the corresponding zprofile file. It also doesn't
 # define any functions - that should be done in functions.zsh file.
+# Some general references:
+# - https://wiki.archlinux.org/title/zsh
 #
 # by Tadeas Uhlir <tadeas.uhlir@gmail.com>
 
@@ -185,6 +187,11 @@ ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;&'
 ################################################################################
 #####                       Completion Configuration                       #####
 ################################################################################
+# Inspiration:
+# - https://github.com/mattjj/my-oh-my-zsh/blob/master/completion.zsh
+# - https://www.codyhiar.com/blog/zsh-autocomplete-with-ssh-config-file/
+# - https://github.com/dotphiles/dotzsh/blob/master/modules/completion/init.zsh
+
 # Adding custom completion functions if they exist
 [[ -d $XDG_DATA_HOME/zsh/completions ]] && \
     fpath+=$XDG_DATA_HOME/zsh/completions
