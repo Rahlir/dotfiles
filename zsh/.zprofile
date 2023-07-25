@@ -8,7 +8,7 @@ if [[ "$(uname -s)" == Linux ]]; then
     export PKG_PREFIX=/usr
 elif [[ "$(uname -s)" == Darwin && (( $+commands[brew] )) ]]; then
     eval "$(brew shellenv)"
-    export PKG_PREFIX=$BREW_PREFIX
+    export PKG_PREFIX=$HOMEBREW_PREFIX
 fi
 
 ##################################################
@@ -34,3 +34,10 @@ export GOPATH=$XDG_DATA_HOME/go
 export NBRC_PATH=$XDG_CONFIG_HOME/nb/nbrc
 # Directory for ZK notes
 export ZK_NOTEBOOK_DIR=$HOME/Documents/rahlir-notes
+# MYPY cache directory
+export MYPY_CACHE_DIR="$XDG_CACHE_HOME"/mypy
+# Jupyter config directory
+export JUPYTER_CONFIG_DIR="$XDG_CONFIG_HOME"/jupyter
+# Gem data and cache
+export GEM_HOME="$XDG_DATA_HOME"/gem
+export GEM_SPEC_CACHE="$XDG_CACHE_HOME"/gem

@@ -50,3 +50,6 @@ export LESSHISTFILE="$XDG_STATE_HOME/less/history"
 export PARALLEL_HOME="$XDG_CONFIG_HOME/parallel"
 # GNU Readline
 export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
+# Terminfo directories
+export TERMINFO="$XDG_DATA_HOME"/terminfo
+export TERMINFO_DIRS="$XDG_DATA_HOME"/terminfo:/usr/share/terminfo

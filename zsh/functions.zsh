@@ -49,18 +49,20 @@ function switch-background() {
         fi
     fi
 
+    [[ "$newbg" == "dark" ]] && local darkmode_bool="true" || local darkmode_bool="false"
+
     local theme_relpath="themes/gruvbox_$newbg.yml"
     ln -fs "$theme_relpath" "$alacritty_configdir/theme.yml" && 
         touch "$alacritty_configdir/alacritty.yml" &&
         export THEMEBG=$newbg && export BAT_THEME=gruvbox-$newbg &&
         source ${XDG_CONFIG_HOME:-$HOME/.config}/zsh/p10k.zsh
 
+
     local gtkconfig=${XDG_CONFIG_HOME:-$HOME/.config}/gtk-3.0/settings.ini
     if [[ -f "$gtkconfig" ]]; then
-        [[ "$newbg" == "dark" ]] && local gtk_varvalue="true" || local gtk_varvalue="false"
         grep -q "gtk-application-prefer-dark-theme" $gtkconfig && \
-            sed -E "s/(gtk-application-prefer-dark-theme[[:space:]]?=[[:space:]]?)(true|false)/\1${gtk_varvalue}/" -i $gtkconfig || \
-            echo "gtk-application-prefer-dark-theme = $gtk_varvalue" >> $gtkconfig
+            sed -E "s/(gtk-application-prefer-dark-theme[[:space:]]?=[[:space:]]?)(true|false)/\1${darkmode_bool}/" -i $gtkconfig || \
+            echo "gtk-application-prefer-dark-theme = $darkmode_bool" >> $gtkconfig
     fi
 
     if [[ "$(uname -s)" == Linux ]]; then
@@ -75,5 +77,7 @@ function switch-background() {
                 swaymsg reload
             fi
         fi
+    elif [[ "$(uname -s)" == Darwin ]]; then
+        osascript -e "tell app \"System Events\" to tell appearance preferences to set dark mode to ${darkmode_bool}"
     fi
 }
