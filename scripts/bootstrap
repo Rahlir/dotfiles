@@ -2,6 +2,11 @@
 
 set -e
 
+if [[ ! "${BASH_VERSINFO:-0}" -ge 4 ]]; then
+	echo "Bash version below 4.0, this script will not work, please install newer bash"
+	exit 1
+fi
+
 shopt -s extglob
 shopt -s globstar
 shopt -s nullglob
@@ -11,7 +16,7 @@ trap finish EXIT
 
 SCRIPT_NAME=$(basename "$0")
 DOTFILES_PATH=$( dirname "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )" )
-IGNORED=( ".git" ".gitignore" "scripts" "pacman" "README.md" )
+IGNORED=( "scripts" "pacman" "README.md" )
 BOOTSTRAP_FILES=()
 
 print_usage()
@@ -291,7 +296,7 @@ process_args()
                 exit 2
                 ;;
             all)
-                BOOTSTRAP_FILES=($(ls -A "$DOTFILES_PATH" ${IGNORED[@]/#/-I }))
+                BOOTSTRAP_FILES=($(ls "$DOTFILES_PATH" ${IGNORED[@]/#/-I }))
                 shift
                 ;;
             *)
@@ -331,7 +336,7 @@ check_xdg_var()
         mkdir -p "$_xdg_var"
     fi
 
-    local _x_dotfiles=$(grep -o "$_xdg_var_str=[^[:space:]]*" "$DOTFILES_PATH/bash/.profile" \
+    local _x_dotfiles=$(grep -m 1 -o "$_xdg_var_str=[^[:space:]]*" "$DOTFILES_PATH/bash/.profile" \
         | cut -d '=' -f2 | tr -d '"' | envsubst)
     if [[ ! "$_xdg_var" -ef "$_x_dotfiles" ]]; then
         echo
@@ -454,7 +459,7 @@ bootstrap_zsh()
                 ;;
             *)
                 local _inner_path=${_zsh_f#"$DOTFILES_PATH"}
-                local _sourced_path=$(grep -o "source [^[:space:]]*$_inner_path" "$_zshrc" | cut -d ' ' -f2 | envsubst)
+                local _sourced_path=$(grep -m 1 -o "source [^[:space:]]*$_inner_path" "$_zshrc" | cut -d ' ' -f2 | envsubst)
                 local _bootstrap_target=${_sourced_path%"$_inner_path"}
                 bootstrap_folder "$_zsh_f" "$_bootstrap_target"
                 ;;
@@ -481,7 +486,7 @@ bootstrap_zsh()
 bootstrap_tmux()
 {
     local _tmux_conf=$DOTFILES_PATH/tmux/tmux.conf
-    local _plugin_path=$(grep -o "TMUX_PLUGIN_MANAGER_PATH [^[:space:]]*" $_tmux_conf | \
+    local _plugin_path=$(grep -m 1 -o "TMUX_PLUGIN_MANAGER_PATH [^[:space:]]*" $_tmux_conf | \
         cut -d ' ' -f2 | tr -d \" | envsubst)
     _plugin_path=${_plugin_path%/tmux/plugins}
     for _tmux_f in $DOTFILES_PATH/tmux/*; do
