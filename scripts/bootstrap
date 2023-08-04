@@ -496,6 +496,8 @@ bootstrap_tmux()
                     bootstrap_folder -d "$_plugin" "$_plugin_path"
                 done
                 ;;
+            */tmux/tmux-256color)
+                ;;
             *)
                 bootstrap_folder "$_tmux_f" "$XDG_CONFIG_HOME"
                 ;;
