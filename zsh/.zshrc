@@ -283,6 +283,10 @@ autoload -Uz compinit bashcompinit
 compinit -d $XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION
 bashcompinit
 
+for bashcompl_f in $XDG_DATA_HOME/bash/bash_completion.d/*(N); do
+    . $bashcompl_f
+done
+
 ################################################################################
 #####                       Utilities Configuration                        #####
 ################################################################################
@@ -306,6 +310,14 @@ _synhl_paths=(
 # Virtualenvwrapper script:
 _virtualenvwrapper_path=${VIRTUALENVWRAPPER_PATH:-$PKG_PREFIX/bin/virtualenvwrapper_lazy.sh}
 [[ -r $_virtualenvwrapper_path ]] && source $_virtualenvwrapper_path
+
+# Other:
+# Some SSL library functions might still use RANDFILE, see openssl-req(1ssl)
+export RANDFILE=$XDG_STATE_HOME/rnd
+# Neo(mutt) requires tty for GPG passphrase input
+if (( $+commands[neomutt] )) || (( $+commands[mutt] )); then
+    export GPG_TTY=$TTY
+fi
 
 # Powerlevel10k:
 _p10k_paths=(

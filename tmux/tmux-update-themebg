@@ -1,0 +1,28 @@
+#!/usr/bin/env zsh
+
+vim_p=( "${(f)$(tmux list-panes -a -F '#{pane_current_command} #S:#I.#P' | \
+    grep -iE "(vim|zk)" | cut -d ' ' -f2)}" )
+mutt_p=( "${(f)$(tmux list-panes -a -F '#{pane_current_command} #S:#I.#P' | \
+    grep -i "mutt" | cut -d ' ' -f2)}" )
+
+for m_pane in $mutt_p; do
+    tmux wait-for -L "lock-${m_pane}"
+    tmux send-keys -t "$m_pane" "C-g" ":source $XDG_CONFIG_HOME/mutt/muttrc" "Enter"
+    tmux send-keys -t "$m_pane" "!tmux wait-for -U lock-${m_pane}" "Enter" "Enter"
+done
+
+for v_pane in $vim_p; do
+    tmux wait-for -L "lock-${v_pane}"
+    tmux send-keys -t "$v_pane" "Escape" ":call SetGruvBackground('${THEMEBG:-dark}')" "Enter"
+    tmux send-keys -t "$v_pane" ":silent exec '!tmux wait-for -U lock-${v_pane}' | echo" "Enter"
+done
+
+for pane in $mutt_p $vim_p; do
+    tmux wait-for -L "lock-${pane}"
+    tmux wait-for -U "lock-${pane}"
+done
+
+all_s=( ${mutt_p%:*} ${vim_p%:*} )
+for session in ${(u)all_s}; do
+    sleep 0.05 && tmux kill-session -C -t "$session"
+done

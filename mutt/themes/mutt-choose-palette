@@ -1,0 +1,16 @@
+#!/usr/bin/env zsh
+
+if [[ -n $TMUX ]]; then
+    sname=$(tmux display-message -p '#S')
+    sattached=$(tmux list-session -f "#{==:#S,$sname}" -F '#{session_attached}')
+    if (( $sattached )); then
+        themebg=$(tmux show-environment THEMEBG | cut -d '=' -f2)
+    else
+        attached_name=$(tmux list-sessions -f '#{session_attached}' -F '#S' | head -n1)
+        themebg=$(tmux show-environment -t $attached_name THEMEBG | cut -d '=' -f2)
+    fi
+else
+    themebg=$THEMEBG
+fi
+
+echo "source gruvbox_${themebg}_palette.muttrc"

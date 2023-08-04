@@ -24,6 +24,8 @@ typeset -U fpath; export FPATH
 export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/npmrc
 # w3m data directory
 export W3M_DIR=$XDG_DATA_HOME/w3m
+# elinks config directory
+export ELINKS_CONFDIR=$XDG_CONFIG_HOME/elinks
 # ipython config directory
 export IPYTHONDIR=$XDG_CONFIG_HOME/ipython
 # directory for virtualenvs of virtualenvwrapper 

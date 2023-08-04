@@ -1,0 +1,113 @@
+# Gruvbox Theme
+
+set color_directcolor = yes
+
+source "${XDG_CONFIG_HOME}/mutt/themes/mutt-choose-palette|"
+
+color attachment  $my_blue $my_bg
+color bold        bold $my_red $my_bg
+color error       $my_red $my_bg
+color hdrdefault  $my_lightaqua $my_bg
+color indicator   $my_bg $my_aqua
+color markers     $my_bg4 $my_bg
+color normal      $my_fg $my_bg
+color quoted      $my_fg3 $my_bg
+color quoted1     $my_lightblue $my_bg
+color quoted2     $my_fg3 $my_bg
+color quoted3     $my_lightblue $my_bg
+color quoted4     $my_fg3 $my_bg
+color quoted5     $my_lightblue $my_bg
+color search      $my_bg $my_lightorange
+color signature   $my_aqua $my_bg
+color status      $my_bg $my_grayer
+color status      bold "#d5c4a1" default 'Msgs:[0-9]+'
+color status      bold "#b8bb26" default 'New:[0-9]+'
+color status      bold "#fe8019" default 'Flag:[0-9]+'
+color status      bold "#fabd2f" default 'Del:[0-9]+'
+color tilde       $my_bg4 $my_bg
+color tree        $my_purple default
+color underline   underline $my_fg $my_bg
+color progress    $my_fg $my_orange
+
+color sidebar_divider    $my_grayer $my_bg
+color sidebar_new        $my_green $my_bg
+color sidebar_highlight  $my_bg $my_blue
+color sidebar_unread     bold $my_fg $my_bg
+
+
+color index $my_green $my_bg ~N
+color index $my_aqua $my_bg ~O
+color index default $my_bg1 "!~Q ~t $imap_user"
+color index $my_fg3 $my_bg ~P
+color index $my_yellow $my_bg ~F
+color index $my_blue $my_bg ~Q
+color index $my_red $my_bg ~=
+color index reverse default default ~T
+color index $my_bg2 $my_bg ~D
+color index_collapsed bold $my_purple default ~A
+
+color header reverse $my_lightaqua $my_bg "^Date:"
+color header $my_aqua $my_bg "^CC:"
+color header bold $my_lightblue $my_bg "^Subject:"
+color header $my_blue $my_bg "^X-Spam-Status:"
+color header $my_blue $my_bg "^Received:"
+
+# Regex magic for URLs and hostnames
+#
+# Attention: BSD's regex has RE_DUP_MAX set to 255.
+#
+# Examples:
+#   http://some-service.example.com
+#   example.com
+#   a.example.com
+#   some-service.example.com
+#   example.com/
+#   example.com/datenschutz
+#   file:///tmp/foo
+#
+# Non-examples:
+#   1.1.1900
+#   14.02.2022/24:00
+#   23.59
+#   w.l.o.g
+#   team.its
+color body $my_green $my_bg "[a-z]{3,255}://[[:graph:]]*"
+color body $my_green $my_bg "([-[:alnum:]]+\\.)+([0-9]{1,3}|[-[:alpha:]]+)/[[:graph:]]*"
+color body $my_green $my_bg "([-[:alnum:]]+\\.){2,255}[-[:alpha:]]{2,10}"
+
+# IPv4 and IPv6 stolen from https://stackoverflow.com/questions/53497/regular-expression-that-matches-valid-ipv6-addresses
+color body $my_green $my_bg "((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])"
+color body $my_green $my_bg "(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))"
+
+# Mail addresses and mailto URLs
+color body $my_lightorange $my_bg "[-a-z_0-9.%$]+@[-a-z_0-9.]+\\.[-a-z][-a-z]+"
+color body $my_lightorange $my_bg "mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
+
+# some simleys and stuff
+color body $my_bg $my_yellow "[;:]-*[)>(<lt;|]"
+# bold
+color body bold $my_fg $my_bg "\\*[[:alnum:][:blank:][:punct:][:cntrl:]]+\\*"
+
+color body $my_yellow $my_bg "^-.*PGP.*-*"
+color body $my_green $my_bg "^gpg: Good signature from"
+color body $my_red $my_bg "^gpg: Can't.*$"
+color body $my_yellow $my_bg "^gpg: WARNING:.*$"
+color body $my_red $my_bg "^gpg: BAD signature from"
+color body $my_red $my_bg "^gpg: Note: This key has expired!"
+color body $my_yellow $my_bg "^gpg: There is no indication that the signature belongs to the owner."
+color body $my_yellow $my_bg "^gpg: can't handle these multiple signatures"
+color body $my_yellow $my_bg "^gpg: signature verification suppressed"
+color body $my_yellow $my_bg "^gpg: invalid node with packet of type"
+
+color body $my_green $my_bg "^Good signature from:"
+color body $my_red $my_bg "^.?BAD.? signature from:"
+color body $my_green $my_bg "^Verification successful"
+color body $my_red $my_bg "^Verification [^s][^[:space:]]*$"
+
+color compose header            $my_fg $my_bg
+color compose security_encrypt  bold $my_purple $my_bg
+color compose security_sign     blue $my_bg
+color compose security_both     $my_green $my_bg
+color compose security_none     $my_lightorange $my_bg
+
+# vim: ft=neomuttrc

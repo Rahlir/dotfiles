@@ -1,0 +1,61 @@
+set header_cache = "${XDG_CACHE_HOME}/mutt/headers"
+set message_cache_dir = "${XDG_CACHE_HOME}/mutt"
+set certificate_file = "${XDG_DATA_HOME}/mutt/certificates"
+set mailcap_path = "${XDG_CONFIG_HOME}/mutt/mailcap"
+set alias_file = "${XDG_CONFIG_HOME}/mutt/aliases"
+
+set imap_user = 'uhlir@ttc.cz'
+set from = $imap_user
+set realname = "Tadeáš Uhlíř"
+set ssl_starttls = yes
+set ssl_force_tls = yes
+set folder = "imap://outlook.office365.com/"
+set smtp_url = "smtp://${imap_user}@smtp.office365.com:587/"
+set imap_authenticators = "oauthbearer:xoauth2"
+set imap_oauth_refresh_command = "~/Software/mutt_contrib/mutt_oauth2.py ~/Software/mutt_contrib/${imap_user}.tokens"
+set smtp_authenticators=${imap_authenticators}
+set smtp_oauth_refresh_command=${imap_oauth_refresh_command}
+
+set my_sent = "Odeslaná pošta"
+set my_trash = "Odstraněná pošta"
+set my_archive = "Archiv"
+set my_drafts = "Koncepty"
+set spoolfile = "+INBOX"
+set postponed = "+$my_drafts"
+set trash = "+$my_trash"
+unset record
+mailboxes =INBOX =$my_archive =$my_sent =$my_drafts =$my_trash 
+
+set mail_check_stats
+set sidebar_visible
+set sidebar_format = "%B%<F? [%F]>%* %<N?%N/>%S"
+
+set index_format = "%4C %Z %<M?%M> %{%b %d} %-15.15L (%<l?%4l&%4c>) %s"
+
+bind index,pager B sidebar-toggle-visible
+bind index \CP sidebar-prev
+bind index \CN sidebar-next
+bind index \CO sidebar-open
+bind pager \CP sidebar-prev
+bind pager \CN sidebar-next
+bind pager \CO sidebar-open
+
+macro index,pager A "<save-message>+$my_archive<enter>" "Save to archive"
+macro index,pager I "<save-message>+INBOX<enter>" "Save to archive"
+
+# Sorting: reverse order, threads with root on the top, last message
+# determines order relative to other
+set use_threads=threads
+set sort=reverse-last-date
+set sort_aux=reverse-last-date
+
+set confirm_append = no
+set pager_stop = yes
+
+alternative_order text/plain text/enriched text/html
+auto_view text/html
+
+source themes/gruvbox.muttrc
+source $alias_file
+
+# vim: ft=neomuttrc

@@ -29,3 +29,10 @@ alias ....='cd ../../..'
 alias vimrc='$EDITOR ~/.vimrc'
 alias nvimrc='$EDITOR ~/.config/nvim/init.lua'
 alias zshrc='$EDITOR ~/.zshrc'
+
+# Application aliases
+# Neomutt needs *-direct term for true colors
+if command -v neomutt &> /dev/null; then
+    term_direct="${TERM%-*}"-direct
+    alias neomutt="TERM=$term_direct neomutt"
+fi
