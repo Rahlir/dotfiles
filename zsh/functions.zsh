@@ -81,3 +81,45 @@ function switch-background() {
         osascript -e "tell app \"System Events\" to tell appearance preferences to set dark mode to ${darkmode_bool}"
     fi
 }
+
+function n()
+{
+    # Block nesting of nnn in subshells
+    if [[ "${NNNLVL:-0}" -ge 1 ]]; then
+        echo "nnn is already running"
+        return 1
+    fi
+
+    # To cd on quit only on ^G, don't use "export" and make sure not to
+    # use a custom path
+    NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+
+    local blk="0B" chr="03" dir="04" exe="05" reg="00"
+    local hardlink="0a" symlink="02" missing="08" orphan="09" fifo="d0" sock="0d" other="01"
+    local plug
+    if [[ -x  ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/gitroot ]]; then
+        plug+="g:gitroot"
+    fi
+    if [[ -x  ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/fzopen ]]; then
+        plug+=";f:fzopen"
+    fi
+    if [[ -x ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/nuke ]]; then
+        NNN_OPENER="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/nuke" \
+            NNN_FCOLORS="$blk$chr$dir$exe$reg$hardlink$symlink$missing$orphan$fifo$sock$other" \
+            NNN_COLORS="#0e0d0c0a" \
+            NNN_BMS="d:$HOME/Development;o:$HOME/Documents;w:$HOME/Downloads;s:$HOME/Software;t:$DOTDIR" \
+            NNN_ORDER="t:$HOME/Downloads" NNN_PLUG=$plug \
+            \nnn -cd $@
+    else
+        NNN_FCOLORS="$blk$chr$dir$exe$reg$hardlink$symlink$missing$orphan$fifo$sock$other" \
+            NNN_COLORS="#0e0d0c0a" \
+            NNN_BMS="d:$HOME/Development;o:$HOME/Documents;w:$HOME/Downloads;s:$HOME/Software;t:$DOTDIR" \
+            NNN_ORDER="t:$HOME/Downloads" NNN_PLUG=$plug \
+            \nnn -ed $@
+    fi
+
+    if [[ -f "$NNN_TMPFILE" ]]; then
+            . "$NNN_TMPFILE"
+            rm -f "$NNN_TMPFILE" > /dev/null
+    fi
+}
