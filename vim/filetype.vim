@@ -23,4 +23,6 @@ augroup filetypedetect
   au! BufNewFile,BufRead $XDG_STATE_HOME/vim/viminfo setf viminfo
 
   au! BufNewFile,BufRead */tridactyl/tridactylrc setf vim
+
+  au! BufNewFile,BufRead */task/*/*.theme setf taskrc
 augroup END

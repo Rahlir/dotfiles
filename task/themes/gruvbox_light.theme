@@ -1,0 +1,76 @@
+# Gruvbox Dark Theme for Taskwarrior
+#
+# by Tadeas Uhlir <tadeas.uhlir@gmail.com>
+
+rule.precedence.color=deleted,completed,active,keyword.,tag.,project.,overdue,scheduled,due.today,due,blocked,blocking,recurring,tagged,uda.
+
+# General decoration
+color.label=
+color.label.sort=
+color.alternate=
+color.header=color5
+color.footnote=color5
+color.warning=bold red
+color.error=color15 on color1
+color.debug=bold yellow
+
+# Task state
+color.completed=
+color.deleted=color249
+color.active=inverse
+color.recurring=color5
+color.scheduled=color166
+color.until=
+color.blocked=color15 on color7
+color.blocking=color0 on color8
+
+# Project
+color.project.none=
+
+# Priority
+color.uda.priority.H=color14
+color.uda.priority.M=color12
+color.uda.priority.L=color8
+
+# Tags
+color.tag.next=
+color.tag.none=
+color.tagged=
+
+# Due
+color.due=color3
+color.due.today=color1
+color.overdue=color9
+
+# Report: burndown
+color.burndown.done=on color2
+color.burndown.pending=on color1
+color.burndown.started=on color4
+
+# Report: history
+color.history.add=color0 on color1
+color.history.delete=color0 on color3
+color.history.done=color0 on color2
+
+# Report: summary
+color.summary.background=on color255
+color.summary.bar=on color12
+
+# Command: calendar
+color.calendar.weeknumber=color4
+color.calendar.weekend=color8
+color.calendar.due=color0 on color3
+color.calendar.due.today=color0 on color1
+color.calendar.overdue=color0 on color9
+color.calendar.today=color0 on color12
+color.calendar.holiday=color0 on color8
+color.calendar.scheduled=color0 on color166
+
+# Command: sync
+color.sync.added=color14
+color.sync.changed=color13
+color.sync.rejected=color9
+
+# Command: undo
+color.undo.after=color2
+color.undo.before=color1

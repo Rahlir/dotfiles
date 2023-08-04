@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+print_usage()
+{
+    local _script_name=$(basename "$0")
+    echo "Usage: "$_script_name" [ -h | --help ] { locale } [ year ]"
+}
+
+process_args()
+{
+    while (( $# > 0 )); do
+        case $1 in
+            -h|--help)
+                print_usage
+                exit 0
+                ;;
+            -*)
+                echo "Unknown option "$1""
+                print_usage
+                exit 1
+                ;;
+            *)
+                LOCALE=$1
+                if [[ -n "$2" ]]; then
+                    YEAR=$2
+                else
+                    YEAR=$(date "+%Y")
+                fi
+                shift && shift
+                ;;
+        esac
+    done
+}
+
+process_args "$@"
+
+if raw_output=$(curl -fs https://holidata.net/"$LOCALE"/"$YEAR".json); then
+    echo "$raw_output" | jq --arg locale "$LOCALE" -sr '[.[]
+    | {name: .description, date: .date | strptime("%Y-%m-%d") | strftime("%Y%m%d")}]
+    | to_entries[] | {index: (.key+1), name: .value.name, date: .value.date}
+    | "holiday.\($locale)\(.index).name=\(.name)\nholiday.\($locale)\(.index).date=\(.date)"' > holidays."$LOCALE"."$YEAR".rc
+else
+    echo "Error fetching https://holidata.net/"$LOCALE"/"$YEAR".json"
+    exit 1
+fi

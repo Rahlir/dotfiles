@@ -1,0 +1,51 @@
+# TASKRC
+#
+# Basic taskwarrior configuration file. Use the command 'task show' to see
+# all defaults and overrides.
+#
+# by Tadeas Uhlir <tadeas.uhlir@gmail.com>
+
+# Sourcing other files:
+# Import holidays
+include holidays/holidays.en-US.2023.rc
+include holidays/holidays.cs-CZ.2023.rc
+# Import color theme setup
+include themes/gruvbox_$THEMEBG.theme
+
+# Store configs and data in XDG Base Dirs
+data.location=$XDG_DATA_HOME/task
+hooks.location=$XDG_CONFIG_HOME/task/hooks
+
+# Low priority means task is less important than no priority
+uda.priority.values=H,M,,L
+urgency.uda.priority.L.coefficient=-1.0
+
+# Blocking tasks inherit urgency, hence blocked task unfortunately
+# have no urgency penalty. So far this has been working okay for me
+urgency.inherit=1
+urgency.blocking.coefficient=0.0
+urgency.blocked.coefficient=-0.0
+
+# Calendar command shows both holidays and list report of all
+# due tasks that fall within the calendar time window
+calendar.details=full
+calendar.holidays=full
+
+# News version
+news.version=2.6.0
+
+# Show all projects on summary. Why would you want to complete
+# a project if you don't get to see the satisfying 100% completion
+# bar
+summary.all.projects=1
+
+# Tasksync setup. The server name is unfortunately device dependent
+# since IP address does not work on workstation where taskd is running
+taskd.server=uhlirpc:53589
+taskd.credentials=ttc/Tadeas Uhlir/43beab23-c310-4d3c-b00a-0565521cf591
+taskd.certificate=$XDG_DATA_HOME/task/tadeas_uhlir.cert.pem
+taskd.key=$XDG_DATA_HOME/task/tadeas_uhlir.key.pem
+taskd.ca=$XDG_DATA_HOME/task/ca.cert.pem
+
+# Aliases:
+alias.dailystatus=status:completed end.after:today all
