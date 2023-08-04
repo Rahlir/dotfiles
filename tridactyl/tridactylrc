@@ -27,7 +27,7 @@ set hintdelay 150
 " lowering RAM footprint
 command discardall jsb browser.tabs.query({}).then(ts => browser.tabs.discard(ts.map(t=>t.id)))
 " Add a site to buku bookmarks manager
-command add_buku js let url=document.location.href; let title=document.title; tri.native.run("buku -a " + url + " --title " + title + " -w 'alacritty -e nvim'")
+command add_buku js let url=document.location.href; let title=document.title; tri.native.run("buku --nostdin -a " + url + " --title " + title + " -w 'alacritty -e nvim'")
 
 " -------------------------------   Binds   ----------------------------------
 " I barely find javascript elements useful
