@@ -250,14 +250,6 @@ local has_words_before = function()
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
 end
 
-local complete_optionally = function(fallback)
-  if has_words_before() then
-    return cmp.complete
-  else
-    return fallback
-  end
-end
-
 local cmp_ultisnips_mappings = require('cmp_nvim_ultisnips.mappings')
 cmp.setup {
   snippet = {
@@ -268,7 +260,7 @@ cmp.setup {
     ["<Tab>"] = cmp.mapping(
     function(fallback)
       if has_words_before() then
-        cmp_ultisnips_mappings.compose{"jump_forwards","select_next_item"}(cmp.complete)
+        cmp_ultisnips_mappings.compose{"select_next_item", "expand"}(cmp.complete)
       else
         fallback()
       end
@@ -276,8 +268,8 @@ cmp.setup {
 
     ["<S-Tab>"] = cmp.mapping(
     function(fallback)
-      if has_words_before() then
-        cmp_ultisnips_mappings.jump_backwards(fallback)
+      if has_words_before() and cmp.visible() then
+        cmp.select_prev_item()
       else
         fallback()
       end

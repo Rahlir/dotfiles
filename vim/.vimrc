@@ -126,6 +126,7 @@ let g:gruvbox_italicize_strings = 1
 let g:gruvbox_contrast_dark = 'medium'
 let g:gruvbox_contrast_light = 'soft'
 let g:gruvbox_invert_selection = 0
+let g:gruvbox_sign_column = 'bg0'
 
 colorscheme gruvbox
 
@@ -141,7 +142,8 @@ endfunction
 " Configurations: {{{
 
 " Setting options:
-set number  " show line numbers
+set number relativenumber  " show relative numbers and line number on current line
+set signcolumn=number  " signcolumn for gitgutter signs and diagnostics in number column
 set linebreak  " visually break long lines
 set laststatus=2  " always show status line
 set title  " set window title, by default has the form 'filename [+=-] (path) - NVIM'
@@ -160,7 +162,7 @@ set updatetime=750  " after what delay should swap be written to
 set exrc secure  " enable secure execution of .nvimrc and .vimrc in current directory
 set completeopt+=longest
 set wildmode=longest,full
-set signcolumn=yes  " signcolumn for gitgutter signs and diagnostics
+set ignorecase smartcase  " ignore case in search unless it contains capital sign
 " Gui options:
 set guioptions-=rL  " no scrollbars
 set guifont=SFMonoNF-Regular:h13  " SFMono on macOS patched with nerdfonts
