@@ -141,24 +141,29 @@ endfunction
 " Configurations: {{{
 
 " Setting options:
-set number lbr laststatus=2 title ruler mouse=a
-set tabstop=8 softtabstop=4 shiftwidth=4 expandtab  " indentation with spaces
+set number  " show line numbers
+set linebreak  " visually break long lines
+set laststatus=2  " always show status line
+set title  " set window title, by default has the form 'filename [+=-] (path) - NVIM'
+set ruler  " show line and column number, might not be needed since lightline is used
+set mouse=a  " enable mouse for all modes
+set tabstop=8 softtabstop=4 shiftwidth=4 expandtab  " indentation with 4 spaces by default
 set noshowmode  " don't show -- INSERT --
 set report=0  " report any line yanked
 set spelllang=en_us  " set spelling language
 set splitright splitbelow  " more natural splits
-set hidden
-set completeopt+=longest
-set fdm=marker
-set modeline
+set hidden  " keep buffer when switching to another file/buffer
+set foldmethod=marker  " markers (three braces) create folds"
+set modeline  " enable setting options with modeline
 set cursorline  " highlight the current line of cursor
-set updatetime=750
-set exrc
-set secure
-set guioptions-=rL
-set guifont=HackNerdFontComplete-Regular:h11
+set updatetime=750  " after what delay should swap be written to
+set exrc secure  " enable secure execution of .nvimrc and .vimrc in current directory
+set completeopt+=longest
 set wildmode=longest,full
-set scl=yes
+set signcolumn=yes  " signcolumn for gitgutter signs and diagnostics
+" Gui options:
+set guioptions-=rL  " no scrollbars
+set guifont=SFMonoNF-Regular:h13  " SFMono on macOS patched with nerdfonts
 
 " General autocommands:
 augroup vimrc_general
