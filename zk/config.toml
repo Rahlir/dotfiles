@@ -53,13 +53,13 @@ recents = "--sort created- --created-after 'last two weeks'"
 ls = "zk list --sort modified --quiet $@"
 qls = "zk list --sort modified -f oneline $@"
 # Show note with the given title
-shownote = "zk list --match \"title: $@\""
+shownote = "zk list --match \"title: $*\""
 # Create note with the given title
 newt = "zk new -t \"$*\""
 # Edit the last modified note.
 editlast = "zk edit --limit 1 --sort modified $@"
 # Edit the first note that matches the given title
-editnote = "zk edit --limit 1 --match \"title: $@\""
+editnote = "zk edit --limit 1 --match \"title: $*\""
 # Interactively edit a note
 editi = "zk edit --interactive $@"
 # Edit this configuration file
