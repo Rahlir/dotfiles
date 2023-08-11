@@ -1,0 +1,11 @@
+snippet t* "Cleared transaction" b
+${1:`!v strftime("%Y")`}-${2:`!v strftime("%m")`}-${3:`!v strftime("%d")`} * ${5:Payee}
+	${6:Expenses:${7:Category}}	${8:0.00} CZK
+	${9:Assets:${10:Checking}}
+endsnippet
+
+snippet t! "Pending transaction" b
+${1:`!v strftime("%Y")`}-${2:`!v strftime("%m")`}-${3:`!v strftime("%d")`} ! ${5:Payee}
+	${6:Expenses:${7:Category}}	${8:0.00} CZK
+	${9:Assets:${10:Checking}}
+endsnippet
