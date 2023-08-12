@@ -183,11 +183,7 @@ nmap <M-CR> O<Esc>
 nmap <CR> o<Esc>
 nmap <leader>p <C-w>}
 nmap <leader>c <C-w>z
-if has('mac')
-  nmap ÷ :call CenterComment()<CR>
-else
-  nmap <M-/> :call CenterComment()<CR>
-endif
+nmap <M-/> :call CenterComment()<CR>
 nmap <leader>s :set hlsearch!<CR>
 nmap <leader>w :call RemLdWs()<CR>
 nmap <leader>W :call RemLdWsGlobally()<CR>

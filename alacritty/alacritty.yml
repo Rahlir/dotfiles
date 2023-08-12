@@ -11,6 +11,9 @@
 import:
   - ~/.config/alacritty/theme.yml
 
+window:
+  option_as_alt: Both
+
 # Font configuration
 font:
   # Normal (roman) font face
