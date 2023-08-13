@@ -106,23 +106,31 @@ function n()
     local blk="0B" chr="03" dir="04" exe="05" reg="00"
     local hardlink="0a" symlink="02" missing="08" orphan="09" fifo="d0" sock="0d" other="01"
     local plug
-    if [[ -x  ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/gitroot ]]; then
+    if [[ -x ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/gitroot ]]; then
         plug+="g:gitroot"
     fi
-    if [[ -x  ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/fzopen ]]; then
+    if [[ -x ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/fzopen ]]; then
         plug+=";f:fzopen"
     fi
+    if [[ -x ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/diffs ]]; then
+        plug+=";d:diffs"
+    fi
+    if [[ -x ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/fzopen && -n $TMUX ]]; then
+        plug+=";p:preview-tui"
+        set -- "-a" "$@"
+    fi
+    plug+=";s:!git s;l:!git lg"
     if [[ -x ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/nuke ]]; then
         NNN_OPENER="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/nuke" \
             NNN_FCOLORS="$blk$chr$dir$exe$reg$hardlink$symlink$missing$orphan$fifo$sock$other" \
             NNN_COLORS="#0e0d0c0a" \
-            NNN_BMS="d:$HOME/Development;o:$HOME/Documents;w:$HOME/Downloads;s:$HOME/Software;t:$DOTDIR" \
+            NNN_BMS="d:$HOME/Development;o:$HOME/Documents;w:$HOME/Downloads;s:$HOME/Software;t:$DOTDIR;n:$HOME/Documents/rahlir-notes" \
             NNN_ORDER="t:$HOME/Downloads" NNN_PLUG=$plug \
             \nnn -cd $@
     else
         NNN_FCOLORS="$blk$chr$dir$exe$reg$hardlink$symlink$missing$orphan$fifo$sock$other" \
             NNN_COLORS="#0e0d0c0a" \
-            NNN_BMS="d:$HOME/Development;o:$HOME/Documents;w:$HOME/Downloads;s:$HOME/Software;t:$DOTDIR" \
+            NNN_BMS="d:$HOME/Development;o:$HOME/Documents;w:$HOME/Downloads;s:$HOME/Software;t:$DOTDIR;n:$HOME/Documents/rahlir-notes" \
             NNN_ORDER="t:$HOME/Downloads" NNN_PLUG=$plug \
             \nnn -ed $@
     fi
