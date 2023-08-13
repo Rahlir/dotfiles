@@ -19,10 +19,10 @@ function rsync-short() {
 
 function switch-background() {
     if [[ $SHLVL != 1 ]]; then
-        echo "You seem to be in a subshell, run change-background from top-level shell"
+        echo "You seem to be in a subshell, run switch-background from top-level shell"
         return 1
     elif [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
-        echo "You seem to be connected over ssh, change background on your local machine"
+        echo "You seem to be connected over ssh, switch-background on your local machine"
         return 1
     fi
 
@@ -71,10 +71,19 @@ function switch-background() {
         fi
         local wallpaper_path=$HOME/Pictures/.wallpaper
         ln -fs "Wallpapers/archgruv_$newbg.jpg" $wallpaper_path
+        if [[ -f ${XDG_CONFIG_HOME:-$HOME/.config}/tofi/theme ]]; then
+            ln -fs "themes/gruvbox_$newbg" ${XDG_CONFIG_HOME:-$HOME/.config}/tofi/theme
+        fi
+        if [[ -f ${XDG_CONFIG_HOME:-$HOME/.config}/sway/swaylock.conf ]]; then
+            ln -fs "swaylock/gruvbox_$newbg" ${XDG_CONFIG_HOME:-$HOME/.config}/sway/swaylock.conf
+        fi
+        if [[ -f ${XDG_CONFIG_HOME:-$HOME/.config}/mako/config ]]; then
+            ln -fs "gruvbox_$newbg" ${XDG_CONFIG_HOME:-$HOME/.config}/mako/config
+        fi
         if [[ -f ${XDG_CONFIG_HOME:-$HOME/.config}/sway/theme.conf ]]; then
             ln -fs "themes/gruvbox_$newbg.conf" ${XDG_CONFIG_HOME:-$HOME/.config}/sway/theme.conf
             if [[ -n "$SWAYSOCK" ]]; then
-                swaymsg reload
+                swaymsg reload && makoctl reload
             fi
         fi
     elif [[ "$(uname -s)" == Darwin ]]; then
