@@ -80,7 +80,7 @@
 
 [mergetool "fugitive"]
     # Use fugitive for merge
-    cmd = "$EDITOR -c 'Gdiff' $MERGED"
+    cmd = "$EDITOR -c 'Gvdiffsplit!' $MERGED"
 
 [pretty]
     niceoneline = "tformat:%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%an %ad)%Creset"
