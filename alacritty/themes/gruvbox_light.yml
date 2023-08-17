@@ -27,6 +27,10 @@ colors:
     cyan:    '#427b58'
     white:   '#3c3836'
 
+  indexed_colors:
+    # gruvbox_light bg0, which is used in taskwarrior (default 229 looks off)
+    - { index: 229, color: '#fbf1c7' }
+
 env:
   THEMEBG: light
   BAT_THEME: gruvbox-light

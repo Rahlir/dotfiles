@@ -27,6 +27,10 @@ colors:
     cyan:    '#8ec07c'
     white:   '#ebdbb2'
 
+  indexed_colors:
+    # gruvbox_dark fg0, which is used in taskwarrior (default 229 looks off)
+    - { index: 229, color: '#fbf1c7' }
+
 env:
   THEMEBG: dark
   BAT_THEME: gruvbox-dark
