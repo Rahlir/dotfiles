@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+POSITIONAL_ARGS=()
+URLS=()
+
+process_args()
+{
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            *)
+                POSITIONAL_ARGS+=("$1")
+                shift
+                ;;
+        esac
+    done
+}
+
+parse_annotation()
+{
+    for url in $(echo "$1" | grep -oP "(?<=\s)((https?://(www\.)?)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}|file:///)\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"); do
+        URLS+=( "$url" )
+    done
+}
+
+get_urls()
+{
+    local index=1;
+    local annotation=$(task _get "$1".annotations."$index".description)
+    while [[ -n "$annotation" ]]; do
+        parse_annotation "$annotation"
+        ((index++))
+        annotation=$(task _get "$1".annotations."$index".description)
+    done
+}
+
+pick_to_open()
+{
+    if [[ ${#URLS[@]} -eq 0 ]]; then
+        echo "No link to open..."
+        exit 1
+    elif [[ ${#URLS[@]} -eq 1 ]]; then
+        read -p "Open "${URLS[0]}"? [Y/n] " -n 1 -r
+        echo
+        if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+            xdg-open "${URLS[0]}"
+        fi
+    else
+        local index=1
+        echo "Open:"
+        for url in "${URLS[@]}"; do
+            echo ""$index") "$url""
+            ((index++))
+        done
+        read -r answers
+        for ans in $answers; do
+            if [[ "$ans" =~ ^[0-9]+$ && "$ans" -lt "$index" && "$ans" -gt 0 ]]; then
+                ((ans--))
+                xdg-open "${URLS["$ans"]}"
+            else
+                echo "Invalid index "$ans""
+            fi
+        done
+    fi
+}
+
+process_args "$@"
+
+for id in ${POSITIONAL_ARGS[@]}; do
+    get_urls "$id"
+done
+
+pick_to_open

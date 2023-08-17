@@ -5,32 +5,74 @@
 #
 # by Tadeas Uhlir <tadeas.uhlir@gmail.com>
 
-# Sourcing other files:
-# Import holidays
+### Sourcing other files ###
+# Holidays
 include holidays/holidays.en-US.2023.rc
 include holidays/holidays.cs-CZ.2023.rc
-# Import color theme setup
+# Color theme
 include themes/gruvbox_$THEMEBG.theme
+# Task sync config. This is not part of dotfiles as is
+# sensitive and device dependent
+include $XDG_CONFIG_HOME/task/tasksyncrc
 
-# Store configs and data in XDG Base Dirs
+### XDG dirs ###
 data.location=$XDG_DATA_HOME/task
 hooks.location=$XDG_CONFIG_HOME/task/hooks
 
-# Low priority means task is less important than no priority
-uda.priority.values=H,M,,L
-urgency.uda.priority.L.coefficient=-1.0
-
+### Urgency setup ###
 # Blocking tasks inherit urgency, hence blocked task unfortunately
 # have no urgency penalty. So far this has been working okay for me
 urgency.inherit=1
 urgency.blocking.coefficient=0.0
 urgency.blocked.coefficient=-0.0
+urgency.project.coefficient=0.9
+urgency.annotations.coefficient=0.8
 
+### Calendar setup ###
 # Calendar command shows both holidays and list report of all
 # due tasks that fall within the calendar time window
 calendar.details=full
 calendar.holidays=full
 
+### UDAs ###
+# Low priority means task is less important than no priority
+uda.priority.values=H,M,,L
+urgency.uda.priority.L.coefficient=-1.0
+# Duration pulled from timewarrior
+uda.took.type=duration
+uda.took.label=Time Spent
+# Time estimate of a task
+uda.estimate.type=duration
+uda.estimate.label=Time Estimated
+urgency.uda.estimate.coefficient=0.8
+
+### Reports ###
+report.timelog.description=Tasks with times (spend or estimated) logged
+report.timelog.columns=uuid.short,id,status.short,end,took,estimate,project,description
+report.timelog.labels=UUID,ID,St,Completed,Spent,Estimated,Project,Description
+report.timelog.filter=estimate.any: or took.any:
+report.timelog.sort=took-,estimate-
+report.timelog.context=1
+
+report.estimates.description=Tasks with time estimates
+report.estimates.columns=id,start.age,priority,tags,project,description,estimate,urgency
+report.estimates.labels=ID,Active,P,Tag,Project,Description,Estimated,Urg
+report.estimates.filter=estimate.any: status:pending
+report.estimates.sort=estimate-,urgency-
+report.estimates.context=1
+
+report.next.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,until.remaining,description,urgency
+report.next.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Until,Description,Urg
+
+report.projectview.columns=id,start.active,depends.count,recur.indicator,scheduled.countdown,due.countdown,until.countdown,estimate,tags,project.indented,description.count
+report.projectview.labels=ID,A,Dep,R,S,Due,Until,Est,Tags,Project,Description
+report.projectview.filter=project.any: status:pending
+report.projectview.sort=project+,start-,depends+
+
+# ### Aliases ###
+alias.dailystatus=status:completed end.after:today all
+
+### Other ###
 # News version
 news.version=2.6.0
 
@@ -39,13 +81,5 @@ news.version=2.6.0
 # bar
 summary.all.projects=1
 
-# Tasksync setup. The server name is unfortunately device dependent
-# since IP address does not work on workstation where taskd is running
-taskd.server=uhlirpc:53589
-taskd.credentials=ttc/Tadeas Uhlir/43beab23-c310-4d3c-b00a-0565521cf591
-taskd.certificate=$XDG_DATA_HOME/task/tadeas_uhlir.cert.pem
-taskd.key=$XDG_DATA_HOME/task/tadeas_uhlir.key.pem
-taskd.ca=$XDG_DATA_HOME/task/ca.cert.pem
-
-# Aliases:
-alias.dailystatus=status:completed end.after:today all
+# Leave room for sync message
+reserved.lines=2
