@@ -121,7 +121,8 @@ function n()
     fi
     plug+=";s:!git s;l:!git lg"
     if [[ -x ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/nuke ]]; then
-        NNN_OPENER="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/nuke" \
+        [[ -n $SSH_CONNECTION ]] || local gui=${GUI:-1}
+        NNN_OPENER="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/nuke" GUI=${gui:-0}\
             NNN_FCOLORS="$blk$chr$dir$exe$reg$hardlink$symlink$missing$orphan$fifo$sock$other" \
             NNN_COLORS="#0e0d0c0a" \
             NNN_BMS="d:$HOME/Development;o:$HOME/Documents;w:$HOME/Downloads;s:$HOME/Software;t:$DOTDIR;n:$HOME/Documents/rahlir-notes" \
