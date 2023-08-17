@@ -36,3 +36,9 @@ if command -v neomutt &> /dev/null; then
     term_direct="${TERM%-*}"-direct
     alias neomutt="TERM=$term_direct neomutt"
 fi
+if command -v buku &> /dev/null; then
+    alias buk='buku --np'
+fi
+if command -v glow &> /dev/null; then
+    alias glow="glow -s $THEMEBG"
+fi
