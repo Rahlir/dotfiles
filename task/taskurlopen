@@ -17,7 +17,18 @@ process_args()
 
 parse_annotation()
 {
-    for url in $(echo "$1" | grep -oP "(?<=\s)((https?://(www\.)?)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}|file:///)\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"); do
+    local _grep_cmd
+    if [[ "$(uname -s)" == Darwin ]]; then
+        if command -v ggrep &> /dev/null; then
+            _grep_cmd=ggrep
+        else
+            echo "Needs GNU Grep, please install it via homebrew"
+            exit 1
+        fi
+    else
+        _grep_cmd=grep
+    fi
+    for url in $(echo "$1" | "$_grep_cmd" -oP "(?<=\s)((https?://(www\.)?)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}|file:///)\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"); do
         URLS+=( "$url" )
     done
 }
@@ -35,6 +46,11 @@ get_urls()
 
 pick_to_open()
 {
+    local _open_cmd="xdg-open"
+    if [[ "$(uname -s)" == Darwin ]]; then
+        _open_cmd=open
+    fi
+
     if [[ ${#URLS[@]} -eq 0 ]]; then
         echo "No link to open..."
         exit 1
@@ -42,7 +58,7 @@ pick_to_open()
         read -p "Open "${URLS[0]}"? [Y/n] " -n 1 -r
         echo
         if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-            xdg-open "${URLS[0]}"
+            "$_open_cmd" "${URLS[0]}"
         fi
     else
         local index=1
@@ -55,7 +71,7 @@ pick_to_open()
         for ans in $answers; do
             if [[ "$ans" =~ ^[0-9]+$ && "$ans" -lt "$index" && "$ans" -gt 0 ]]; then
                 ((ans--))
-                xdg-open "${URLS["$ans"]}"
+                "$_open_cmd" "${URLS["$ans"]}"
             else
                 echo "Invalid index "$ans""
             fi
