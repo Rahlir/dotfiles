@@ -96,11 +96,14 @@ style_windowstatus() {
     local wcurrent_fg="$(get_tmux_option @wcurrent-fg black)"
     local wlast_fg="$(get_tmux_option @wlast-fg "$window_fg")"
     local wlast_bg="$(get_tmux_option @wlast-bg "$window_bg")"
+    local wbell_fg="$(get_tmux_option @wbell-fg "$window_fg")"
+    local wbell_bg="$(get_tmux_option @wbell-bg "$default_emph_color")"
     
     tmux set-option -g window-status-style fg="$window_fg",bg="$window_bg"
     tmux set-option -g window-status-current-style fg="$wcurrent_fg",bg="$wcurrent_bg",bold
     tmux set-option -g window-status-activity-style fg="$wactivity_fg",bg="$wactivity_bg"
     tmux set-option -g window-status-last-style fg="$wlast_fg",bg="$wlast_bg",italics
+    tmux set-option -g window-status-bell-style fg="$wbell_fg",bg="$wbell_bg"
 
     local separator_window_inner="$(get_tmux_option @separator-window-inner "$default_inner_separator")"
     local separator_window_left="$(get_tmux_option @separator-window-left "$default_right_separator")"
