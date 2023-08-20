@@ -25,8 +25,8 @@ hooks.location=$XDG_CONFIG_HOME/task/hooks
 urgency.inherit=1
 urgency.blocking.coefficient=0.0
 urgency.blocked.coefficient=-0.0
-urgency.project.coefficient=0.9
-urgency.annotations.coefficient=0.8
+urgency.project.coefficient=0.8
+urgency.annotations.coefficient=0.5
 
 ### Calendar setup ###
 # Calendar command shows both holidays and list report of all
