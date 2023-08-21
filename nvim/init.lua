@@ -19,6 +19,7 @@ vim.api.nvim_create_autocmd({"BufReadPost,FileReadPost"}, {
 --- }}}
 -- Diagnostics: {{{
 local opts = {noremap=true, silent=true}
+vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, opts)
@@ -38,6 +39,33 @@ end
 -- }}}
 
 -- ------------------------------Plugin Options--------------------------------
+-- Telescope: {{{
+local themes = require('telescope.themes')
+local builtin = require('telescope.builtin')
+
+vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
+vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
+vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
+
+require('telescope').setup{
+  defaults = {
+    layout_strategy = 'flex',
+
+    layout_config = {
+      flex = {
+        flip_columns = 120
+      }
+    },
+
+    preview = {
+      timeout = 400
+    },
+
+    color_devicons = false
+  }
+}
+-- }}}
 -- LspConfig: {{{
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -46,9 +74,41 @@ local on_attach = function(client, bufnr)
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
   local bufopts = { noremap=true, silent=true, buffer=bufnr }
+
+  vim.keymap.set('n', 'gr', function()
+    builtin.lsp_references(themes.get_cursor({
+      show_line=false, layout_config={width=0.7}
+    }))
+  end, bufopts)
+
+  vim.keymap.set('n', 'gd', function()
+    builtin.lsp_definitions(themes.get_cursor({
+      show_line=false, layout_config={width=0.7}
+    }))
+  end, bufopts)
+
+  vim.keymap.set('n', '<leader>gi', function()
+    builtin.lsp_implementations(themes.get_cursor({
+      show_line=false, layout_config={width=0.7}
+    }))
+  end, bufopts)
+
+  vim.keymap.set('n', '<leader>gci', function()
+    builtin.lsp_incoming_calls(themes.get_cursor({
+      show_line=false, layout_config={width=0.7}
+    }))
+  end, bufopts)
+
+  vim.keymap.set('n', '<leader>gco', function()
+    builtin.lsp_outgoing_calls(themes.get_cursor({
+      how_line=false, layout_config={width=0.7}
+    }))
+  end, bufopts)
+
+  vim.keymap.set('n', '<leader>fs', builtin.lsp_document_symbols, bufopts)
+  vim.keymap.set('n', '<leader>fS', builtin.lsp_dynamic_workspace_symbols, bufopts)
+
   vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-  vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
   vim.keymap.set('n', '<C-s>', vim.lsp.buf.signature_help, bufopts)
 
@@ -63,21 +123,6 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', '<leader>fm', function()
     vim.lsp.buf.format { async = true }
   end, bufopts)
-
-  -- Create autocommand showing diagnostics in float window
-  vim.api.nvim_create_autocmd("CursorHold", {
-    buffer = bufnr,
-    callback = function()
-      local opts = {
-        focusable = false,
-        close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
-        border = 'rounded',
-        source = 'if_many',
-        prefix = ' ',
-      }
-      vim.diagnostic.open_float(nil, opts)
-    end
-  })
 end
 
 require('lspconfig')['clangd'].setup{
@@ -196,50 +241,6 @@ require('nvim-treesitter.configs').setup{
       },
     }
   },
-}
--- }}}
--- Telescope: {{{
-local themes = require('telescope.themes')
-local builtin = require('telescope.builtin')
-
-vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
-vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
-vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
-vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
-vim.keymap.set('n', '<leader>gr', function()
-  builtin.lsp_references(themes.get_cursor({show_line=false, layout_config={width=0.5}}))
-end)
-vim.keymap.set('n', '<leader>gd', function()
-  builtin.lsp_definitions(themes.get_cursor({show_line=false, layout_config={width=0.5}}))
-end)
-vim.keymap.set('n', '<leader>gi', function()
-  builtin.lsp_implementations(themes.get_cursor({show_line=false, layout_config={width=0.5}}))
-end)
-vim.keymap.set('n', '<leader>gci', function()
-  builtin.lsp_incoming_calls(themes.get_cursor({show_line=false, layout_config={width=0.5}}))
-end)
-vim.keymap.set('n', '<leader>gco', function()
-  builtin.lsp_outgoing_calls(themes.get_cursor({show_line=false, layout_config={width=0.5}}))
-end)
-vim.keymap.set('n', '<leader>fs', builtin.lsp_document_symbols, {})
-vim.keymap.set('n', '<leader>fS', builtin.lsp_dynamic_workspace_symbols, {})
-
-require('telescope').setup{
-  defaults = {
-    layout_strategy = 'flex',
-
-    layout_config = {
-      flex = {
-        flip_columns = 120
-      }
-    },
-
-    preview = {
-      timeout = 400
-    },
-
-    color_devicons = false
-  }
 }
 -- }}}
 -- CMP: {{{
