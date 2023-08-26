@@ -51,6 +51,7 @@ if has('nvim')
   " while nvim-web-devicons is used by Telescope
   Plug 'ryanoasis/vim-devicons'
   Plug 'nvim-tree/nvim-web-devicons'
+  Plug 'windwp/nvim-ts-autotag'
 
 " Vim specific plugins (in the future I think I should get rid of this
 " and let vim configuration be as minimal as possible)
@@ -181,19 +182,28 @@ let g:changelog_username = 'Tadeas Uhlir <tadeas.uhlir@gmail.com>'
 
 nmap <M-CR> O<Esc>
 nmap <CR> o<Esc>
+" Open preview window with the tag under cursor
 nmap <leader>p <C-w>}
-nmap <leader>c <C-w>z
+" Close the preview window
+nmap <leader>P <C-w>z
 nmap <M-/> :call CenterComment()<CR>
 nmap <leader>s :set hlsearch!<CR>
 nmap <leader>w :call RemLdWs()<CR>
 nmap <leader>W :call RemLdWsGlobally()<CR>
 nmap <leader>a :setlocal spell!<CR>
+" Enter insert mode at the end / beginning of a paragraph
 nnoremap ]a }kA
 nnoremap [a {jI
 map + :call BlockComment()<CR>
 map - :call UnBlockComment()<CR>
 nnoremap <leader>b :b #<CR>
 nnoremap <silent> <leader><Space> :call FindTodo()<CR>
+" Quickfix mappings
+nnoremap [q :cprev<CR>
+nnoremap ]q :cnext<CR>
+nnoremap <leader>cc :cc<CR>
+nnoremap <leader>co :copen<CR>
+nnoremap <leader>cl :cclose<CR>
 
 " }}}
 
@@ -354,19 +364,24 @@ endif
 " }}}
 " Startify Options: {{{
 
-    let g:startify_bookmarks = [
-            \ { 'c': '~/.vimrc' },
-            \ { 'n': '~/.config/nvim/init.lua' },
-            \ { 'z': '~/.zshrc' },
-            \ { 'a': '~/.config/alacritty/alacritty.yml' },
-            \ ]
-    let g:startify_change_to_vcs_root = 1
-    let g:startify_files_number = 5
+let g:startify_bookmarks = [
+        \ { 'c': '~/.vimrc' },
+        \ { 'n': '~/.config/nvim/init.lua' },
+        \ { 'z': '~/.zshrc' },
+        \ { 'a': '~/.config/alacritty/alacritty.yml' },
+        \ ]
+let g:startify_change_to_vcs_root = 1
+let g:startify_files_number = 5
 
 " }}}
 " CtrlP Options: {{{
 
 let g:ctrlp_extensions = ['tag']
+
+" }}}
+" Ledger Options: {{{
+
+let g:ledger_bin = 'ledger'
 
 " }}}
 

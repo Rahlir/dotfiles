@@ -22,7 +22,7 @@ local opts = {noremap=true, silent=true}
 vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, opts)
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setqflist, opts)
 
 vim.diagnostic.config({
   virtual_text = false,
@@ -47,6 +47,7 @@ vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
 vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
+vim.keymap.set('n', '<leader>fd', builtin.diagnostics, {})
 
 require('telescope').setup{
   defaults = {
@@ -110,7 +111,7 @@ local on_attach = function(client, bufnr)
 
   vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-  vim.keymap.set('n', '<C-s>', vim.lsp.buf.signature_help, bufopts)
+  vim.keymap.set({'n', 'i'}, '<C-s>', vim.lsp.buf.signature_help, bufopts)
 
   vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, bufopts)
   vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
@@ -127,12 +128,14 @@ end
 
 require('lspconfig')['clangd'].setup{
   on_attach = on_attach,
-  capabilities = capabilities
 }
 
 require('lspconfig')['pyright'].setup{
   on_attach = on_attach,
-  capabilities = capabilities
+}
+
+require('lspconfig')['tsserver'].setup{
+  on_attach = on_attach,
 }
 -- }}}
 -- Lightline: {{{
@@ -221,26 +224,30 @@ require('nvim-treesitter.configs').setup{
         ["[B"] = "@block.outer"
       }
     },
+  },
 
-    playground = {
-      enable = true,
-      disable = {},
-      updatetime = 25,  -- Debounced time for highlighting nodes in the playground from source code
-      persist_queries = false,  -- Whether the query persists across vim sessions
-      keybindings = {
-        toggle_query_editor = 'o',
-        toggle_hl_groups = 'i',
-        toggle_injected_languages = 't',
-        toggle_anonymous_nodes = 'a',
-        toggle_language_display = 'I',
-        focus_language = 'f',
-        unfocus_language = 'F',
-        update = 'R',
-        goto_node = '<cr>',
-        show_help = '?',
-      },
+  playground = {
+    enable = true,
+    disable = {},
+    updatetime = 25,  -- Debounced time for highlighting nodes in the playground from source code
+    persist_queries = false,  -- Whether the query persists across vim sessions
+    keybindings = {
+      toggle_query_editor = 'o',
+      toggle_hl_groups = 'i',
+      toggle_injected_languages = 't',
+      toggle_anonymous_nodes = 'a',
+      toggle_language_display = 'I',
+      focus_language = 'f',
+      unfocus_language = 'F',
+      update = 'R',
+      goto_node = '<cr>',
+      show_help = '?',
     }
   },
+
+  autotag = {
+    enable = true
+  }
 }
 -- }}}
 -- CMP: {{{
@@ -307,23 +314,6 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 require("zk").setup({
   -- can be "telescope", "fzf" or "select"
   picker = "telescope",
-
-  lsp = {
-    -- `config` is passed to `vim.lsp.start_client(config)`
-    -- see `:h vim.lsp.start_client()`
-    config = {
-      cmd = { "zk", "lsp" },
-      name = "zk",
-      on_attach = on_attach,
-      capabilities = capabilities,
-    },
-
-    -- automatically attach buffers in a zk notebook that match the given filetypes
-    auto_attach = {
-      enabled = true,
-      filetypes = { "markdown" },
-    },
-  },
 })
 
 -- ZK Keymaps
@@ -331,4 +321,12 @@ local opts = { noremap=true, silent=false }
 vim.keymap.set("n", "<leader>zn", "<Cmd>ZkNew { title = vim.fn.input('Title: ') }<CR>", opts)
 vim.keymap.set("n", "<leader>zl", "<Cmd>ZkNotes<CR>", opts)
 vim.keymap.set("n", "<leader>zt", "<Cmd>ZkTags<CR>", opts)
+
+-- Keymaps to be used only when inside zk notebook
+if require("zk.util").notebook_root(vim.fn.expand('%:p')) ~= nul then
+  local bufopts = { noremap=true, silent=false, buffer=vim.api.nvim_get_current_buf() }
+  vim.keymap.set("n", "<CR>", vim.lsp.buf.definition, bufopts)
+  vim.keymap.set("n", "<leader>zb", "<Cmd>ZkBacklinks<CR>", bufopts)
+  vim.keymap.set("v", "<leader>zN", ":'<,'>ZkNewFromTitleSelection<CR>", bufopts)
+end
 -- }}}
