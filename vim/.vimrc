@@ -12,7 +12,7 @@ call plug#begin('~/.vim/plugged')
 " Plugins for all systems and (neo)vims
 Plug 'tpope/vim-sensible'
 Plug 'itchyny/lightline.vim'
-Plug 'morhetz/gruvbox'
+Plug 'rahlir/gruvbox', { 'branch': 'nvim_features' }
 Plug 'raimondi/delimitmate'
 Plug 'yggdroot/indentline'
 Plug 'tpope/vim-surround'
@@ -98,22 +98,6 @@ endif
 set termguicolors
 syntax on
 
-if has('nvim')
-  " Extra colors for diagnostics, telescope, and treesitter
-  augroup vimrc_colorscheme
-    autocmd!
-    autocmd ColorScheme gruvbox highlight! link DiagnosticError GruvboxRedBold
-    autocmd ColorScheme gruvbox highlight! link DiagnosticWarn GruvboxYellowBold
-    autocmd ColorScheme gruvbox highlight! link TelescopeBorder GruvboxFg4
-    autocmd ColorScheme gruvbox highlight! link @namespace GruvboxFg3
-    autocmd ColorScheme gruvbox highlight! link @variable GruvboxFg1
-    autocmd ColorScheme gruvbox highlight! link @text.strike markdownStrike
-    autocmd ColorScheme gruvbox highlight! link @text.strong markdownBold
-    autocmd ColorScheme gruvbox highlight! link @text.emphasis markdownItalic
-    autocmd ColorScheme gruvbox highlight! link @text.reference markdownLinkText
-  augroup END
-endif
-
 " Dynamic dark/light switching
 if exists('$THEMEBG') && $THEMEBG == 'light'
   set background=light
@@ -168,12 +152,6 @@ set ignorecase smartcase  " ignore case in search unless it contains capital sig
 set guioptions-=rL  " no scrollbars
 set guifont=SFMonoNF-Regular:h13  " SFMono on macOS patched with nerdfonts
 
-" General autocommands:
-augroup vimrc_general
-  autocmd!
-  autocmd FileType help setlocal scl=auto
-augroup END
-
 " Other options and variables:
 let g:changelog_username = 'Tadeas Uhlir <tadeas.uhlir@gmail.com>'
 
@@ -206,12 +184,24 @@ nnoremap <leader>co :copen<CR>
 nnoremap <leader>cl :cclose<CR>
 
 " }}}
+" Filetype Plugin Configuration: {{{
+
+" Python
+let g:python_indent = {
+      \ 'open_paren': 'shiftwidth()',
+      \ 'continue': 'shiftwidth()',
+      \ 'closed_paren_align_last_line': v:false
+  \ }
+
+" Tex
+let g:tex_flavor = 'latex'
+let g:tex_comment_nospell = 1
+
+" }}}
 
 " ------------------------------Plugin Options--------------------------------
 " Vimtex Options: {{{
 
-let g:tex_flavor = 'latex'
-let g:tex_comment_nospell = 1
 let g:vimtex_view_method = 'skim'
 let g:vimtex_quickfix_open_on_warning = 0
 let g:vimtex_fold_manual = 1
