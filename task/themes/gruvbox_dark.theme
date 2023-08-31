@@ -38,7 +38,7 @@ color.tag.none=
 color.tagged=
 
 # Due
-color.due=color3
+color.due=color11
 color.due.today=color1
 color.overdue=color9
 
