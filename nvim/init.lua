@@ -63,7 +63,10 @@ require('telescope').setup{
       timeout = 400
     },
 
-    color_devicons = false
+    color_devicons = false,
+    prompt_prefix = '󰭎 ',
+    --- prompt_prefix = ' ',
+    selection_caret = ' '
   }
 }
 -- }}}
@@ -75,35 +78,28 @@ local on_attach = function(client, bufnr)
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
   local bufopts = { noremap=true, silent=true, buffer=bufnr }
+  local teleopts = {
+    show_line=false, layout_config={ width=0.7, preview_width=0.45 }, initial_mode="normal"
+  }
 
   vim.keymap.set('n', 'gr', function()
-    builtin.lsp_references(themes.get_cursor({
-      show_line=false, layout_config={width=0.7}
-    }))
+    builtin.lsp_references(themes.get_cursor(teleopts))
   end, bufopts)
 
   vim.keymap.set('n', 'gd', function()
-    builtin.lsp_definitions(themes.get_cursor({
-      show_line=false, layout_config={width=0.7}
-    }))
+    builtin.lsp_definitions(themes.get_cursor(teleopts))
   end, bufopts)
 
   vim.keymap.set('n', '<leader>gi', function()
-    builtin.lsp_implementations(themes.get_cursor({
-      show_line=false, layout_config={width=0.7}
-    }))
+    builtin.lsp_implementations(themes.get_cursor(teleopts))
   end, bufopts)
 
   vim.keymap.set('n', '<leader>gci', function()
-    builtin.lsp_incoming_calls(themes.get_cursor({
-      show_line=false, layout_config={width=0.7}
-    }))
+    builtin.lsp_incoming_calls(themes.get_cursor(teleopts))
   end, bufopts)
 
   vim.keymap.set('n', '<leader>gco', function()
-    builtin.lsp_outgoing_calls(themes.get_cursor({
-      how_line=false, layout_config={width=0.7}
-    }))
+    builtin.lsp_outgoing_calls(themes.get_cursor(teleopts))
   end, bufopts)
 
   vim.keymap.set('n', '<leader>fs', builtin.lsp_document_symbols, bufopts)
