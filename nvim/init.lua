@@ -314,6 +314,11 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 require("zk").setup({
   -- can be "telescope", "fzf" or "select"
   picker = "telescope",
+  lsp = {
+    config = {
+      on_attach = on_attach
+    }
+  }
 })
 
 -- ZK Keymaps
@@ -321,12 +326,4 @@ local opts = { noremap=true, silent=false }
 vim.keymap.set("n", "<leader>zn", "<Cmd>ZkNew { title = vim.fn.input('Title: ') }<CR>", opts)
 vim.keymap.set("n", "<leader>zl", "<Cmd>ZkNotes<CR>", opts)
 vim.keymap.set("n", "<leader>zt", "<Cmd>ZkTags<CR>", opts)
-
--- Keymaps to be used only when inside zk notebook
-if require("zk.util").notebook_root(vim.fn.expand('%:p')) ~= nul then
-  local bufopts = { noremap=true, silent=false, buffer=vim.api.nvim_get_current_buf() }
-  vim.keymap.set("n", "<CR>", vim.lsp.buf.definition, bufopts)
-  vim.keymap.set("n", "<leader>zb", "<Cmd>ZkBacklinks<CR>", bufopts)
-  vim.keymap.set("v", "<leader>zN", ":'<,'>ZkNewFromTitleSelection<CR>", bufopts)
-end
 -- }}}
