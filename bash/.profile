@@ -41,6 +41,12 @@ else
     export VISUAL=vi
 fi
 
+if test -n "$WAYLAND_DISPLAY" || test -n "$DISPLAY" || test "$(uname -s)" = Darwin; then
+    export BROWSER=firefox
+else
+    export BROWSER=lynx
+fi
+
 # Path to dotfiles
 export DOTDIR="$HOME/.dotfiles"
 # LESS history file
