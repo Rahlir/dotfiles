@@ -41,7 +41,9 @@ else
     export VISUAL=vi
 fi
 
-if test -n "$WAYLAND_DISPLAY" || test -n "$DISPLAY" || test "$(uname -s)" = Darwin; then
+if test "$(uname -s)" = Darwin; then
+    :
+elif test -n "$WAYLAND_DISPLAY" || test -n "$DISPLAY"; then
     export BROWSER=firefox
 else
     export BROWSER=lynx
