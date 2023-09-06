@@ -35,6 +35,7 @@ vim.keymap.set('n', '<leader>sd', function()
     vim.diagnostic.disable(0)
     vim.print("diagnostics were disabled...")
   end
+  vim.api.nvim_exec_autocmds("DiagnosticChanged", {})
 end, diagopts)
 -- Bracket movements
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, diagopts)

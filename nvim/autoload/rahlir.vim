@@ -25,8 +25,9 @@ endfunction
 function! rahlir#ok() abort
   let l:warnings = luaeval("require('rahlir').get_diagnostic_count('warn')")
   let l:errors = luaeval("require('rahlir').get_diagnostic_count('error')")
-  if warnings == 0 && errors == 0
-    if luaeval('vim.tbl_count(vim.lsp.buf_get_clients(' . bufnr() . '))') != 0
+  if warnings == 0 && errors == 0 &&
+	\ luaeval('vim.tbl_count(vim.lsp.buf_get_clients(' . bufnr() . '))') != 0 &&
+	\ luaeval('vim.diagnostic.is_disabled(0)') != v:true
       return 'OK'
     endif
   endif
