@@ -8,7 +8,7 @@ Keymaps use `<space>` as `<leader>`. The systems for the keymaps is:
     * `]d` or `[d`: next or previous diagnostic item
     * `]t` or `[t`: next or previous TODO comment
     * `]q` or `[q`: next or previous quickfix item
-    * `]a` or `[a`: next or previous file in the file list
+    * `]f` or `[f`: next or previous file in the file list
     * `]b` or `[b`: next or previous buffer in the buffer list
 * `<leader><char>` where `<char>` represents mode / functionality
   for actions related to the mode / functionality

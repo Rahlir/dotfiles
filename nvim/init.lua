@@ -18,6 +18,13 @@ vim.api.nvim_create_autocmd({"BufReadPost,FileReadPost"}, {
   command = "setlocal foldmethod=expr | setlocal foldexpr=nvim_treesitter#foldexpr() | normal zR",
   group = nvimrc_augroup
 })
+-- Autocommand to use treesitter for indenting javascriptreact and typescriptreact files
+-- with treesitter
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "javascriptreact", "typescriptreact" },
+  command = "TSBufEnable indent",
+  group = nvimrc_augroup
+})
 --- }}}
 -- Diagnostics: {{{
 
@@ -205,9 +212,14 @@ vim.keymap.set('n', '<leader>st', function()
   vim.cmd.TSToggle('highlight')
   vim.print("treesitter highlighting was toggled...")
 end, { noremap=true, silent=true })
+vim.keymap.set('n', '<leader>sT', function()
+  vim.cmd.TSToggle('indent')
+  vim.print("treesitter indent was toggled...")
+end, { noremap=true, silent=true })
 require('nvim-treesitter.configs').setup{
   ensure_installed = { "c", "cpp", "python", "vim", "make", "cmake", "comment", "lua",
-                       "ledger", "latex", "markdown", "markdown_inline" },
+                       "ledger", "latex", "markdown", "markdown_inline",
+                       "javascript", "typescript", "tsx" },
 
   -- I think this could solve the error on updates when upgrading treesitter with plug
   sync_install = true,  -- only applied to `ensure_installed`
@@ -267,10 +279,6 @@ require('nvim-treesitter.configs').setup{
         ["[A"] = "@parameter.inner"
       }
     },
-  },
-
-  indent = {
-    enable = { 'typescriptreact', 'javascriptreact' }
   },
 
   autotag = {
