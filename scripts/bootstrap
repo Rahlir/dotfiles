@@ -551,6 +551,11 @@ for fn in "${BOOTSTRAP_FILES[@]}"; do
         vim)
             bootstrap_vim
             ;;
+        xdg-open)
+            for _xdg_f in "$DOTFILES_PATH"/"$fn"/*; do
+                bootstrap_folder "$_xdg_f" "$XDG_CONFIG_HOME" "$DOTFILES_PATH"/"$fn"
+            done
+            ;;
         *)
             bootstrap_folder "$DOTFILES_PATH/$fn" "$XDG_CONFIG_HOME"
             ;;
