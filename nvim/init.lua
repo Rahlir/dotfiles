@@ -46,7 +46,7 @@ vim.keymap.set('n', '<leader>sD', function()
     vim.print("global diagnostics were disabled...")
   end
   vim.api.nvim_exec_autocmds("DiagnosticChanged", {})
-end)
+end, diagopts)
 -- Bracket movements
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, diagopts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, diagopts)
@@ -200,6 +200,11 @@ vim.api.nvim_create_autocmd('DiagnosticChanged', {
 })
 -- }}}
 -- Treesitter: {{{
+-- Mappings:
+vim.keymap.set('n', '<leader>st', function()
+  vim.cmd.TSToggle('highlight')
+  vim.print("treesitter highlighting was toggled...")
+end, { noremap=true, silent=true })
 require('nvim-treesitter.configs').setup{
   ensure_installed = { "c", "cpp", "python", "vim", "make", "cmake", "comment", "lua",
                        "ledger", "latex", "markdown", "markdown_inline" },
@@ -240,43 +245,28 @@ require('nvim-treesitter.configs').setup{
       goto_next_start = {
         ["]m"] = "@function.outer",
         ["]]"] = "@class.outer",
-        ["]k"] = "@block.outer"
+        ["]k"] = "@block.outer",
+        ["]a"] = "@parameter.inner"
       },
       goto_next_end = {
         ["]M"] = "@function.outer",
         ["]["] = "@class.outer",
-        ["]K"] = "@block.outer"
+        ["]K"] = "@block.outer",
+        ["]A"] = "@parameter.inner"
       },
       goto_previous_start = {
         ["[m"] = "@function.outer",
         ["[["] = "@class.outer",
-        ["[k"] = "@block.outer"
+        ["[k"] = "@block.outer",
+        ["[a"] = "@parameter.inner"
       },
       goto_previous_end = {
         ["[M"] = "@function.outer",
         ["[]"] = "@class.outer",
-        ["[K"] = "@block.outer"
+        ["[K"] = "@block.outer",
+        ["[A"] = "@parameter.inner"
       }
     },
-  },
-
-  playground = {
-    enable = true,
-    disable = {},
-    updatetime = 25,  -- Debounced time for highlighting nodes in the playground from source code
-    persist_queries = false,  -- Whether the query persists across vim sessions
-    keybindings = {
-      toggle_query_editor = 'o',
-      toggle_hl_groups = 'i',
-      toggle_injected_languages = 't',
-      toggle_anonymous_nodes = 'a',
-      toggle_language_display = 'I',
-      focus_language = 'f',
-      unfocus_language = 'F',
-      update = 'R',
-      goto_node = '<cr>',
-      show_help = '?',
-    }
   },
 
   indent = {

@@ -35,7 +35,6 @@ if has('nvim')
   Plug 'neovim/nvim-lspconfig'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   Plug 'nvim-treesitter/nvim-treesitter-textobjects', {'do': ':TSUpdate'}
-  Plug 'nvim-treesitter/playground', {'do': ':TSUpdate'}
 
   Plug 'hrsh7th/cmp-nvim-lsp'
   Plug 'quangnguyen30192/cmp-nvim-ultisnips'
@@ -317,8 +316,8 @@ nnoremap <silent> ]l :lnext<CR>
 nnoremap <silent> [b :bprev<CR>
 nnoremap <silent> ]b :bnext<CR>
 " Files
-nnoremap <silent> [a :prev<CR>
-nnoremap <silent> ]a :next<CR>
+nnoremap <silent> [f :prev<CR>
+nnoremap <silent> ]f :next<CR>
 
 " Quickfix:
 nnoremap <silent> <leader>qq :<C-U><C-R>=v:count ? 'cc' . v:count : 'cc'<CR><CR>
