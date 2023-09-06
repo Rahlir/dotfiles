@@ -52,14 +52,12 @@ recents = "--sort created- --created-after 'last two weeks'"
 [alias]
 ls = "zk list --sort modified --quiet $@"
 qls = "zk list --sort modified -f oneline $@"
-# Show note with the given title
-shownote = "zk list --match \"title: $*\""
 # Create note with the given title
 newt = "zk new -t \"$*\""
 # Edit the last modified note.
 editlast = "zk edit --limit 1 --sort modified $@"
 # Edit the first note that matches the given title
-editnote = "zk edit --limit 1 --match \"title: $*\""
+editnote = "zk edit --limit 1"
 # Interactively edit a note
 editi = "zk edit --interactive $@"
 # Edit this configuration file
@@ -68,6 +66,6 @@ confg = '$EDITOR "$XDG_CONFIG_HOME/zk/config.toml"'
 # Note the use of a pipe and the location of $@.
 hist = "zk list --format path --delimiter0 --quiet $@ | xargs -t -0 git log --patch --"
 # View note in pretty format with glow
-view = "zk list $@ --format {{raw-content}} --quiet --limit 1 | glow --pager"
+view = "zk list $@ --format {{raw-content}} --quiet --limit 1 | glow -s $THEMEBG --pager"
 # Browse your default notes directory with glow
-browse = "glow $ZK_NOTEBOOK_DIR"
+browse = "glow -s $THEMEBG $ZK_NOTEBOOK_DIR"
