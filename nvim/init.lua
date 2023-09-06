@@ -37,6 +37,16 @@ vim.keymap.set('n', '<leader>sd', function()
   end
   vim.api.nvim_exec_autocmds("DiagnosticChanged", {})
 end, diagopts)
+vim.keymap.set('n', '<leader>sD', function()
+  if vim.diagnostic.is_disabled(0) then
+    vim.diagnostic.enable()
+    vim.print("global diagnostics were enabled...")
+  else
+    vim.diagnostic.disable()
+    vim.print("global diagnostics were disabled...")
+  end
+  vim.api.nvim_exec_autocmds("DiagnosticChanged", {})
+end)
 -- Bracket movements
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, diagopts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, diagopts)
