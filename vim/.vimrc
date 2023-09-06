@@ -532,11 +532,6 @@ let g:startify_change_to_vcs_root = 1
 let g:startify_files_number = 5
 
 " }}}
-" CtrlP Options: {{{
-
-let g:ctrlp_extensions = ['tag']
-
-" }}}
 " Ledger Options: {{{
 
 let g:ledger_bin = 'ledger'
