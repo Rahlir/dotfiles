@@ -12,17 +12,33 @@ vim.opt.updatetime = 300
 vim.g.python3_host_prog = '$WORKON_HOME/neovim/bin/python'
 -- }}}
 -- Autocommands: {{{
+local nvimrc_augroup = vim.api.nvim_create_augroup("nvimrc", { clear = true })
 vim.api.nvim_create_autocmd({"BufReadPost,FileReadPost"}, {
   pattern = {"*.cpp", "*.cc", "*.h", "*.hpp"},
-  command = "setlocal foldmethod=expr | setlocal foldexpr=nvim_treesitter#foldexpr() | normal zR"
+  command = "setlocal foldmethod=expr | setlocal foldexpr=nvim_treesitter#foldexpr() | normal zR",
+  group = nvimrc_augroup
 })
 --- }}}
 -- Diagnostics: {{{
-local opts = {noremap=true, silent=true}
-vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, opts)
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setqflist, opts)
+
+-- Mappings:
+local diagopts = { noremap=true, silent=true }
+-- Diagnostic actions
+vim.keymap.set('n', '<leader>dd', vim.diagnostic.open_float, diagopts)
+vim.keymap.set('n', '<leader>dq', vim.diagnostic.setqflist, diagopts)
+-- Toggling diagnostics
+vim.keymap.set('n', '<leader>sd', function()
+  if vim.diagnostic.is_disabled(0) then
+    vim.diagnostic.enable(0)
+    vim.print("diagnostics were enabled...")
+  else
+    vim.diagnostic.disable(0)
+    vim.print("diagnostics were disabled...")
+  end
+end, diagopts)
+-- Bracket movements
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, diagopts)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, diagopts)
 
 vim.diagnostic.config({
   virtual_text = false,
@@ -43,11 +59,13 @@ end
 local themes = require('telescope.themes')
 local builtin = require('telescope.builtin')
 
+-- Mappings:
 vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
 vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
 vim.keymap.set('n', '<leader>fd', builtin.diagnostics, {})
+vim.keymap.set('n', '<leader>ft', builtin.git_status, {})
 
 require('telescope').setup{
   defaults = {
@@ -74,14 +92,16 @@ require('telescope').setup{
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
-  -- Mappings.
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings:
   local bufopts = { noremap=true, silent=true, buffer=bufnr }
   local teleopts = {
     show_line=false, layout_config={ width=0.7, preview_width=0.45 }, initial_mode="normal"
   }
 
+  -- Go to
   vim.keymap.set('n', 'gr', function()
     builtin.lsp_references(themes.get_cursor(teleopts))
   end, bufopts)
@@ -94,32 +114,39 @@ local on_attach = function(client, bufnr)
     builtin.lsp_implementations(themes.get_cursor(teleopts))
   end, bufopts)
 
-  vim.keymap.set('n', '<leader>gci', function()
+  vim.keymap.set('n', '<leader>gd', vim.lsp.buf.declaration, bufopts)
+
+  -- LSP Actions
+  vim.keymap.set('n', '<leader>li', function()
     builtin.lsp_incoming_calls(themes.get_cursor(teleopts))
   end, bufopts)
 
-  vim.keymap.set('n', '<leader>gco', function()
+  vim.keymap.set('n', '<leader>lo', function()
     builtin.lsp_outgoing_calls(themes.get_cursor(teleopts))
   end, bufopts)
 
-  vim.keymap.set('n', '<leader>fs', builtin.lsp_document_symbols, bufopts)
-  vim.keymap.set('n', '<leader>fS', builtin.lsp_dynamic_workspace_symbols, bufopts)
+  vim.keymap.set('n', '<leader>lr', vim.lsp.buf.rename, bufopts)
+  vim.keymap.set('n', '<leader>lc', vim.lsp.buf.code_action, bufopts)
 
-  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-  vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-  vim.keymap.set({'n', 'i'}, '<C-s>', vim.lsp.buf.signature_help, bufopts)
-
-  vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, bufopts)
-  vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
-  vim.keymap.set('n', '<leader>wl', function()
+  -- LSP Actions regarding workspace
+  vim.keymap.set('n', '<leader>lwa', vim.lsp.buf.add_workspace_folder, bufopts)
+  vim.keymap.set('n', '<leader>lwr', vim.lsp.buf.remove_workspace_folder, bufopts)
+  vim.keymap.set('n', '<leader>lwl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, bufopts)
 
-  vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
-  vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
-  vim.keymap.set('n', '<leader>fm', function()
+  -- LSP Formatting
+  vim.keymap.set('n', '<leader>rl', function()
     vim.lsp.buf.format { async = true }
   end, bufopts)
+
+  -- Telescope
+  vim.keymap.set('n', '<leader>fs', builtin.lsp_document_symbols, bufopts)
+  vim.keymap.set('n', '<leader>fS', builtin.lsp_dynamic_workspace_symbols, bufopts)
+
+  -- Misc
+  vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+  vim.keymap.set({'n', 'i'}, '<C-s>', vim.lsp.buf.signature_help, bufopts)
 end
 
 require('lspconfig')['clangd'].setup{
@@ -175,7 +202,7 @@ require('nvim-treesitter.configs').setup{
     -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
     -- Using this option may slow down your editor, and you may see some duplicate highlights.
     -- Instead of true it can also be a list of languages
-    additional_vim_regex_highlighting = { "markdown" },
+    additional_vim_regex_highlighting = { "markdown", "vim" },
   },
 
   textobjects = {
@@ -202,22 +229,22 @@ require('nvim-treesitter.configs').setup{
       goto_next_start = {
         ["]m"] = "@function.outer",
         ["]]"] = "@class.outer",
-        ["]b"] = "@block.outer"
+        ["]k"] = "@block.outer"
       },
       goto_next_end = {
         ["]M"] = "@function.outer",
         ["]["] = "@class.outer",
-        ["]B"] = "@block.outer"
+        ["]K"] = "@block.outer"
       },
       goto_previous_start = {
         ["[m"] = "@function.outer",
         ["[["] = "@class.outer",
-        ["[b"] = "@block.outer"
+        ["[k"] = "@block.outer"
       },
       goto_previous_end = {
         ["[M"] = "@function.outer",
         ["[]"] = "@class.outer",
-        ["[B"] = "@block.outer"
+        ["[K"] = "@block.outer"
       }
     },
   },
@@ -317,7 +344,7 @@ require("zk").setup({
   }
 })
 
--- ZK Keymaps
+-- Mappings:
 local opts = { noremap=true, silent=false }
 vim.keymap.set("n", "<leader>zn", "<Cmd>ZkNew { title = vim.fn.input('Title: ') }<CR>", opts)
 vim.keymap.set("n", "<leader>zl", "<Cmd>ZkNotes<CR>", opts)

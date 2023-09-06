@@ -52,13 +52,6 @@ if has('nvim')
   Plug 'ryanoasis/vim-devicons'
   Plug 'nvim-tree/nvim-web-devicons'
   Plug 'windwp/nvim-ts-autotag'
-
-" Vim specific plugins (in the future I think I should get rid of this
-" and let vim configuration be as minimal as possible)
-else
-  Plug 'octol/vim-cpp-enhanced-highlight', {'for': 'cpp'}
-  Plug 'ervandew/supertab'
-  Plug 'kien/ctrlp.vim'
 endif
 
 call plug#end()
@@ -119,22 +112,21 @@ colorscheme gruvbox
 " for Indentline options
 function! GetGruvColor(group)
   let guiColor = synIDattr(hlID(a:group), "fg", "gui") 
-  let termColor = synIDattr(hlID(a:group), "fg", "cterm") 
+  let termColor = synIDattr(hlID(a:group), "fg", "cterm")
   return [ guiColor, termColor ]
-endfunction
+endfunction 
 
 " }}}
-" Configurations: {{{
+" Setting Options: {{{
 
-" Setting options:
 set number relativenumber  " show relative numbers and line number on current line
 set signcolumn=number  " signcolumn for gitgutter signs and diagnostics in number column
-set linebreak  " visually break long lines
+set linebreak  " visually break long lines at 'breakat'
+set breakindent showbreak=+  " match indentation of the line and show '+' character on breakline
 set laststatus=2  " always show status line
 set title  " set window title, by default has the form 'filename [+=-] (path) - NVIM'
-set ruler  " show line and column number, might not be needed since lightline is used
 set mouse=a  " enable mouse for all modes
-set tabstop=8 softtabstop=4 shiftwidth=4 expandtab  " indentation with 4 spaces by default
+setglobal tabstop=8 softtabstop=4 shiftwidth=4 expandtab  " indentation with 4 spaces by default
 set noshowmode  " don't show -- INSERT --
 set report=0  " report any line yanked
 set spelllang=en_us  " set spelling language
@@ -147,41 +139,217 @@ set updatetime=750  " after what delay should swap be written to
 set exrc secure  " enable secure execution of .nvimrc and .vimrc in current directory
 set completeopt+=longest
 set wildmode=longest,full
-set ignorecase smartcase  " ignore case in search unless it contains capital sign
+set ignorecase smartcase  " ignore case in search unless it contains upper case
+set confirm  " ask for a confirmation on :q with edits instead of failing
 " Gui options:
 set guioptions-=rL  " no scrollbars
 set guifont=SFMonoNF-Regular:h13  " SFMono on macOS patched with nerdfonts
 
-" Other options and variables:
-let g:changelog_username = 'Tadeas Uhlir <tadeas.uhlir@gmail.com>'
-
 " }}}
 " Custom Mappings: {{{
 
-nmap <M-CR> O<Esc>
-nmap <CR> o<Esc>
-" Open preview window with the tag under cursor
-nmap <leader>p <C-w>}
-" Close the preview window
-nmap <leader>P <C-w>z
-nmap <M-/> :call CenterComment()<CR>
-nmap <leader>s :set hlsearch!<CR>
-nmap <leader>w :call RemLdWs()<CR>
-nmap <leader>W :call RemLdWsGlobally()<CR>
-nmap <leader>a :setlocal spell!<CR>
+" Configuring <space> as mapleader
+nnoremap <space> <Nop>
+let g:mapleader = ' '
+
+" Mapable Functions: {{{
+
+function! s:BlockComment(mode) abort
+  let l:cmnt_raw = empty(&commentstring) ? '# ' : split(&commentstring, '%s')[0]
+  let l:cmnt = substitute(l:cmnt_raw, '^\s*\(.\{-}\)\s*$', '\1', '')
+  if a:mode == 'add'
+    let l:command = 's/^/' . l:cmnt . ' /'
+  else
+    let l:command = 's/^' . l:cmnt . ' //e'
+  endif
+  silent! execute l:command
+  nohlsearch
+endfunction
+
+function! s:RemoveLeadingSpace(global) abort
+  if a:global
+    let l:flags = 'ws'
+    let l:leadingws = 0
+    let l:nexthit = search('\s\+$', 'wn')
+    while l:nexthit > 0
+      let l:leadingws += 1
+      let l:stripped = substitute(getline(l:nexthit), "\\s\\+$", "", "")
+      call setline(l:nexthit, l:stripped)
+      let l:nexthit = search('\s\+$', 'wn')
+    endwhile
+    if l:leadingws
+      echo printf("Removed %d leading spaces", l:leadingws)
+    else
+      echo "No leading space in the file"
+    endif
+  else
+    if match(getline("."), "^\\s\\+$") == 0
+      silent! s/\s\+$//
+      echo "Leading space removed"
+    else
+      echo "No leading space on the current line"
+    endif
+  endif
+endfunction
+
+function! s:SectionComment(big, ...) abort
+  if &ft == 'cpp' || &ft == 'c'
+    let l:cmnt = '//'
+  else
+    let l:cmnt_raw = empty(&commentstring) ? '# ' : split(&commentstring, '%s')[0]
+    let l:cmnt = substitute(l:cmnt_raw, '^\s*\(.\{-}\)\s*$', '\1', '')
+  endif
+
+  let l:del_str = a:big ? ' ' : '-'
+  let l:width = get(a:, 1, &textwidth)
+  if l:width == 0
+    let l:width = 80
+  endif
+
+  let l:header = getline(".")
+  let l:header_w = strlen(l:header)
+  if a:big
+    let l:prepost_w = l:width / 16
+    let l:before_w = (l:width - l:header_w - 2*l:prepost_w) / 2
+    let l:after_w = l:width - l:header_w - l:before_w - 2*l:prepost_w
+    let l:prepost = repeat(l:cmnt, l:prepost_w / len(l:cmnt))
+    let l:before =  repeat(l:del_str, l:before_w)
+    let l:after = repeat(l:del_str, l:after_w)
+    call setline(".", l:prepost . l:before . l:header . l:after . l:prepost)
+    call append(line(".")-1, repeat(l:cmnt, l:width / len(l:cmnt)))
+    call append(line("."), repeat(l:cmnt, l:width / len(l:cmnt)))
+  else
+    let l:before_w = (l:width - l:header_w) / 2
+    let l:after_w = (l:width - l:header_w - l:before_w)
+    let l:before = l:cmnt . ' ' . repeat(l:del_str, l:before_w-5) . repeat(' ', 3)
+    let l:after = repeat(' ', 3) . repeat(l:del_str, l:after_w-3)
+    call setline(".", l:before . l:header . l:after)
+  endif
+endfunc
+
+function! s:FindTodo(reverse)
+  if &ft == 'cpp' || &ft == 'c'
+    let l:cmnt_reg = '\/\/\|\/\?\*'
+  else
+    let l:cmnt_raw = empty(&commentstring) ? '# ' : split(&commentstring, '%s')[0]
+    let l:cmnt = substitute(l:cmnt_raw, '^\s*\(.\{-}\)\s*$', '\1', '')
+    let l:cmnt_reg = escape(l:cmnt, '/*')
+  endif
+  let l:search_cmd = a:reverse ? '?' : '/'
+  let l:pattern = '\(' . l:cmnt_reg . '\).*\<TODO\>'
+  let l:flags = a:reverse ? 'bew' : 'ew'
+  let l:res = search(l:pattern, l:flags)
+  if l:res == 0
+    echo "There is no TODO comment in the file"
+  endif
+endfunc
+
+" Functions that are used in mappings
+function! s:MoveLine(dir, count) abort
+  if a:dir == 'up'
+    silent! execute 'move--' . a:count
+  elseif a:dir == 'down'
+    silent! execute 'move+' . a:count
+  endif
+endfunction
+
+function! s:ToggleOption(option) abort
+  silent! execute 'setlocal ' . a:option . '!'
+  if eval('&' . a:option)
+    echo a:option . " was enabled..."
+  else
+    echo a:option . " was disabled..."
+  endif
+endfunction
+
+function! s:ToggleColorColumn() abort
+  if empty(&colorcolumn)
+    set colorcolumn=+1
+    echo "colorcolumn was drawn"
+  else
+    set colorcolumn=
+    echo "colorcolumn was cleared"
+  endif
+endfunction
+
+" }}}
+
+" Commenting:
+" Create section comments:
+" Form --- Section ---
+nnoremap <silent> <M-/> :<C-U>call <SID>SectionComment(0, v:count)<CR>
+" Form ### Section ### with commented lines above and below
+nnoremap <silent> <M-?> :<C-U>call <SID>SectionComment(1, v:count)<CR>
+" Add / remove comments from a line or selected block
+nnoremap <silent> + :call <SID>BlockComment('add')<CR>
+nnoremap <silent> - :call <SID>BlockComment('remove')<CR>
+vnoremap <silent> + :call <SID>BlockComment('add')<CR>
+vnoremap <silent> - :call <SID>BlockComment('remove')<CR>
+
+" Toggling Options:
+nnoremap <silent> <leader>sh :call <SID>ToggleOption('hlsearch')<CR>
+nnoremap <silent> <leader>ss :call <SID>ToggleOption('spell')<CR>
+nnoremap <silent> <leader>si :call <SID>ToggleOption('ignorecase')<CR>
+nnoremap <silent> <leader>sc :call <SID>ToggleColorColumn()<CR>
+
+" Formatting Tweaks:
+nnoremap <silent> <leader>rs :call <SID>RemoveLeadingSpace(0)<CR>
+nnoremap <silent> <leader>rS :call <SID>RemoveLeadingSpace(1)<CR>
+
+" Entering Insert Mode:
 " Enter insert mode at the end / beginning of a paragraph
-nnoremap ]a }kA
-nnoremap [a {jI
-map + :call BlockComment()<CR>
-map - :call UnBlockComment()<CR>
-nnoremap <leader>b :b #<CR>
-nnoremap <silent> <leader><Space> :call FindTodo()<CR>
-" Quickfix mappings
-nnoremap [q :cprev<CR>
-nnoremap ]q :cnext<CR>
-nnoremap <leader>cc :cc<CR>
-nnoremap <leader>co :copen<CR>
-nnoremap <leader>cl :cclose<CR>
+nnoremap <leader>ip }kA
+nnoremap <leader>iP {jI
+
+" Bracket Movements:
+" Todos
+nnoremap  <silent> ]t :call <SID>FindTodo(0)<CR>
+nnoremap  <silent> [t :call <SID>FindTodo(1)<CR>
+" Quickfix items
+nnoremap <silent> [q :cprev<CR>
+nnoremap <silent> ]q :cnext<CR>
+" Location list items
+nnoremap <silent> [l :lprev<CR>
+nnoremap <silent> ]l :lnext<CR>
+" Buffers
+nnoremap <silent> [b :bprev<CR>
+nnoremap <silent> ]b :bnext<CR>
+" Files
+nnoremap <silent> [a :prev<CR>
+nnoremap <silent> ]a :next<CR>
+
+" Quickfix:
+nnoremap <silent> <leader>qq :<C-U><C-R>=v:count ? 'cc' . v:count : 'cc'<CR><CR>
+nnoremap <silent> <leader>qo :copen<CR>
+nnoremap <silent> <leader>qc :cclose<CR>
+nnoremap <silent> <leader>qw :cwindow<CR>
+nnoremap <silent> <leader>qf :cfirst<CR>
+nnoremap <silent> <leader>qF :clast<CR>
+
+" Location List:
+nnoremap <silent> <leader>ll :<C-U><C-R>=v:count ? 'll' . v:count : 'll'<CR><CR>
+nnoremap <silent> <leader>lo :lopen<CR>
+nnoremap <silent> <leader>lc :lclose<CR>
+nnoremap <silent> <leader>lw :lwindow<CR>
+nnoremap <silent> <leader>lf :lfirst<CR>
+nnoremap <silent> <leader>lF :llast<CR>
+
+" Buffer List:
+nnoremap <silent> <leader>bb :buffer #<CR>
+nnoremap <silent> <leader>bf :bfirst<CR>
+nnoremap <silent> <leader>bF :blast<CR>
+
+" File List:
+nnoremap <silent> <leader>af :first<CR>
+nnoremap <silent> <leader>aF :last<CR>
+
+" Misc:
+" Move lines up / down
+nnoremap <silent> <leader>k :<C-U>call <SID>MoveLine('up', v:count1)<CR>
+nnoremap <silent> <leader>j :<C-U>call <SID>MoveLine('down', v:count1)<CR>
+" Insert empty line above / below
+nnoremap <M-CR> O<Esc>
+nnoremap <CR> o<Esc>
 
 " }}}
 " Filetype Plugin Configuration: {{{
@@ -376,92 +544,7 @@ let g:ledger_bin = 'ledger'
 " }}}
 
 " --------------------------------Functions-----------------------------------
-" Mappable Functions: {{{
-
-function! BlockComment()
-  let l:cmnt_raw = split(&commentstring, '%s')[0]
-  let l:cmnt = substitute(l:cmnt_raw, '^\s*\(.\{-}\)\s*$', '\1', '')
-  exe ':silent s/^\(\s*\)/\1' . l:cmnt . ' /'
-  nohlsearch
-endfunction
-
-function! UnBlockComment()
-  let l:cmnt_raw = split(&commentstring, '%s')[0]
-  let l:cmnt = substitute(l:cmnt_raw, '^\s*\(.\{-}\)\s*$', '\1', '')
-  exe ':silent s/^\(\s*\)' . l:cmnt .  ' /\1/e'
-  nohlsearch
-endfunction
-
-function! RemLdWs()
-  exe 's/\s\+$//e'
-  nohlsearch
-endfunction
-
-function! RemLdWsGlobally()
-  exe '%s/\s\+$//e'
-  nohlsearch
-endfunction
-
-function! CenterComment()
-  if &ft == 'cpp' || &ft == 'c'
-    let l:cmnt_raw = split(&commentstring, '%s')[0]
-    let l:cmnt_better = substitute(l:cmnt_raw, ' ', '', '')
-    let l:cmnt = substitute(l:cmnt_better, '\*', '/', '')
-  else
-    let l:cmnt_raw_other = split(&commentstring, '%s')[0]
-    let l:cmnt = substitute(l:cmnt_raw_other, ' ', '', '')
-  endif
-
-  let l:del_str = '-'
-
-  if &tw != 0
-    let l:width = &tw
-  else
-    let l:width = 80
-  endif
-
-  let l:header = getline(".")
-  let l:header_w = strlen(l:header)
-  let l:before_w = (l:width - l:header_w) / 2
-  let l:after_w = (l:width - l:header_w - l:before_w)
-  let l:before = l:cmnt . ' ' . repeat(l:del_str, l:before_w-5) . repeat(' ', 3)
-  let l:after = repeat(' ', 3) . repeat(l:del_str, l:after_w-3)
-
-  call setline(".", l:before . l:header . l:after)
-endfunc
-
-function! CenterCommentBig(...)
-  let l:cmnt_raw_other = split(&commentstring, '%s')[0]
-  let l:cmnt = substitute(l:cmnt_raw_other, ' ', '', '')
-
-  let l:del_str = ' '
-
-  if a:0 > 0
-    let l:width = a:1
-  elseif &tw != 0
-    let l:width = &tw
-  else
-    let l:width = 80
-  endif
-
-  let l:header = getline(".")
-  let l:header_w = strlen(l:header)
-  let l:prepost_w = l:width / 16
-  let l:before_w = (l:width - l:header_w - 2*l:prepost_w) / 2
-  let l:after_w = l:width - l:header_w - l:before_w - 2*l:prepost_w
-  let l:prepost = repeat(l:cmnt, l:prepost_w)
-  let l:before =  repeat(l:del_str, l:before_w)
-  let l:after = repeat(l:del_str, l:after_w)
-
-  call setline(".", l:prepost . l:before . l:header . l:after . l:prepost)
-endfunc
-
-function! FindTodo()
-  silent! execute "normal /\\<TODO\\>/;/$\<CR>"
-endfunc
-
-" }}}
-" Other Functions: {{{
+" Global Functions: {{{
 
 function! SynStack()
   if !exists("*synstack")

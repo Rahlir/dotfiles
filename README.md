@@ -1,5 +1,42 @@
 # Config dotfiles for Vim & Bash
 
+### Vim Config
+
+Keymaps use `<space>` as `<leader>`. The systems for the keymaps is:
+
+* `]` and `[` for movements such as:
+    * `]d` or `[d`: next or previous diagnostic item
+    * `]t` or `[t`: next or previous TODO comment
+    * `]q` or `[q`: next or previous quickfix item
+    * `]a` or `[a`: next or previous file in the file list
+    * `]b` or `[b`: next or previous buffer in the buffer list
+* `<leader><char>` where `<char>` represents mode / functionality
+  for actions related to the mode / functionality
+    * `<leader>q` for quickfix mappings:
+        * `<leader>qq`: move to current quickfix item
+        * `<leader>qo`: open quickfix window
+        * `<leader>qw`: open quickfix window if there are quickfix items
+    * `<leader>l` for location list mappings
+    * `<leader>d` for diagnostics mappings
+        * `<leader>dd`: open float for diagnostics under cursor
+        * `<leader>dq`: add diagnostics under cursor to quickfix list
+    * `<leader>f` for telescope mappings
+        * `<leader>ff`: for `find_files` with Telescope
+        * `<leader>fg`: for `live_grep` with Telescope
+        * `<leader>fs`: for `git_status` with Telescope
+        * `<leader>ft`: for `git_status` with Telescope
+        * `<leader>fs`: for `lsp_symbols` with Telescope
+    * `<leader>l` for lsp mappings
+        * `<leader>lr`: to rename with lsp
+        * `<leader>lc`: to run code action with lsp
+    * `<leader>r` for formatting mappings
+        * `<leader>rs`: remove white space on empty line
+        * `<leader>rS`: remove white space on all empty lines in the file
+        * `<leader>rl`: format with lsp
+    * `<leader>s` for toggling various options
+
+This setup was heavily inspired by [vim-unimpaired](https://github.com/tpope/vim-unimpaired)
+
 ### How to install
 - Run bootstrap.sh
 - Delete files of wrong operation system -> appendix "\_linux" or "\_mac"
