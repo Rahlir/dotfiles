@@ -126,7 +126,9 @@ set breakindent showbreak=+  " match indentation of the line and show '+' charac
 set laststatus=2  " always show status line
 set title  " set window title, by default has the form 'filename [+=-] (path) - NVIM'
 set mouse=a  " enable mouse for all modes
-setglobal tabstop=8 softtabstop=4 shiftwidth=4 expandtab  " indentation with 4 spaces by default
+if has('vim_starting')
+  set tabstop=8 softtabstop=4 shiftwidth=4 expandtab  " indentation with 4 spaces by default
+endif
 set noshowmode  " don't show -- INSERT --
 set report=0  " report any line yanked
 set spelllang=en_us  " set spelling language

@@ -279,6 +279,10 @@ require('nvim-treesitter.configs').setup{
     }
   },
 
+  indent = {
+    enable = { 'typescriptreact', 'javascriptreact' }
+  },
+
   autotag = {
     enable = true
   }
