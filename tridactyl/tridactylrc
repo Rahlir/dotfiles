@@ -59,8 +59,8 @@ bind yg composite js "git clone " + document.location.href.replace(/https?:\/\//
 
 " The selector behind ',' ensures we can also select search results on the
 " pages beyond the first
-bindurl www.google.com f hint -Jc #search div:not(.action-menu) > a, #botstuff div:not(.action-menu) > a
-bindurl www.google.com F hint -Jtc #search div:not(.action-menu) > a, #botstuff div:not(.action-menu) > a
+bindurl www.google.com f hint -Jc #search span > a, #botstuff div:not(.action-menu) > a
+bindurl www.google.com F hint -Jtc #search span > a, #botstuff div:not(.action-menu) > a
 " In case you need to click on something other than search results
 bindurl www.google.com ;d hint -J
 bindurl www.google.com ;D hint -Jt
