@@ -302,10 +302,15 @@ nnoremap <silent> <leader>rS :call <SID>RemoveLeadingSpace(1)<CR>
 nnoremap <leader>ip }kA
 nnoremap <leader>iP {jI
 
+" Starting Netrw:
+nnoremap <silent> <leader>ee :Explore<CR>
+nnoremap <silent> <leader>el :Lexplore<CR>
+nnoremap <silent> <leader>eh :Hexplore<CR>
+
 " Bracket Movements:
 " Todos
-nnoremap  <silent> ]t :call <SID>FindTodo(0)<CR>
-nnoremap  <silent> [t :call <SID>FindTodo(1)<CR>
+nnoremap <silent> ]t :call <SID>FindTodo(0)<CR>
+nnoremap <silent> [t :call <SID>FindTodo(1)<CR>
 " Quickfix items
 nnoremap <silent> [q :cprev<CR>
 nnoremap <silent> ]q :cnext<CR>
@@ -369,6 +374,16 @@ let g:tex_comment_nospell = 1
 " }}}
 
 " ------------------------------Plugin Options--------------------------------
+" Netrw Options: {{{
+
+augroup vimrc_netrw
+  autocmd!
+  autocmd filetype netrw nmap <buffer> <silent> <c-e> <Plug>NetrwRefresh
+  autocmd filetype netrw noremap <silent> <c-l> :<C-U>TmuxNavigateRight<CR>
+augroup END
+nmap <silent> <c-e> <Plug>NetrwRefresh
+
+" }}}
 " Vimtex Options: {{{
 
 let g:vimtex_view_method = 'skim'

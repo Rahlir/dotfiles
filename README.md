@@ -34,6 +34,10 @@ Keymaps use `<space>` as `<leader>`. The systems for the keymaps is:
         * `<leader>rS`: remove white space on all empty lines in the file
         * `<leader>rl`: format with lsp
     * `<leader>s` for toggling various options
+    * `<leader>e` for starting netrw
+        * `<leader>ee`: run `:Explore`
+        * `<leader>el`: run `:Lexplore`
+        * `<leader>eh`: run `:Hexplore`
 
 This setup was heavily inspired by [vim-unimpaired](https://github.com/tpope/vim-unimpaired)
 
