@@ -67,5 +67,9 @@ confg = '$EDITOR "$XDG_CONFIG_HOME/zk/config.toml"'
 hist = "zk list --format path --delimiter0 --quiet $@ | xargs -t -0 git log --patch --"
 # View note in pretty format with glow
 view = "zk list $@ --format {{raw-content}} --quiet --limit 1 | glow -s $THEMEBG --pager"
+# View note in lynx
+viewlynx = "zk list $@ --format {{raw-content}} --quiet --limit 1 | pandoc -f gfm | lynx -stdin"
+# View note in w3m
+vieww3m = "zk list $@ --format {{raw-content}} --quiet --limit 1 | pandoc -f gfm | w3m -T text/html"
 # Browse your default notes directory with glow
 browse = "glow -s $THEMEBG $ZK_NOTEBOOK_DIR"
