@@ -167,28 +167,28 @@ function! s:BlockComment(mode) abort
   nohlsearch
 endfunction
 
-function! s:RemoveLeadingSpace(global) abort
+function! s:RemoveTrailingSpace(global) abort
   if a:global
     let l:flags = 'ws'
-    let l:leadingws = 0
+    let l:trailingws = 0
     let l:nexthit = search('\s\+$', 'wn')
     while l:nexthit > 0
-      let l:leadingws += 1
+      let l:trailingws += 1
       let l:stripped = substitute(getline(l:nexthit), "\\s\\+$", "", "")
       call setline(l:nexthit, l:stripped)
       let l:nexthit = search('\s\+$', 'wn')
     endwhile
-    if l:leadingws
-      echo printf("Removed %d leading spaces", l:leadingws)
+    if l:trailingws
+      echo printf("Removed %d trailing space(s)", l:trailingws)
     else
-      echo "No leading space in the file"
+      echo "No trailing space in the file"
     endif
   else
-    if match(getline("."), "^\\s\\+$") == 0
+    if match(getline("."), "\\s\\+$") >= 0
       silent! s/\s\+$//
-      echo "Leading space removed"
+      echo "Trailing space removed"
     else
-      echo "No leading space on the current line"
+      echo "No trailing space on the current line"
     endif
   endif
 endfunction
@@ -294,8 +294,8 @@ nnoremap <silent> <leader>si :call <SID>ToggleOption('ignorecase')<CR>
 nnoremap <silent> <leader>sc :call <SID>ToggleColorColumn()<CR>
 
 " Formatting Tweaks:
-nnoremap <silent> <leader>rs :call <SID>RemoveLeadingSpace(0)<CR>
-nnoremap <silent> <leader>rS :call <SID>RemoveLeadingSpace(1)<CR>
+nnoremap <silent> <leader>rs :call <SID>RemoveTrailingSpace(0)<CR>
+nnoremap <silent> <leader>rS :call <SID>RemoveTrailingSpace(1)<CR>
 
 " Entering Insert Mode:
 " Enter insert mode at the end / beginning of a paragraph
