@@ -13,9 +13,13 @@ vim.g.python3_host_prog = '$WORKON_HOME/neovim/bin/python'
 -- }}}
 -- Autocommands: {{{
 local nvimrc_augroup = vim.api.nvim_create_augroup("nvimrc", { clear = true })
-vim.api.nvim_create_autocmd({"BufReadPost,FileReadPost"}, {
-  pattern = {"*.cpp", "*.cc", "*.h", "*.hpp"},
-  command = "setlocal foldmethod=expr | setlocal foldexpr=nvim_treesitter#foldexpr() | normal zR",
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = {"cpp"},
+  callback = function()
+    vim.wo.foldmethod = "expr"
+    vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+    vim.cmd.normal('zR')
+  end,
   group = nvimrc_augroup
 })
 -- Autocommand to use treesitter for indenting javascriptreact and typescriptreact files
