@@ -26,8 +26,8 @@ set hintdelay 150
 " Suspend / "discard" all tabs - handy for stretching out battery life /
 " lowering RAM footprint
 command discardall jsb browser.tabs.query({}).then(ts => browser.tabs.discard(ts.map(t=>t.id)))
-" Add a site to buku bookmarks manager
-command add_buku js let url=document.location.href; let title=document.title; tri.native.run("buku --nostdin -a " + url + " --title " + title + " -w 'alacritty -e nvim'")
+" Add the current webpage to buku bookmarks manager
+command add_buku js shellescape(document.location.href).then(loc => shellescape(document.title).then(title => tri.native.run(`test -n "$(buku --nostdin --np --nc ${loc})"`).then(res => res.code==0 ? alert("Bookmark for " + document.location.href + " already exists") : tri.native.run(`buku --nostdin -a ${loc} --title ${title} -w 'alacritty -e nvim'`))))
 
 " -------------------------------   Binds   ----------------------------------
 " I barely find javascript elements useful
@@ -79,3 +79,7 @@ bind gD composite tabduplicate; tabdetach
 " Binds for new reader mode
 bind gr reader
 bind gR reader --tab
+
+" --------------------------------   Guiset   ----------------------------------
+"  This seems to be not working
+guiset_quiet hoverlink right
