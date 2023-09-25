@@ -64,6 +64,16 @@ ${1:ReturnType} ${2:FunctionName}(${3:param})
 }
 endsnippet
 
+snippet ddoxygen "More basic doxygen template"
+/**
+* ${1:brief}.
+*
+* @param ${2:param}
+*
+* @return ${3:return}
+*/
+endsnippet
+
 snippet cclass "class declaration"
 class ${1:`!p class_name(snip)`} {
 	$0
@@ -84,7 +94,7 @@ snippet === "Surround comment with ==="
 endsnippet
 
 snippet --- "Surround comment with ---"
-/* ==============================================================================
+/* ------------------------------------------------------------------------------
  * ${VISUAL:Section/\/\///g}
- * ============================================================================*/
+ * ----------------------------------------------------------------------------*/
 endsnippet
