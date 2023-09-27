@@ -32,8 +32,11 @@
     # Nice one commit per line log
     lg = log --graph --date=relative --pretty=niceoneline
     # Log and one line log of only local commits
-    log-local = log @{push}..
     lg-local = lg @{push}..
+    log-local = log @{push}..
+    # Log and one line log of only remote (in origin) commits
+    lg-origin = lg ..origin/main
+    log-origin = log --name-status ..origin/main
     # Log with file changes
     log-full = log --name-status
 
