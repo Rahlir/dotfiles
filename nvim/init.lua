@@ -207,7 +207,8 @@ vim.g.lightline = lightline
 
 -- Update lightline if diagnostics change
 vim.api.nvim_create_autocmd('DiagnosticChanged', {
-  callback = "lightline#update"
+  callback = 'lightline#update',
+  group = nvimrc_augroup
 })
 -- }}}
 -- Treesitter: {{{
