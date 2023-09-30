@@ -142,6 +142,7 @@ set completeopt+=longest
 set wildmode=longest,full
 set ignorecase smartcase  " ignore case in search unless it contains upper case
 set confirm  " ask for a confirmation on :q with edits instead of failing
+set cinoptions=(0,N-s,g0  " C(++) indentation configuration
 " Gui options:
 set guioptions-=rL  " no scrollbars
 set guifont=SFMonoNF-Regular:h13  " SFMono on macOS patched with nerdfonts
