@@ -9,6 +9,9 @@ vim.opt.guicursor:append{'a:blinkwait700-blinkoff400-blinkon250'}
 vim.opt.hlsearch = false
 vim.opt.showcmd = false
 vim.opt.updatetime = 300
+-- Add fix that has already been added to vim (errorformat ignoring (g)make[\d]: *** mesages)
+-- The vim fix was submitted here: https://groups.google.com/g/vim_dev/c/IUC2_PW2ZgI
+vim.opt.errorformat = "%*[^\"]\"%f\"%*\\D%l: %m,\"%f\"%*\\D%l: %m,%-Gg%\\?make[%*\\d]: *** [%f:%l:%m,%-Gg%\\?make: *** [%f:%l:%m,%-G%f:%l: (Each undeclared identifier is reported only once,%-G%f:%l: for each function it appears in.),%-GIn file included from %f:%l:%c:,%-GIn file included from %f:%l:%c\\,,%-GIn file included from %f:%l:%c,%-GIn file included from %f:%l,%-G%*[ ]from %f:%l:%c,%-G%*[ ]from %f:%l:,%-G%*[ ]from %f:%l\\,,%-G%*[ ]from %f:%l,%f:%l:%c:%m,%f(%l):%m,%f:%l:%m,\"%f\"\\, line %l%*\\D%c%*[^ ] %m,%D%*\\a[%*\\d]: Entering directory %*[`']%f',%X%*\\a[%*\\d]: Leaving directory %*[`']%f',%D%*\\a: Entering directory %*[`']%f',%X%*\\a: Leaving directory %*[`']%f',%DMaking %*\\a in %f,%f|%l| %m"
 vim.g.python3_host_prog = '$WORKON_HOME/neovim/bin/python'
 -- }}}
 -- Autocommands: {{{
@@ -158,7 +161,7 @@ local on_attach = function(client, bufnr)
   end, bufopts)
 
   -- LSP Formatting
-  vim.keymap.set('n', '<leader>rl', function()
+  vim.keymap.set({'n', 'v'}, '<leader>rl', function()
     vim.lsp.buf.format { async = true }
   end, bufopts)
 

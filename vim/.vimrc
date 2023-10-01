@@ -23,6 +23,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'SirVer/ultisnips'
 Plug 'lervag/vimtex', {'for': 'tex'}
 Plug 'ledger/vim-ledger', {'for': 'ledger'}
+Plug 'mbbill/undotree'
 
 " Mac specific plugins. This check should work for any recent
 " vim on macOS
@@ -61,7 +62,7 @@ call plug#end()
 
 " Settings for regular vim
 if !has('nvim')
-  " Store viminfo in XDG_STATE_HOME directory
+  " Store viminfo and undo data in XDG_STATE_HOME directory
   if !empty($XDG_STATE_HOME)
     let s:statedir = $XDG_STATE_HOME . '/vim'
   else
@@ -71,6 +72,10 @@ if !has('nvim')
     call mkdir(s:statedir)
   endif
   let &viminfofile=s:statedir . '/viminfo'
+  let &undodir=s:statedir . '/undo'
+  if !isdirectory(&undodir)
+    call mkdir(&undodir)
+  endif
 
   " Settings for regular terminal vim
   if !has('gui_running')
@@ -146,6 +151,7 @@ set cinoptions=(0,N-s,g0  " C(++) indentation configuration
 " Gui options:
 set guioptions-=rL  " no scrollbars
 set guifont=SFMonoNF-Regular:h13  " SFMono on macOS patched with nerdfonts
+set undofile  " store undo data persistently
 
 " }}}
 " Custom Mappings: {{{
@@ -349,6 +355,15 @@ nnoremap <silent> <leader>bF :blast<CR>
 " File List:
 nnoremap <silent> <leader>af :first<CR>
 nnoremap <silent> <leader>aF :last<CR>
+
+" Undotree Plugin:
+if &runtimepath =~ 'undotree'
+  nnoremap <silent> <leader>uu :UndotreeToggle<CR>
+  nnoremap <silent> <leader>uS :UndotreeShow<CR>:UndotreeFocus<CR>
+  nnoremap <silent> <leader>us :UndotreeShow<CR>
+  nnoremap <silent> <leader>uf :UndotreeFocus<CR>
+  nnoremap <silent> <leader>uh :UndotreeHide<CR>
+endif
 
 " Misc:
 " Move lines up / down
