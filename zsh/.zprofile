@@ -45,3 +45,5 @@ export GEM_HOME="$XDG_DATA_HOME"/gem
 export GEM_SPEC_CACHE="$XDG_CACHE_HOME"/gem
 # Rust Cargo home
 export CARGO_HOME="$XDG_DATA_HOME"/cargo
+# Texlive cache
+export TEXMFVAR="$XDG_CACHE_HOME"/texlive/texmf-var
