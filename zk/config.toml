@@ -46,7 +46,7 @@ dead-link = "warning"
 # To match the notes created in the last two weeks:
 #    $ zk list recents --limit 15
 #    $ zk edit recents --interactive
-recents = "--sort created- --created-after 'last two weeks'"
+recent = "--sort created- --created-after 'last two weeks'"
 
 
 [alias]
