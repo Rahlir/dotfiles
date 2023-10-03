@@ -26,11 +26,11 @@
 #
 ###############################################################################
 
+from datetime import datetime, timedelta
 import json
 import subprocess
 import sys
-
-from datetime import timedelta, datetime
+from typing import cast
 
 # Hook should extract all the following for use as Timewarrior tags:
 #   UUID
@@ -143,8 +143,8 @@ def main(old, new):
 
 
 if __name__ == "__main__":
-    old = json.loads(input_stream.readline().decode("utf-8", errors="replace"))
-    new = json.loads(input_stream.readline().decode("utf-8", errors="replace"))
+    old = json.loads(cast(bytes, input_stream.readline()).decode("utf-8", errors="replace"))
+    new = json.loads(cast(bytes, input_stream.readline()).decode("utf-8", errors="replace"))
     main(old, new)
     if not new:
         if is_undo(sys.argv):

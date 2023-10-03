@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
+from datetime import datetime
 import json
-import subprocess
-from sys import stdin, argv
 from os import getenv
 from pathlib import Path
-from datetime import datetime
+import subprocess
+from sys import argv, stdin
 from textwrap import wrap
+from typing import cast
 
 
 try:
@@ -47,8 +48,8 @@ def main(old, new):
 
 
 if __name__ == "__main__":
-    old = json.loads(input_stream.readline().decode('utf-8', errors='replace'))
-    new = json.loads(input_stream.readline().decode('utf-8', errors='replace'))
+    old = json.loads(cast(bytes, input_stream.readline()).decode('utf-8', errors='replace'))
+    new = json.loads(cast(bytes, input_stream.readline()).decode('utf-8', errors='replace'))
     if is_done(argv):
         main(old, new)
     print(json.dumps(new))
