@@ -64,6 +64,14 @@ report.estimates.context=1
 report.next.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,until.remaining,description,urgency
 report.next.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Until,Description,Urg
 
+# Next-like report with annotations shown as count to be more compact
+report.cnext.description=Compact overview of most urgent tasks (compact next)
+report.cnext.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,until.remaining,description.count,urgency
+report.cnext.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Until,Description,Urg
+report.cnext.filter=status:pending -WAITING limit:page
+report.cnext.sort=urgency-
+report.cnext.context=1
+
 report.projectview.columns=id,start.active,depends.count,recur.indicator,scheduled.countdown,due.countdown,until.countdown,estimate,tags,project.indented,description.count
 report.projectview.labels=ID,A,Dep,R,S,Due,Until,Est,Tags,Project,Description
 report.projectview.filter=project.any: status:pending
