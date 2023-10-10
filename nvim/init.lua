@@ -225,9 +225,9 @@ vim.keymap.set('n', '<leader>sT', function()
   vim.print("treesitter indent was toggled...")
 end, { noremap=true, silent=true })
 require('nvim-treesitter.configs').setup{
-  ensure_installed = { "c", "cpp", "python", "vim", "make", "cmake", "comment", "lua",
-                       "ledger", "latex", "markdown", "markdown_inline",
-                       "javascript", "typescript", "tsx" },
+  ensure_installed = { "bash", "c", "cpp", "python", "vim", "make", "cmake",
+                       "comment", "lua", "ledger", "latex", "markdown",
+                       "markdown_inline", "javascript", "typescript", "tsx" },
 
   -- I think this could solve the error on updates when upgrading treesitter with plug
   sync_install = true,  -- only applied to `ensure_installed`

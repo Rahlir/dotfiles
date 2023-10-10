@@ -12,7 +12,7 @@ call plug#begin('~/.vim/plugged')
 " Plugins for all systems and (neo)vims
 Plug 'tpope/vim-sensible'
 Plug 'itchyny/lightline.vim'
-Plug 'rahlir/gruvbox', { 'branch': 'nvim_features' }
+Plug 'rahlir/gruvbox', {'branch': 'nvim_features'}
 Plug 'raimondi/delimitmate'
 Plug 'yggdroot/indentline'
 Plug 'tpope/vim-surround'
@@ -28,14 +28,14 @@ Plug 'mbbill/undotree'
 " Mac specific plugins. This check should work for any recent
 " vim on macOS
 if has('mac')
-  Plug 'mityu/vim-applescript', {'for': 'applescript' }
+  Plug 'mityu/vim-applescript', {'for': 'applescript'}
 endif
 
 " Neovim specific plugins
 if has('nvim')
   Plug 'neovim/nvim-lspconfig'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-  Plug 'nvim-treesitter/nvim-treesitter-textobjects', {'do': ':TSUpdate'}
+  Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
   Plug 'hrsh7th/cmp-nvim-lsp'
   Plug 'quangnguyen30192/cmp-nvim-ultisnips'
