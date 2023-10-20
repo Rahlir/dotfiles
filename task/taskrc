@@ -27,6 +27,7 @@ urgency.blocking.coefficient=0.0
 urgency.blocked.coefficient=-0.0
 urgency.project.coefficient=0.8
 urgency.annotations.coefficient=0.5
+urgency.user.tag.bump.coefficient=4.0
 
 ### Calendar setup ###
 # Calendar command shows both holidays and list report of all
@@ -47,6 +48,13 @@ uda.estimate.label=Time Estimated
 urgency.uda.estimate.coefficient=0.8
 
 ### Reports ###
+# Modifications to builtin reports
+report.next.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,until.remaining,description,urgency
+report.next.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Until,Description,Urg
+
+report.active.sort=start+,project+
+
+# Custom reports
 report.timelog.description=Tasks with times (spend or estimated) logged
 report.timelog.columns=uuid.short,id,status.short,end,took,estimate,project,description
 report.timelog.labels=UUID,ID,St,Completed,Spent,Estimated,Project,Description
@@ -60,9 +68,6 @@ report.estimates.labels=ID,Active,P,Tag,Project,Description,Estimated,Urg
 report.estimates.filter=estimate.any: status:pending
 report.estimates.sort=estimate-,urgency-
 report.estimates.context=1
-
-report.next.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,until.remaining,description,urgency
-report.next.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Until,Description,Urg
 
 # Next-like report with annotations shown as count to be more compact
 report.cnext.description=Compact overview of most urgent tasks (compact next)
@@ -79,6 +84,7 @@ report.projectview.sort=project+,start-,depends+
 
 # ### Aliases ###
 alias.dailystatus=status:completed end.after:today all
+alias.editconf=execute nvim $XDG_CONFIG_HOME/task/taskrc
 
 ### Other ###
 # News version
