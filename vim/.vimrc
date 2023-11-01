@@ -24,6 +24,7 @@ Plug 'SirVer/ultisnips'
 Plug 'lervag/vimtex', {'for': 'tex'}
 Plug 'ledger/vim-ledger', {'for': 'ledger'}
 Plug 'mbbill/undotree'
+Plug 'dhruvasagar/vim-table-mode', {'for': ['markdown', 'text', 'rst']}
 
 " Mac specific plugins. This check should work for any recent
 " vim on macOS
