@@ -504,12 +504,14 @@ augroup END
 
 let g:delimitMate_expand_cr = 1
 let g:delimitMate_expand_space = 1
+let g:delimitMate_expand_inside_quotes = 1
 augroup vimrc_delimitmate
   autocmd!
   autocmd FileType python let b:delimitMate_smart_quotes = '\%(\%(\w\&[^fr]\)\|[^[:punct:][:space:]fr]\|\%(\\\\\)*\\\)\%#\|\%#\%(\w\|[^[:space:][:punct:]]\)'
   autocmd FileType tex let b:delimitMate_quotes = "\" ' ` $"
   autocmd FileType tex let b:delimitMate_smart_matchpairs = '^\%(\w\|\!\|£\|[^[:space:][:punct:]]\)'
   autocmd FileType markdown let b:delimitMate_nesting_quotes = ['`']
+  autocmd FileType sql let b:delimitMate_quotes = "\" ' ` %"
 augroup END
 
 " }}}
