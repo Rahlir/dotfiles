@@ -61,7 +61,6 @@ def extract_tags_from(json_obj):
 
 
 def extract_annotation_from(json_obj):
-
     if 'annotations' not in json_obj:
         return '\'\''
 
@@ -127,6 +126,8 @@ def main(old, new):
                         new['took'] = timedelta_to_isostring(total_t)
 
     # Modifications to task other than start/stop
+    # TODO: There is a bug, it shouldn't just modify @1 segment, it should pick the relevant segment
+    # using tags
     elif 'start' in new and 'start' in old:
         old_tags = extract_tags_from(old)
         new_tags = extract_tags_from(new)
@@ -146,10 +147,7 @@ if __name__ == "__main__":
     old = json.loads(cast(bytes, input_stream.readline()).decode("utf-8", errors="replace"))
     new = json.loads(cast(bytes, input_stream.readline()).decode("utf-8", errors="replace"))
     main(old, new)
-    if not new:
-        if is_undo(sys.argv):
-            print(json.dumps(old))
-        else:
-            print(json.dumps(new))
+    if not new and is_undo(sys.argv):
+        print(json.dumps(old))
     else:
         print(json.dumps(new))
