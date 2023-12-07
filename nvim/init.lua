@@ -153,12 +153,17 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', '<leader>lr', vim.lsp.buf.rename, bufopts)
   vim.keymap.set('n', '<leader>lc', vim.lsp.buf.code_action, bufopts)
 
-  -- LSP Actions regarding workspace
+  -- LSP Actions related to workspace
   vim.keymap.set('n', '<leader>lwa', vim.lsp.buf.add_workspace_folder, bufopts)
   vim.keymap.set('n', '<leader>lwr', vim.lsp.buf.remove_workspace_folder, bufopts)
   vim.keymap.set('n', '<leader>lwl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, bufopts)
+
+  -- Filetype specific LSP Actions
+  if client.name == 'pyright' then
+    vim.keymap.set('n', '<leader>lpi', vim.cmd.PyrightOrganizeImports, bufopts)
+  end
 
   -- LSP Formatting
   vim.keymap.set({'n', 'v'}, '<leader>rl', function()
