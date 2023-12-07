@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+
+from datetime import datetime
+import json
+from os import getenv
+from pathlib import Path
+import subprocess
+from sys import argv, stdin
+from textwrap import wrap
+from typing import cast
+
+
+try:
+    input_stream = stdin.buffer
+except AttributeError:
+    input_stream = stdin
+
+
+def get_command(args):
+    for arg in args:
+        if 'command' in arg:
+            return arg.split(':')[1]
+    return ''
+
+
+def extract_newest_annotation(json_obj):
+    if 'annotations' not in json_obj:
+        return None
+
+    return json_obj['annotations'][-1]
+
+
+def main(_, new, command):
+    if command in ['done', 'annotate']:
+        now = datetime.now().astimezone()
+        uuid = new['uuid'].split('-')[0]
+        desc = new['description']
+        action = ""
+        log_desc = ""
+
+        if command == 'done':
+            action = "Completed"
+            log_desc = desc
+
+        elif command == 'annotate':
+            action = "Annotated"
+            annotation = extract_newest_annotation(new)
+            if annotation:
+                log_desc = annotation['description']
+                now = datetime.fromisoformat(annotation['entry']).astimezone()
+
+        log_message = f"{action:s} task {uuid:s}"
+        if 'project' in new:
+            log_message += f" in #{new['project']:s}"
+        log_message += f": {log_desc:s}"
+
+        daily_note = Path(getenv("ZK_NOTEBOOK_DIR", ".")) / f"daily/{now.strftime('%Y-%m-%d')}.md"
+        if daily_note.is_file():
+            log_message = f"{now.strftime('%I:%M %p')} - " + log_message
+            log_lines = wrap(log_message, width=80, initial_indent="* ", subsequent_indent="  ")
+            with open(daily_note, "a") as df:
+                for line in log_lines:
+                    df.write(line + "\n")
+        else:
+            proc = subprocess.Popen(
+                ['zk', 'new', '--interactive', '--no-input', '--date', now.isoformat(), 'daily', '--print-path'],
+                text=True, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL
+            )
+            proc.communicate(input=log_message)
+
+
+if __name__ == "__main__":
+    old = json.loads(cast(bytes, input_stream.readline()).decode('utf-8', errors='replace'))
+    new = json.loads(cast(bytes, input_stream.readline()).decode('utf-8', errors='replace'))
+    command = get_command(argv)
+    main(old, new, command)
+    print(json.dumps(new))
