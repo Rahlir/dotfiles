@@ -31,7 +31,7 @@ def extract_newest_annotation(json_obj):
 
 
 def main(_, new, command):
-    if command in ['done', 'annotate']:
+    if command in ['done', 'annotate', 'start']:
         now = datetime.now().astimezone()
         uuid = new['uuid'].split('-')[0]
         desc = new['description']
@@ -48,6 +48,10 @@ def main(_, new, command):
             if annotation:
                 log_desc = annotation['description']
                 now = datetime.fromisoformat(annotation['entry']).astimezone()
+
+        elif command == 'start':
+            action = "Started"
+            log_desc = desc
 
         log_message = f"{action:s} task {uuid:s}"
         if 'project' in new:
