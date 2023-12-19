@@ -95,5 +95,12 @@ news.version=2.6.0
 # bar
 summary.all.projects=1
 
+# Contexts
+# TODO: It is possible change configuration with context using
+# context.<name>.rc.<key>=<value>. Might be interesting to think about this
+context.AtWork.read=+work or +office
+context.AtWork.write=+work
+context.Workflow.read=+dotfiles or +meta or +notes
+
 # Leave room for sync message
 reserved.lines=2
