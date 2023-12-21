@@ -36,41 +36,47 @@ def main(_, new, command):
         uuid = new['uuid'].split('-')[0]
         desc = new['description']
         action = ""
-        log_desc = ""
+        first_line = ""
+        detail_lines = []
 
         if command == 'done':
             action = "Completed"
-            log_desc = desc
+            first_line = " **" + desc + "**"
 
         elif command == 'annotate':
             action = "Annotated"
             annotation = extract_newest_annotation(new)
             if annotation:
-                log_desc = annotation['description']
+                detail_lines = wrap(annotation['description'], width=79,
+                                    initial_indent="    > ", subsequent_indent="    > ")
                 now = datetime.fromisoformat(annotation['entry']).astimezone()
 
         elif command == 'start':
             action = "Started"
-            log_desc = desc
+            first_line = " **" + desc + "**"
 
-        log_message = f"{action:s} task {uuid:s}"
+        prefix = f"{action:s} task {uuid:s}"
         if 'project' in new:
-            log_message += f" in #{new['project']:s}"
-        log_message += f": {log_desc:s}"
+            prefix += f" in #{new['project']:s}"
+        first_line = prefix + ":" + first_line
 
         daily_note = Path(getenv("ZK_NOTEBOOK_DIR", ".")) / f"daily/{now.strftime('%Y-%m-%d')}.md"
         if daily_note.is_file():
-            log_message = f"{now.strftime('%I:%M %p')} - " + log_message
-            log_lines = wrap(log_message, width=80, initial_indent="* ", subsequent_indent="  ")
+            first_line = f"{now.strftime('%I:%M %p')} - " + first_line
+            first_line_wrapped = wrap(first_line, width=79, initial_indent="* ", subsequent_indent="  ")
             with open(daily_note, "a") as df:
-                for line in log_lines:
+                for line in first_line_wrapped:
+                    df.write(line + "\n")
+                for line in detail_lines:
                     df.write(line + "\n")
         else:
             proc = subprocess.Popen(
                 ['zk', 'new', '--interactive', '--no-input', '--date', now.isoformat(), 'daily', '--print-path'],
                 text=True, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL
             )
-            proc.communicate(input=log_message)
+            input_wrapped = wrap(first_line, width=79)
+            input_wrapped.extend(detail_lines)
+            proc.communicate(input="\n".join(input_wrapped))
 
 
 if __name__ == "__main__":
