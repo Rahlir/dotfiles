@@ -98,7 +98,7 @@ summary.all.projects=1
 # Contexts
 # TODO: It is possible change configuration with context using
 # context.<name>.rc.<key>=<value>. Might be interesting to think about this
-context.AtWork.read=+work or +office
+context.AtWork.read=(+work or +office) and -docbrown
 context.AtWork.write=+work
 context.Workflow.read=+dotfiles or +meta or +notes
 
