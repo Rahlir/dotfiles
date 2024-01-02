@@ -25,6 +25,8 @@ tags
 compile_commands.json
 .clang*
 .ccls*
+# File created by jdtls (and eclipse)
+.factorypath
 
 # JetBrains
 .idea
