@@ -1,0 +1,18 @@
+# Configuration for Alacritty
+#
+# by Tadeas Uhlir <tadeas.uhlir@gmail.com>
+
+# Import theme
+import = ["/home/uhlir/.config/alacritty/theme.toml"]
+
+# Font configuration
+[font]
+size = 10.0
+
+[font.normal]
+family = "JetBrainsMono Nerd Font"
+style = "Regular"
+
+# Make option act as alt. macOS only option
+[window]
+option_as_alt = "Both"

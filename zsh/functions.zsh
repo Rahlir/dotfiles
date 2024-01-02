@@ -33,12 +33,12 @@ function switch-background() {
     else
         # THEMEBG variable should be set. Nevertheless, if it is not,
         # try to infer the current background from alacritty theme file used
-        if ! [[ -f "$alacritty_configdir/theme.yml" ]]; then
+        if ! [[ -f "$alacritty_configdir/theme.toml" ]]; then
             echo "THEMEBG variable is not set and alacritty theme file could not be found"
             return 1
         fi
-        local isdark=$(head -n 1 "$alacritty_configdir/theme.yml" | grep -c dark)
-        local islight=$(head -n 1 "$alacritty_configdir/theme.yml" | grep -c light)
+        local isdark=$(head -n 1 "$alacritty_configdir/theme.toml" | grep -c dark)
+        local islight=$(head -n 1 "$alacritty_configdir/theme.toml" | grep -c light)
         if (( isdark == 1 )); then
             local newbg=light
         elif (( islight == 1 )); then
@@ -51,9 +51,9 @@ function switch-background() {
 
     [[ "$newbg" == "dark" ]] && local darkmode_bool="true" || local darkmode_bool="false"
 
-    local theme_relpath="themes/gruvbox_$newbg.yml"
-    ln -fs "$theme_relpath" "$alacritty_configdir/theme.yml" && 
-        touch "$alacritty_configdir/alacritty.yml" &&
+    local theme_relpath="themes/gruvbox_$newbg.toml"
+    ln -fs "$theme_relpath" "$alacritty_configdir/theme.toml" &&
+        touch "$alacritty_configdir/alacritty.toml" &&
         export THEMEBG=$newbg && export BAT_THEME=gruvbox-$newbg &&
         source ${XDG_CONFIG_HOME:-$HOME/.config}/zsh/p10k.zsh
 
