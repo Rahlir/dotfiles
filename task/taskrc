@@ -82,6 +82,13 @@ report.projectview.labels=ID,A,Dep,R,S,Due,Until,Est,Tags,Project,Description
 report.projectview.filter=project.any: status:pending
 report.projectview.sort=project+,start-,depends+
 
+# Today report showing scheduled tasks and tasks with due dates soon
+report.today.columns=id,priority,scheduled.age,due.relative,start.age,depends,estimate,project,description,urgency
+report.today.labels=ID,!,Sched,Due,Active,Deps,Est,Project,Description,Urg
+report.today.filter=status:pending (scheduled.before:tomorrow or +next or due.before:2weeks)
+report.today.sort=scheduled-,due-,urgency-
+report.today.context=0
+
 # ### Aliases ###
 alias.dailystatus=status:completed end.after:today all
 alias.editconf=execute nvim $XDG_CONFIG_HOME/task/taskrc
