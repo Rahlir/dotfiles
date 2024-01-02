@@ -57,7 +57,7 @@ def main(_, new, command):
 
         prefix = f"{action:s} task {uuid:s}"
         if 'project' in new:
-            prefix += f" in #{new['project']:s}"
+            prefix += f" in #{new['project']:s} "
         first_line = prefix + ":" + first_line
 
         daily_note = Path(getenv("ZK_NOTEBOOK_DIR", ".")) / f"daily/{now.strftime('%Y-%m-%d')}.md"
