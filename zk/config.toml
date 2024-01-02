@@ -75,3 +75,5 @@ viewlynx = "zk list $@ --format {{raw-content}} --quiet --limit 1 | pandoc -f gf
 vieww3m = "zk list $@ --format {{raw-content}} --quiet --limit 1 | pandoc -f gfm | w3m -T text/html"
 # Browse your default notes directory with glow
 browse = "glow -s $THEMEBG $ZK_NOTEBOOK_DIR"
+# Return list of notes inline to be used with other zk list commands
+inline = "zk list --quiet --format {{path}} --delimiter , $@"
