@@ -37,8 +37,8 @@ function switch-background() {
             echo "THEMEBG variable is not set and alacritty theme file could not be found"
             return 1
         fi
-        local isdark=$(head -n 1 "$alacritty_configdir/theme.toml" | grep -c dark)
-        local islight=$(head -n 1 "$alacritty_configdir/theme.toml" | grep -c light)
+        local isdark=$(tail -n 1 "$alacritty_configdir/theme.toml" | grep -c dark)
+        local islight=$(tail -n 1 "$alacritty_configdir/theme.toml" | grep -c light)
         if (( isdark == 1 )); then
             local newbg=light
         elif (( islight == 1 )); then

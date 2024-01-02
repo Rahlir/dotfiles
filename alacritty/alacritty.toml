@@ -3,7 +3,7 @@
 # by Tadeas Uhlir <tadeas.uhlir@gmail.com>
 
 # Import theme
-import = ["/home/uhlir/.config/alacritty/theme.toml"]
+import = ["~/.config/alacritty/theme.toml"]
 
 # Font configuration
 [font]
