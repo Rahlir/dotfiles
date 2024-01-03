@@ -1,0 +1,37 @@
+"query:Unread Articles:unread = \"yes\"
+"query:Unread Articles (1 year old):unread = \"yes\" and age between 0:365"
+https://macstories.net/feed/
+https://feeds.macrumors.com/MacRumors-All
+https://news.ycombinator.com/rss
+https://xn--gckvb8fzb.com/index.xml
+https://stackoverflow.blog/feed
+https://feeds.wired.com/wired/index ~Wired
+https://techcrunch.com/feed/
+https://rss.macworld.com/macworld/feeds/main
+https://neovim.io/news.xml
+https://j11g.com/feed/
+http://rss.sciam.com/ScientificAmerican-Global
+https://www.rockpapershotgun.com/feed/news
+https://www.rockpapershotgun.com/feed/reviews
+http://feeds.feedburner.com/ign/reviews
+http://feeds.feedburner.com/ign/news
+https://randomascii.wordpress.com/feed/
+https://phys.org/rss-feed/
+https://github.blog/feed/
+https://codeascraft.com/feed/atom/
+http://scripting.com/rss.xml
+https://xkcd.com/rss.xml
+https://vkc.sh/feed/
+https://newsboat.org/news.atom
+https://archlinux.org/feeds/news/
+https://www.reddit.com/r/Physics/.rss
+https://www.reddit.com/r/neovim/.rss
+https://www.reddit.com/r/vim/.rss
+https://dotfyle.com/this-week-in-neovim/rss.xml
+https://api.quantamagazine.org/feed/
+https://osxdaily.com/feed/
+https://www.youtube.com/feeds/videos.xml?channel_id=UCOpcACMWblDls9Z6GERVi1A
+https://dagster.io/rss.xml
+https://www.nature.com/nature.rss
+https://medium.com/feed/airbnb-engineering
+https://hackernoon.com/feed

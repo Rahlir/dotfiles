@@ -1,0 +1,19 @@
+# Newsboat colour scheme to work with the Gruvbox palette
+
+color background          default   default
+color listnormal          default   default
+color listnormal_unread   color10   default
+color listfocus           color0    color6 bold
+color listfocus_unread    color0    color6 bold
+color info                color229  color8
+color article             default   default
+
+# highlights
+highlight article "^(Feed|Title):.*$" color14 default bold
+highlight article "^(Link|Date|Author):.*$" color6 default
+highlight article "https?://[^ ]+" color5 default underline
+highlight article "\\[[0-9]+\\]" color12 default bold
+highlight article "\\[(image|iframe|audio)\\ [0-9]+(:\\ .*)?\\ \\(link\\ #[0-9]+\\)\\]" color166 default bold
+# section highlight
+highlight feedlist "---.*---" color1 default bold
+highlight feedlist ".*0/0.." default default invis

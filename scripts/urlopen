@@ -1,0 +1,58 @@
+#!/bin/zsh
+
+# urlopen script
+#
+# Inspired by:
+# - https://github.com/gotbletu/shownotes/blob/master/urlportal.sh
+# - https://github.com/mrdotx/link-handler/blob/master/link_handler.sh
+# - https://github.com/sigpipe/urlview/blob/master/url_handler.sh
+#
+# by Tadeas Uhlir <tadeas.uhlir@gmail.com>
+
+if [[ $(uname -s) == Darwin ]]; then
+    DEFAULT=open
+elif (( $+commands[xdg-open] )); then
+    DEFAULT=xdg-open
+else
+    echo "Could not determine default URL opener, exitting"
+    exit 1
+fi
+
+function imageviewer()
+{
+    local _url=$1
+    if [[ $(uname -s) == Darwin ]]; then
+        curl -s $_url | open -a Preview.app -f
+    else
+        if (( $+commands[imv] )); then
+            curl -s $_url | imv -
+        elif (( $+commands[feh] )); then
+            feh $_url
+        else
+            $DEFAULT $_url
+        fi
+    fi
+}
+
+function videoviewer()
+{
+    local _url=$1
+    if (( $+commands[mpv] )); then
+        mpv --ontop --force-window --no-terminal $_url &
+    else
+        $DEFAULT $_url
+    fi
+}
+
+url=$1
+case $url:l in
+    *.png|*.png?*|*.jpg|*.jpg?*|*.jpeg|*.jpeg?*)
+        imageviewer $url
+        ;;
+    *youtube.com/watch?*|*youtube.com/embed/*|*vimeo.com/video*)
+        videoviewer $url
+        ;;
+    *)
+        $DEFAULT $url
+        ;;
+esac

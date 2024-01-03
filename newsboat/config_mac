@@ -1,0 +1,5 @@
+browser "open %u"
+macro i set browser "curl -s %u | open -a Preview.app -f"; open-in-browser; set browser "open %u"
+macro I set browser "curl -s %u | open -a Preview.app -f"; one; set browser "open %u"
+macro O set browser "curl -s %u | open -a Preview.app -f"; two; set browser "open %u"
+macro P set browser "curl -s %u | open -a Preview.app -f"; three; set browser "open %u"
