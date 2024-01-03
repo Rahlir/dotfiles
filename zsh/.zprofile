@@ -47,3 +47,9 @@ export GEM_SPEC_CACHE="$XDG_CACHE_HOME"/gem
 export CARGO_HOME="$XDG_DATA_HOME"/cargo
 # Texlive cache
 export TEXMFVAR="$XDG_CACHE_HOME"/texlive/texmf-var
+# SQLite history
+export SQLITE_HISTORY="$XDG_CACHE_HOME"/sqlite_history
+# Ruby bundler
+export BUNDLE_USER_CONFIG="$XDG_CONFIG_HOME"/bundle
+export BUNDLE_USER_CACHE="$XDG_CACHE_HOME"/bundle
+export BUNDLE_USER_PLUGIN="$XDG_DATA_HOME"/bundle
