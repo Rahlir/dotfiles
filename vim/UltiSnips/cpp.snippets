@@ -52,26 +52,32 @@ endsnippet
 
 snippet doxygen "Basic c++ doxygen function template" b
 /**
-* @brief ${4:brief}
-*
-* @param `!p write_docstring_args(t[3],snip)`
-*
-* @return `!p snip.rv = t[1]`
-*/
+ * @brief ${4:brief}
+ *
+ * @param `!p write_docstring_args(t[3],snip)`
+ *
+ * @return `!p snip.rv = t[1]`
+ */
 ${1:ReturnType} ${2:FunctionName}(${3:param})
 {
 	${0:FunctionBody}
 }
 endsnippet
 
-snippet ddoxygen "More basic doxygen template"
+snippet ddoxygen "More basic doxygen template" b
 /**
-* ${1:brief}.
-*
-* @param ${2:param}
-*
-* @return ${3:return}
-*/
+ * ${1:brief}.
+ *
+ * @param ${2:param}
+ *
+ * @return ${3:return}
+ */
+endsnippet
+
+snippet bblock "Block comment used with doxygen" b
+/**
+ * ${1:brief}
+ */
 endsnippet
 
 snippet cclass "class declaration"
