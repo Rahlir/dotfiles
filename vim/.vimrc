@@ -361,10 +361,10 @@ nnoremap <silent> <leader>aF :last<CR>
 " Undotree Plugin:
 if &runtimepath =~ 'undotree'
   nnoremap <silent> <leader>uu :UndotreeToggle<CR>
-  nnoremap <silent> <leader>uS :UndotreeShow<CR>:UndotreeFocus<CR>
-  nnoremap <silent> <leader>us :UndotreeShow<CR>
+  nnoremap <silent> <leader>uO :UndotreeShow<CR>:UndotreeFocus<CR>
+  nnoremap <silent> <leader>uo :UndotreeShow<CR>
   nnoremap <silent> <leader>uf :UndotreeFocus<CR>
-  nnoremap <silent> <leader>uh :UndotreeHide<CR>
+  nnoremap <silent> <leader>uc :UndotreeHide<CR>
 endif
 
 " Misc:
