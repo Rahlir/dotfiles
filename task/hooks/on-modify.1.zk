@@ -8,6 +8,7 @@ import subprocess
 from sys import argv, stdin
 from textwrap import wrap
 from typing import cast
+from re import match
 
 
 try:
@@ -18,8 +19,9 @@ except AttributeError:
 
 def get_command(args):
     for arg in args:
-        if 'command' in arg:
-            return arg.split(':')[1]
+        command = match(r"command:(\w+)", arg)
+        if command:
+            return command.group(1)
     return ''
 
 
