@@ -731,12 +731,13 @@ snippet pmdoc "pocoo style module doc string" b
 $0
 endsnippet
 
-snippet "def (\w+)\((.*)\):" "docstring for already written function" r
-`!p snip.rv = "def " + match.group(1) + "(" + match.group(2) + "):"`
+# Example numpy style docstrings:
+# https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_numpy.html#example-numpy
+snippet "def (\w+)\((.*)\)( -> [\w\[\]]+)?:" "docstring for already written function" r
+`!p snip.rv = "def " + match.group(1) + "(" + match.group(2) + ")"+ match.group(3) + ":"`
 	`!p snip.rv = triple_quotes(snip)`${1: TODO: Docstring for `!p snip.rv=match.group(1)`.}`!p
 plist=["", match.group(1), match.group(2)]
 write_function_docstring(plist, snip)`
 endsnippet
-
 
 # vim:ft=snippets:
