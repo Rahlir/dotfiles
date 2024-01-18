@@ -63,3 +63,5 @@ export TERMINFO="$XDG_DATA_HOME"/terminfo
 export TERMINFO_DIRS="$XDG_DATA_HOME"/terminfo:/usr/share/terminfo
 # Docker config home
 export DOCKER_CONFIG="$XDG_CONFIG_HOME"/docker
+# Postgresql history
+export PSQL_HISTORY="$XDG_DATA_HOME"/psql_history
