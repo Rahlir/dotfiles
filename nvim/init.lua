@@ -17,11 +17,11 @@ vim.g.python3_host_prog = '$WORKON_HOME/neovim/bin/python'
 -- Autocommands: {{{
 local nvimrc_augroup = vim.api.nvim_create_augroup("nvimrc", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = {"cpp"},
+  pattern = {"cpp", "java"},
   callback = function()
     vim.wo.foldmethod = "expr"
     vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-    vim.cmd.normal('zR')
+    vim.wo.foldlevel = 99
   end,
   group = nvimrc_augroup
 })
@@ -113,84 +113,6 @@ require('telescope').setup{
   }
 }
 -- }}}
--- LspConfig: {{{
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-  -- Mappings:
-  local bufopts = { noremap=true, silent=true, buffer=bufnr }
-  local teleopts = {
-    show_line=false, layout_config={ width=0.7, preview_width=0.45 }, initial_mode="normal"
-  }
-
-  -- Go to
-  vim.keymap.set('n', 'gr', function()
-    builtin.lsp_references(themes.get_cursor(teleopts))
-  end, bufopts)
-
-  vim.keymap.set('n', 'gd', function()
-    builtin.lsp_definitions(themes.get_cursor(teleopts))
-  end, bufopts)
-
-  vim.keymap.set('n', '<leader>gi', function()
-    builtin.lsp_implementations(themes.get_cursor(teleopts))
-  end, bufopts)
-
-  vim.keymap.set('n', '<leader>gd', vim.lsp.buf.declaration, bufopts)
-
-  -- LSP Actions
-  vim.keymap.set('n', '<leader>li', function()
-    builtin.lsp_incoming_calls(themes.get_cursor(teleopts))
-  end, bufopts)
-
-  vim.keymap.set('n', '<leader>lo', function()
-    builtin.lsp_outgoing_calls(themes.get_cursor(teleopts))
-  end, bufopts)
-
-  vim.keymap.set('n', '<leader>lr', vim.lsp.buf.rename, bufopts)
-  vim.keymap.set('n', '<leader>lc', vim.lsp.buf.code_action, bufopts)
-
-  -- LSP Actions related to workspace
-  vim.keymap.set('n', '<leader>lwa', vim.lsp.buf.add_workspace_folder, bufopts)
-  vim.keymap.set('n', '<leader>lwr', vim.lsp.buf.remove_workspace_folder, bufopts)
-  vim.keymap.set('n', '<leader>lwl', function()
-    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-  end, bufopts)
-
-  -- Filetype specific LSP Actions
-  if client.name == 'pyright' then
-    vim.keymap.set('n', '<leader>lpi', vim.cmd.PyrightOrganizeImports, bufopts)
-  end
-
-  -- LSP Formatting
-  vim.keymap.set({'n', 'v'}, '<leader>rl', function()
-    vim.lsp.buf.format { async = true }
-  end, bufopts)
-
-  -- Telescope
-  vim.keymap.set('n', '<leader>fs', builtin.lsp_document_symbols, bufopts)
-  vim.keymap.set('n', '<leader>fS', builtin.lsp_dynamic_workspace_symbols, bufopts)
-
-  -- Misc
-  vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-  vim.keymap.set({'n', 'i'}, '<C-s>', vim.lsp.buf.signature_help, bufopts)
-end
-
-require('lspconfig')['clangd'].setup{
-  on_attach = on_attach,
-}
-
-require('lspconfig')['pyright'].setup{
-  on_attach = on_attach,
-}
-
-require('lspconfig')['tsserver'].setup{
-  on_attach = on_attach,
-}
--- }}}
 -- Lightline: {{{
 local lightline = vim.g.lightline
 
@@ -229,6 +151,7 @@ vim.keymap.set('n', '<leader>sT', function()
   vim.cmd.TSToggle('indent')
   vim.print("treesitter indent was toggled...")
 end, { noremap=true, silent=true })
+
 require('nvim-treesitter.configs').setup{
   ensure_installed = { "bash", "c", "cpp", "python", "vim", "make", "cmake",
                        "comment", "lua", "ledger", "latex", "markdown",
@@ -308,6 +231,13 @@ local has_words_before = function()
 end
 
 local cmp_ultisnips_mappings = require('cmp_nvim_ultisnips.mappings')
+
+-- See here: https://github.com/hrsh7th/nvim-cmp/issues/1251
+local fixed_abort = function()
+  cmp.abort()
+  cmp.core:reset()
+end
+
 cmp.setup {
   snippet = {
     expand = function(args) vim.fn["UltiSnips#Anon"](args.body) end
@@ -317,7 +247,20 @@ cmp.setup {
     ["<Tab>"] = cmp.mapping(
     function(fallback)
       if has_words_before() then
-        cmp_ultisnips_mappings.compose{"select_next_item", "expand"}(cmp.complete)
+        cmp_ultisnips_mappings.compose{"select_next_item", "expand"}(function()
+          if cmp.visible() then
+            if #cmp.get_entries() == 1 then
+              cmp.confirm({ select = true })
+            else
+              cmp.select_next_item()
+            end
+          else
+            cmp.complete()
+            if #cmp.get_entries() == 1 then
+              cmp.confirm({ select = true })
+            end
+          end
+        end)
       else
         fallback()
       end
@@ -335,6 +278,10 @@ cmp.setup {
     ['<C-y>'] = cmp.mapping(cmp.mapping.confirm({
       behavior = cmp.ConfirmBehavior.Replace, select = false}),
     {'i', 'c'}),
+
+    ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), {'i'}),
+    ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), {'i'}),
+    ['<C-u>'] = cmp.mapping(fixed_abort, {'i', 's'}),
   },
 
   sources = cmp.config.sources({
@@ -345,6 +292,10 @@ cmp.setup {
 
   completion = {
     autocomplete = false
+  },
+  
+  matching = {
+    disallow_fuzzy_matching = true,
   }
 }
 
@@ -353,11 +304,97 @@ cmp.setup.filetype({'markdown'}, {
   completion = {
     autocomplete = {
       "TextChanged"
-    }
+    },
   }
 })
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
+-- }}}
+-- LspConfig: {{{
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings:
+  local bufopts = { noremap=true, silent=true, buffer=bufnr }
+  local teleopts = {
+    show_line=false, layout_config={ width=0.7, preview_width=0.45 }, initial_mode="normal"
+  }
+
+  -- Go to
+  vim.keymap.set('n', 'gr', function()
+    builtin.lsp_references(themes.get_cursor(teleopts))
+  end, bufopts)
+
+  vim.keymap.set('n', 'gd', function()
+    builtin.lsp_definitions(themes.get_cursor(teleopts))
+  end, bufopts)
+
+  vim.keymap.set('n', '<leader>gi', function()
+    builtin.lsp_implementations(themes.get_cursor(teleopts))
+  end, bufopts)
+
+  vim.keymap.set('n', '<leader>gd', vim.lsp.buf.declaration, bufopts)
+
+  -- LSP Actions
+  vim.keymap.set('n', '<leader>li', function()
+    builtin.lsp_incoming_calls(themes.get_cursor(teleopts))
+  end, bufopts)
+
+  vim.keymap.set('n', '<leader>lo', function()
+    builtin.lsp_outgoing_calls(themes.get_cursor(teleopts))
+  end, bufopts)
+
+  vim.keymap.set('n', '<leader>lr', vim.lsp.buf.rename, bufopts)
+  vim.keymap.set('n', '<leader>lc', vim.lsp.buf.code_action, bufopts)
+
+  -- LSP Actions related to workspace
+  vim.keymap.set('n', '<leader>lwa', vim.lsp.buf.add_workspace_folder, bufopts)
+  vim.keymap.set('n', '<leader>lwr', vim.lsp.buf.remove_workspace_folder, bufopts)
+  vim.keymap.set('n', '<leader>lwl', function()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  end, bufopts)
+
+  -- Filetype specific LSP Actions
+  if client.name == 'pyright' then
+    vim.keymap.set('n', '<leader>lpi', vim.cmd.PyrightOrganizeImports, bufopts)
+  end
+
+  -- LSP Formatting
+  vim.keymap.set({'n', 'v'}, '<leader>rl', function()
+    vim.lsp.buf.format { async = true }
+  end, bufopts)
+
+  -- Telescope
+  vim.keymap.set('n', '<leader>fs', builtin.lsp_document_symbols, bufopts)
+  vim.keymap.set('n', '<leader>fS', builtin.lsp_dynamic_workspace_symbols, bufopts)
+
+  -- Misc
+  vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+  vim.keymap.set({'n', 'i'}, '<C-s>', vim.lsp.buf.signature_help, bufopts)
+end
+
+require('lspconfig')['clangd'].setup{
+  on_attach = on_attach,
+  capabilities = capabilities
+}
+
+require('lspconfig')['pyright'].setup{
+  on_attach = on_attach,
+  capabilities = capabilities
+}
+
+require('lspconfig')['tsserver'].setup{
+  on_attach = on_attach,
+  capabilities = capabilities
+}
+
+require('lspconfig')['jdtls'].setup{
+  on_attach = on_attach,
+  capabilities = capabilities
+}
 -- }}}
 -- ZK: {{{
 require("zk").setup({
