@@ -1,0 +1,46 @@
+#!/usr/bin/env zsh
+
+function process_args()
+{
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -s|--short)
+                SHORT=1
+                shift
+                ;;
+            -h|--help)
+                print_help
+                shift
+                ;;
+            -*|--*)
+                echo "Unknown option $1"
+                print_help
+                exit 1
+                ;;
+            *)
+                shift
+                ;;
+        esac
+    done
+}
+
+function get_boot_kernel()
+{
+    file /boot/vmlinuz* | grep -m 1 -oP "version \K[^[:space:]]+"
+}
+
+process_args $@
+if [[ $(uname -r) != $(get_boot_kernel) ]]; then
+    if [[ -n $SHORT ]]; then
+        echo "yes"
+    else
+        echo "$(uname -r) != $(get_boot_kernel)"
+        echo "reboot required"
+    fi
+else
+    if [[ -n $SHORT ]]; then
+        echo "no"
+    else
+        echo "reboot not required"
+    fi
+fi

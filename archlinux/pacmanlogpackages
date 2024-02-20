@@ -1,0 +1,51 @@
+#!/usr/bin/env zsh
+
+SCRIPT_NAME=$(basename $0)
+typeset -a POSITIONAL_ARGS
+
+function print_help()
+{
+    echo "Usage: $SCRIPT_NAME [ -h | --help ] [ -a | --all ] [ package... ]"
+    echo "Options:"
+    echo "    -h   show this help and exit"
+    echo "    -a   list log of all (not only explicitly installed) packages"
+}
+
+function process_args()
+{
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -a|--all)
+                ALL_PACKAGES=1
+                shift
+                ;;
+            -h|--help)
+                print_help
+                exit 0
+                ;;
+            -*|--*)
+                echo "Unknown option $1"
+                print_help
+                exit 1
+                ;;
+            *)
+                POSITIONAL_ARGS+=$1
+                shift
+                ;;
+        esac
+    done
+}
+
+process_args $@
+
+if (( $#POSITIONAL_ARGS )); then
+    package_list=( $POSITIONAL_ARGS )
+elif [[ -n $ALL_PACKAGES ]]; then
+    package_list=( "${(f)$(pacman -Qq)}" )
+else
+    package_list=( "${(f)$(pacman -Qeq)}" )
+fi
+
+for package in $package_list; do
+    grep "\[ALPM\] installed ${package}[[:space:]]" /var/log/pacman.log
+done | sort -u | sed -e 's/\[ALPM\] installed //' -e 's/(.*$//'

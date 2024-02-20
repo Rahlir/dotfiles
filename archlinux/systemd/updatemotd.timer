@@ -1,0 +1,8 @@
+[Unit]
+Description=Timer for the script that updates message-of-the-day with useful information every day
+
+[Timer]
+OnCalendar=daily
+
+[Install]
+WantedBy=timers.target

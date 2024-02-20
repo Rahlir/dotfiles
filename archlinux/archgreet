@@ -1,0 +1,11 @@
+#!/bin/sh
+
+PCKGS=$(checkupdates | wc -l)
+LSTLOG=$(lastlog -u "$USER" | tail -n 1 | \
+    grep -oE "([A-Z][a-z]{2}\s){2}\s*[[:digit:]]+ ([[:digit:]]{2}:?){3}")
+
+# Wait for a bit so that the notification appears after sway startup is complete
+sleep 5
+
+/usr/bin/notify-send -t 20000 -i distributor-logo-archlinux "Welcome Back" \
+    "last login: ${LSTLOG}\npackages to upgrade: $PCKGS" &

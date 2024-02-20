@@ -1,0 +1,60 @@
+#!/bin/sh
+
+AQU="\x1b[36;1m"
+RED="\x1b[31;1m"
+RES="\x1b[38;49;00m"
+
+TODAY=$(/usr/bin/date "+%A %F")
+LST_UPGRADE=$(/usr/local/bin/pacmanlastupgrade)
+PCKGS_UPDATE=$(/usr/bin/checkupdates | wc -l)
+LST_REBOOT=$(/usr/bin/uptime -s)
+RQD_REBOOT=$(/usr/local/bin/rebootrequired -s)
+
+process_args()
+{
+    while [ $# -gt 0 ]; do
+        case $1 in
+            -o|--output)
+                OUTPUT_FILE=$2
+                shift
+                shift
+                ;;
+            -v|--verbose)
+                VERBOSE=1
+                shift
+                ;;
+            -*|--*)
+                echo "Unknown option "$1""
+                exit 1
+                ;;
+        esac
+    done
+}
+
+process_args "$@"
+motd=$(echo -e "                $AQU-@$RES
+               $AQU.##@                        ${RED}__    ___$RES
+              $AQU.####@                ${RED}__  __/ /_  / (_)________  _____$RES
+             $AQU @#####@              $RED/ / / / __ \/ / / ___/ __ \/ ___/$RES
+            $AQU. *######@            $RED/ /_/ / / / / / / /  / /_/ / /__$RES
+           $AQU.##@o@#####@           $RED\__,_/_/ /_/_/_/_/  / .___/\___/$RES
+          $AQU/############@                             $RED/_/$RES
+         $AQU/##############@$RES
+        $AQU@######@**%######@$RES         today is $TODAY 
+       $AQU@######\`     %#####o$RES        last system upgrade: $LST_UPGRADE
+      $AQU@######@       ######%$RES       packages to upgrade: $PCKGS_UPDATE
+    $AQU-@#######h       ######@.\`$RES     last reboot: $LST_REBOOT
+   $AQU/#####h**\`\`       \`**%@####@$RES    reboot required: $RQD_REBOOT
+  $AQU@H@*\`                    \`*%#@$RES
+  $AQU*\`                            \`*$RES")
+
+if [ -n "$OUTPUT_FILE" ]; then
+    echo -e "$motd" > "$OUTPUT_FILE"
+else
+    echo -e "$motd"
+fi
+
+if [ -n "$VERBOSE" ]; then
+    echo -n "MOTD updated"
+    [ -n "$OUTPUT_FILE" ] && echo " in "$OUTPUT_FILE"" || echo
+fi

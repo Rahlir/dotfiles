@@ -1,0 +1,8 @@
+[Trigger]
+Operation = Upgrade
+Type = Path
+Target = usr/bin/*
+[Action]
+Depends = pacman-contrib
+When = PostTransaction
+Exec = /usr/local/bin/updatemotd > /etc/motd

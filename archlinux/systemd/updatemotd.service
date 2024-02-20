@@ -1,0 +1,11 @@
+[Unit]
+Description=Service that updates message-of-the-day with some useful info
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/updatemotd -v -o /etc/motd
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target

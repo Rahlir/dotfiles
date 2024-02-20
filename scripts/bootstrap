@@ -16,7 +16,7 @@ trap finish EXIT
 
 SCRIPT_NAME=$(basename "$0")
 DOTFILES_PATH=$( dirname "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )" )
-IGNORED=( "scripts" "pacman" "README.md" )
+IGNORED=( "README.md" )
 BOOTSTRAP_FILES=()
 
 print_usage()
@@ -524,6 +524,64 @@ bootstrap_vim()
     done
 }
 
+admin_copy()
+{
+    local _from=$1
+    local _to=$2
+    if [[ -n "$VERBOSE" ]]; then
+        local _destination=$_to
+        if [[ $_destination != */${_from##*/} ]]; then
+            _destination=${_destination%/}/${_from##*/}
+        fi
+        if [[ -e "$_destination" ]]; then
+            echo "Note that "$(echo_styled -i "$_destination")" exists and will be overwritten"
+        fi
+        local _from_short=${_from/$HOME/\~}
+        echo "Copying "$(echo_styled -i "$_from_short")" -> "$(echo_styled -i "$_destination")""
+    fi
+    sudo cp "$_from" "$_to"
+}
+
+bootstrap_archlinux()
+{
+    for _arch_fn in "$DOTFILES_PATH"/archlinux/*; do
+        case $_arch_fn in
+            */pacman)
+                for _pacman_fn in "$_arch_fn"/*; do
+                    if [[ $_pacman_fn == */hooks ]]; then
+                        for _hook_fn in "$_pacman_fn"/*; do
+                            admin_copy "$_hook_fn" /etc/pacman.d/hooks/
+                        done
+                    else
+                        echo ""$(echo_styled -e Warning:)" unknown pacman config file "$_pacman_fn""
+                    fi
+                done
+                ;;
+            */systemd)
+                for _systemd_fn in "$_arch_fn"/*; do
+                    if [[ -f "$_systemd_fn" ]]; then
+                        # TODO: You might eventually also have user services, make sure the destination
+                        # is correct
+                        admin_copy "$_systemd_fn" /usr/lib/systemd/system/
+                    else
+                        echo ""$(echo_styled -e Warning:)" unexpected type of systemd config file "$_systemd_fn""
+                    fi
+                done
+                if [[ -n "$VERBOSE" ]]; then
+                    echo_styled -t "To enable a systemd service, run \"systemctl daemon-reload\" and \"systemctl enable {service}\"\n"
+                fi
+                ;;
+            *)
+                if [[ -x "$_arch_fn" && ! -d "$_arch_fn" ]]; then
+                    admin_copy "$_arch_fn" /usr/local/bin/
+                else
+                    echo ""$(echo_styled -e Warning:)" unexpected type of archlinux config file "$_arch_fn""
+                fi
+                ;;
+        esac
+    done
+}
+
 process_args "$@"
 [[ -n "$VERBOSE" ]] && print_welcome
 check_requirements
@@ -540,7 +598,7 @@ for fn in "${BOOTSTRAP_FILES[@]}"; do
             bootstrap_zsh
             ;;
         bash)
-            for _bash_f in $DOTFILES_PATH/$fn/*; do
+            for _bash_f in "$DOTFILES_PATH"/bash/*; do
                 bootstrap_folder "$_bash_f" "$HOME" "$DOTFILES_PATH/$fn"
             done
             ;;
@@ -551,8 +609,38 @@ for fn in "${BOOTSTRAP_FILES[@]}"; do
             bootstrap_vim
             ;;
         xdg-open)
-            for _xdg_f in "$DOTFILES_PATH"/"$fn"/*; do
-                bootstrap_folder "$_xdg_f" "$XDG_CONFIG_HOME" "$DOTFILES_PATH"/"$fn"
+            for _xdg_f in "$DOTFILES_PATH"/xdg-open/*; do
+                bootstrap_folder "$_xdg_f" "$XDG_CONFIG_HOME" "$DOTFILES_PATH"/xdg-open
+            done
+            ;;
+        task)
+            for _task_f in "$DOTFILES_PATH"/task/*; do
+                if [[ "$_task_f" == */taskurlopen ]]; then
+                    safe_symlink "$_task_f" ""$HOME"/.local/bin/taskurlopen"
+                else
+                    bootstrap_folder "$_task_f" "$XDG_CONFIG_HOME"
+                fi
+            done
+            ;;
+        nnn)
+            for _nnn_f in "$DOTFILES_PATH"/nnn/*; do
+                if [[ "$_nnn_f" == */nscript ]]; then
+                    safe_symlink "$_nnn_f" ""$HOME"/.local/bin/nscript"
+                elif [[ "$_nnn_f" == */nnn.desktop ]]; then
+                    safe_symlink "$_nnn_f" ""$XDG_DATA_HOME"/applications/nnn.desktop"
+                else
+                    echo ""$(echo_styled -e Warning:)" unknown nnn config file "$_nnn_f""
+                fi
+            done
+            ;;
+        archlinux)
+            bootstrap_archlinux
+            ;;
+        scripts)
+            for _script_f in "$DOTFILES_PATH"/scripts/*; do
+                if [[ "$_script_f" != */bootstrap ]]; then
+                    bootstrap_folder "$_script_f" "$HOME"/.local/bin "$DOTFILES_PATH"/scripts
+                fi
             done
             ;;
         *)

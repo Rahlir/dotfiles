@@ -1,0 +1,52 @@
+#!/bin/sh
+
+if [ "$EUID" -ne 0 ]; then
+    echo "You need to be root to run archbackup..."
+    exit 1
+fi
+
+BACKUP_DIR=/mnt/storage/backup/
+
+if ! [ -d "$BACKUP_DIR" ]; then
+    echo "The backup folder in "$BACKUP_DIR" does not exist."
+    echo "Perhaps storage disk is not mounted..."
+    exit 1
+fi
+
+echo -ne "\x1b[33m"
+echo "                   __    __               __            " 
+echo "  ____ ___________/ /_  / /_  ____ ______/ /____  ______"
+echo " / __ \`/ ___/ ___/ __ \/ __ \/ __ \`/ ___/ //_/ / / / __ \ "
+echo "/ /_/ / /  / /__/ / / / /_/ / /_/ / /__/ ,< / /_/ / /_/ /"
+echo "\__,_/_/   \___/_/ /_/_.___/\__,_/\___/_/|_|\__,_/ .___/"
+echo "                                                /_/     "
+echo -e "\x1b[39;49;00m"
+
+echo ""$(date +"%x %X")" - archbackup script started -----------" >> "$BACKUP_DIR"/backup.log 
+
+echo "Running root disk backup"
+rsync -ahAXH --delete --delete-excluded --info=progress2 --filter="merge "$BACKUP_DIR"/backup.filter" / "$BACKUP_DIR"/arch_backup \
+    && echo ""$(date +"%x %X")" - Completed root disk backup          |" >> "$BACKUP_DIR"/backup.log \
+    || echo "-> failed"
+
+echo "Running pacman database backup"
+tar -cjf "$BACKUP_DIR"/pacman_database_backup.tar.bz2 -C / var/lib/pacman/local \
+    && echo ""$(date +"%x %X")" - Completed pacman database backup    |" >> "$BACKUP_DIR"/backup.log \
+    || echo "-> failed"
+
+echo "Fetching pacman database list"
+pacman -Qqe > "$BACKUP_DIR"/pkglist.txt && pacman -Qqem > "$BACKUP_DIR"/foreignpkglist.txt \
+    && echo ""$(date +"%x %X")" - Written pacman package list         |" >> "$BACKUP_DIR"/backup.log \
+    || echo "-> failed"
+
+echo "Fetching pipx packages list"
+runuser -l uhlir -c 'pipx list --short' > "$BACKUP_DIR"/pipxlist.txt \
+    && echo ""$(date +"%x %X")" - Written pipx package list           |" >> "$BACKUP_DIR"/backup.log \
+    || echo "-> failed"
+
+echo "Fetching npm packages list"
+runuser -l uhlir -c 'npm -g list' > "$BACKUP_DIR"/npmlist.txt \
+    && echo ""$(date +"%x %X")" - Written npm package list            |" >> "$BACKUP_DIR"/backup.log \
+    || echo "-> failed"
+
+echo ""$(date +"%x %X")" - archbackup script finished ----------" >> "$BACKUP_DIR"/backup.log 

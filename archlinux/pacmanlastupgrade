@@ -1,0 +1,3 @@
+#!/usr/bin/env zsh
+
+grep "starting full system upgrade" /var/log/pacman.log | tail -n1 | cut -d ' ' -f1 | sed -E 's/(\[|\])//g; s/T/ /; s/\+[[:digit:]]+//'
