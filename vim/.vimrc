@@ -25,6 +25,7 @@ Plug 'lervag/vimtex', {'for': 'tex'}
 Plug 'ledger/vim-ledger', {'for': 'ledger'}
 Plug 'mbbill/undotree'
 Plug 'dhruvasagar/vim-table-mode', {'for': ['markdown', 'text', 'rst']}
+Plug 'preservim/tagbar'
 
 " Mac specific plugins. This check should work for any recent
 " vim on macOS
@@ -367,6 +368,13 @@ if &runtimepath =~ 'undotree'
   nnoremap <silent> <leader>uc :UndotreeHide<CR>
 endif
 
+" Tagbar Plugin:
+if &runtimepath =~ 'tagbar'
+  nnoremap <silent> <leader>tt :Tagbar<CR>
+  nnoremap <silent> <leader>tf :TagbarOpen fj<CR>
+  nnoremap <silent> <leader>tp :TagbarTogglePause<CR>
+endif
+
 " Misc:
 " Move lines up / down
 nnoremap <silent> <leader>k :<C-U>call <SID>MoveLine('up', v:count1)<CR>
@@ -433,8 +441,8 @@ let g:lightline = {
       \ 'subseparator': g:separator_def['subseparator'],
       \ 'active': {
       \ 'left': [['mode', 'paste'],
-      \          ['readonly', 'filename', 'modified', 'gitbranch'],
-      \          ['gitsummary']],
+      \          ['readonly', 'filename', 'gitbranch', 'tagbarsort'],
+      \          ['gitsummary', 'tagbarflags']],
       \ 'right': [[],
       \           ['lineinfo', 'percent'],
       \           [ 'fileformat', 'fileencoding', 'filetype' ]]
@@ -443,6 +451,12 @@ let g:lightline = {
       \       'gitbranch': 'LightLineGitBranch',
       \       'filetype': 'WebDevFiletype',
       \       'fileformat': 'WebDevFileformat',
+      \       'mode': 'LightlineMode',
+      \       'readonly': 'LightlineReadonly',
+      \       'filename': 'LightlineFilename',
+      \       'tagbarsort': 'LightlineTagbarsort',
+      \       'fileencoding': 'LightlineFileencoding',
+      \       'tagbarflags': 'LightlineTagbarflags',
       \ },
       \ 'component_expand': {
       \       'gitsummary': 'LightLineGitGutter',
@@ -488,12 +502,76 @@ function! WebDevFileformat()
     endif
 endfunction
 
+function! LightlineMode()
+  let fname = expand('%:t')
+  return fname =~# '^__Tagbar__' ? 'Tagbar'
+        \ : winwidth(0) > 60 ? lightline#mode() : ''
+endfunction
+
+function! LightlineReadonly()
+  return &ft !~? 'help' && &readonly ? 'RO' : ''
+endfunction
+
+function! LightlineModified()
+  return &ft =~# 'help\|tagbar' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+
+function! LightlineFilename()
+  let fname = expand('%:t')
+  return fname =~# '^__Tagbar__' ? '' :
+        \ &filetype ==# 'startify' ? "󱓞 Let's start" :
+        \ (fname !=# '' ? fname : '[No Name]') .
+        \ (LightlineModified() !=# '' ? ' ' . LightlineModified() : '')
+endfunction
+
 function! LightLineGitBranch()
-  if exists('*FugitiveHead')
+  if expand('%:t') !~# '^__Tagbar__' && exists('*FugitiveHead')
     let branch = FugitiveHead()
     return branch !=# '' ? ' '.branch : ''
   endif
   return ''
+endfunction
+
+function! LightlineFileencoding()
+  return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
+endfunction
+
+function! LightlineTagbarsort()
+  if expand('%:t') =~# '^__Tagbar__'
+    let fileinfo = tagbar#state#get_current_file(0)
+    let sorted = get(fileinfo.typeinfo, 'sort', g:tagbar_sort)
+    return sorted ? 'Name' : 'Order'
+  endif
+  return ''
+endfunction
+
+function! LightlineTagbarflags()
+  if expand('%:t') =~# '^__Tagbar__'
+    let flags = []
+    let flags += exists('w:autoclose') && w:autoclose ? ['c'] : []
+    let flags += g:tagbar_autoclose ? ['C'] : []
+    let flags += (g:tagbar_sort && g:tagbar_case_insensitive) ? ['i'] : []
+    let flags += g:tagbar_hide_nonpublic ? ['v'] : []
+    return join(flags, '')
+  endif
+  return ''
+endfunction
+
+let g:tagbar_status_func = 'TagbarStatusFunc'
+
+function! TagbarStatusFunc(current, sort, fname, flags, ...) abort
+  if a:current
+    return lightline#statusline(0)
+  else
+    let flag_str = join(a:flags, '')
+    let status_str = flag_str ==# '' ? 'Tagbar [' . a:sort . ']':
+          \ 'Tagbar [' . a:sort . '] ' . flag_str
+    let status_width = strwidth(status_str)
+    let tagbar_width = winwidth(0)
+    if tagbar_width > status_width + strwidth(a:fname)
+      return status_str . '%=' . a:fname
+    else
+      return 'TB [' . a:sort . ']%= %<' . a:fname
 endfunction
 
 augroup vimrc_lightline
@@ -571,6 +649,22 @@ let g:startify_files_number = 5
 " Ledger Options: {{{
 
 let g:ledger_bin = 'ledger'
+
+" }}}
+" Tagbar Options: {{{
+
+let g:tagbar_scopestrs = {
+      \ 'namespace': "\uea8b",
+      \ 'class': "\ueb5b",
+      \ 'func': "\Uf0295",
+      \ 'function': "\Uf0295",
+      \ }
+
+" Keep sort as defined in the source file
+let g:tagbar_sort = 0
+
+" Default is <space> which conflicts with my <leader>
+let g:tagbar_map_showproto = 'K'
 
 " }}}
 
