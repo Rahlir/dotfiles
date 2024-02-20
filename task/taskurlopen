@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -o nounset
+
 POSITIONAL_ARGS=()
 URLS=()
 
@@ -28,7 +30,7 @@ parse_annotation()
     else
         _grep_cmd=grep
     fi
-    for url in $(echo "$1" | "$_grep_cmd" -oP "(?<=\s)((https?://(www\.)?)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}|file:///)\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"); do
+    for url in $(echo "$1" | "$_grep_cmd" -oP "(?<=\s)((https?://(www\.)?)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}|file:///|note://|task://)\b((\.*[-a-zA-Z0-9()@:%_\+~#?&//=])*)"); do
         URLS+=( "$url" )
     done
 }
@@ -46,7 +48,7 @@ get_urls()
 
 pick_to_open()
 {
-    local _open_cmd="xdg-open"
+    local _open_cmd="urlopen"
     if [[ "$(uname -s)" == Darwin ]]; then
         _open_cmd=open
     fi

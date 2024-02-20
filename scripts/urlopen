@@ -9,12 +9,14 @@
 #
 # by Tadeas Uhlir <tadeas.uhlir@gmail.com>
 
+setopt no_unset
+
 if [[ $(uname -s) == Darwin ]]; then
     DEFAULT=open
 elif (( $+commands[xdg-open] )); then
     DEFAULT=xdg-open
 else
-    echo "Could not determine default URL opener, exitting"
+    echo "ERROR: could not determine default URL opener"
     exit 1
 fi
 
@@ -37,22 +39,83 @@ function imageviewer()
 function videoviewer()
 {
     local _url=$1
-    if (( $+commands[mpv] )); then
+    if (( $+commands[mpv] && $+commands[youtube-dl] )); then
         mpv --ontop --force-window --no-terminal $_url &
     else
         $DEFAULT $_url
     fi
 }
 
+function handle_http()
+{
+    local _url=$1
+    if [[ ${URLOPEN_DUMB:-0} == 1 ]]; then
+        $DEFAULT $_url
+    else
+        case $_url:l in
+            *.png|*.png?*|*.jpg|*.jpg?*|*.jpeg|*.jpeg?*)
+                imageviewer $_url
+                ;;
+            *youtube.com/watch?*|*youtube.com/embed/*|*vimeo.com/video*)
+                videoviewer $_url
+                ;;
+            *)
+                $DEFAULT $_url
+                ;;
+        esac
+    fi
+}
+
+function handle_taskwarrior()
+{
+    local _url=$1
+    local _uuid=${_url#task://}
+    if (( $(task count $_uuid) == 0 )); then
+        echo "ERROR: task $_uuid does not exist"
+        exit 1
+    fi
+    task $_uuid
+}
+
+function handle_note()
+{
+    local _url=$1
+    local _note_path=${_url#note://}
+
+    if (( $(zk list $_note_path --format oneline --quiet | wc -l) == 0 )); then
+        echo "ERROR: note $_note_path does not exist"
+        exit 1
+    fi
+
+    local _file_link="file://${ZK_NOTEBOOK_DIR:-$PWD}/${_note_path%.md}.md"
+    if [[ -n ${URLOPEN_NOTESAPP:-} ]]; then
+        $URLOPEN_NOTESAPP $_file_link
+    elif (( $+commands[glow] )); then
+        zk list $_note_path --format "{{raw-content}}" --quiet --limit 1 | glow -s ${THEMEBG:-dark} --pager
+    elif (( $+commands[lynx] && $+commands[pandoc] )); then
+        zk list $_note_path --format "{{raw-content}}" --quiet --limit 1 | pandoc -f gfm | lynx -stdin
+    elif (( $+commands[w3m] && $+commands[pandoc] )); then
+        zk list $_note_path --format "{{raw-content}}" --quiet --limit 1 | pandoc -f gfm | w3m -T text/html
+    else
+        $DEFAULT $_file_link
+    fi
+}
+
 url=$1
-case $url:l in
-    *.png|*.png?*|*.jpg|*.jpg?*|*.jpeg|*.jpeg?*)
-        imageviewer $url
+
+scheme=${url%%:*}
+case $scheme in
+    (file|http(|s)))
+        handle_http $url
         ;;
-    *youtube.com/watch?*|*youtube.com/embed/*|*vimeo.com/video*)
-        videoviewer $url
+    task)
+        handle_taskwarrior $url
+        ;;
+    note)
+        handle_note $url
         ;;
     *)
-        $DEFAULT $url
+        echo "ERROR: unknown scheme \"$scheme\""
+        exit 1
         ;;
 esac
