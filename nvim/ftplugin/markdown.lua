@@ -16,6 +16,13 @@ if require("zk.util").notebook_root(vim.fn.expand('%:p')) ~= nil then
         return
       end
     end
+    local cursor_word = vim.fn.expand("<cword>")
+    -- This matches 8 hex characters which is the start of UUID, so that
+    -- should be task URI
+    if cursor_word:match("^%x%x%x%x%x%x%x%x$") ~= nil then
+      vim.cmd("!task " .. cursor_word)
+      return
+    end
     vim.cmd.normal('o')
   end, bufopts)
   vim.keymap.set("n", "<leader>zb", "<Cmd>ZkBacklinks<CR>", bufopts)
