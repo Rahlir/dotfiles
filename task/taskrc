@@ -108,6 +108,8 @@ summary.all.projects=1
 context.AtWork.read=(+work or +office) and -docbrown
 context.AtWork.write=+work
 context.Workflow.read=+dotfiles or +meta or +notes
+context.School.read=+school
+context.School.write=+school
 
 # Leave room for sync message
 reserved.lines=2
