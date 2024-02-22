@@ -1,0 +1,310 @@
+#!/usr/bin/env python3
+
+from subprocess import run
+from argparse import ArgumentParser
+from os import environ
+from pathlib import Path
+from tomllib import TOMLDecodeError, load
+from sys import exit
+from enum import Flag, auto
+
+
+def parse_args():
+    parser = ArgumentParser(
+        prog='taskreview',
+        description='Script that provides taskwarrior review functionality'
+    )
+    parser.add_argument('cutoff', nargs='?', type=int)
+    parser.add_argument('-c', '--config', type=Path)
+
+    parsed = parser.parse_args()
+
+    if parsed.config:
+        if not parsed.config.is_file():
+            print(styled_string("WARNING: ", fg=3, modifiers=Modifier.BOLD) +
+                  f"config file {parsed.config!s} is not a valid file\n")
+            parsed.config = None
+
+    return parsed
+
+
+def get_config(config_file: Path | None = None) -> dict:
+    default_config = {
+        "interval": "1week",
+        "filter": "+PENDING or +WAITING",
+        "task_command": "task",
+        "sort": "reviewed+,modified+"
+    }
+
+    if not config_file:
+        xdg_config_home = environ.get("XDG_CONFIG_HOME")
+        if not xdg_config_home:
+            xdg_config_home = Path.home().joinpath(".config").as_posix()
+        config_file = Path(xdg_config_home).joinpath("task", "taskreview.toml")
+
+    config = {}
+    if config_file.is_file():
+        with config_file.open(mode='br') as config_fh:
+            try:
+                config = load(config_fh)
+            except TOMLDecodeError:
+                print(styled_string("WARNING: ", fg=3, modifiers=Modifier.BOLD)
+                      + "couldn't parse config file\n")
+
+    default_config.update(config)
+    return default_config
+
+
+def run_and_check(command_args: list[str]) -> str:
+    """Run a CLI command and return output.
+
+    The function raises RuntimeError if the command terminates
+    with non-zero exit code.
+
+    Parameters
+    ----------
+    command_args : command line arguments to pass to run
+
+    Returns
+    -------
+    string the command outputs to stdout
+
+    """
+    cmd_run = run(command_args, capture_output=True)
+    if cmd_run.returncode != 0:
+        if err_msg := cmd_run.stderr:
+            raise RuntimeError(err_msg.decode('utf-8').strip())
+        else:
+            raise RuntimeError()
+
+    if out_msg := cmd_run.stdout:
+        return out_msg.decode('utf-8').strip()
+    else:
+        return ""
+
+
+def review_action(uuid: str, task_cmd: str = "task") -> bool | None:
+    """Start a review loop of a single task.
+
+    The function prompts the user for an input that specifies the action to be
+    performed.
+
+    Parameters
+    ----------
+    uuid : unique identifier of the task to review
+    task_cmd : taskwarrior command
+
+    Returns
+    -------
+    True or false indicating if the task was reviewed. None is returned in case
+    the user wishes to terminate the program.
+
+    """
+    while True:
+        header_str = styled_string("Action: ", fg=2, bg=237, modifiers=Modifier.BOLD)
+        actions_str = styled_string(
+            "r(eview) m(odify) s(kip) c(omplete) a(nnotate) e(dit) d(elete) p(rint) q(uit) -> ",
+            bg=237
+        )
+        try:
+            action = input(f"{header_str}{actions_str}")
+        except EOFError:
+            print("\nQuitting...")
+            return None
+
+        if action:
+            command = action.split()[0]
+            cmd_args = action.split()[1:]
+
+            if command in ["review", "r"]:
+                out_msg = run_and_check([task_cmd, uuid,  "mod", "reviewed:now"])
+                if out_msg:
+                    print(out_msg.splitlines()[-1])
+                return True
+            elif command in ["edit", "e"]:
+                run([task_cmd, uuid, "edit"])
+            elif command in ["skip", "s"]:
+                print("Skipping...")
+                return False
+            elif command in ["modify", "m"]:
+                try:
+                    out_msg = run_and_check([task_cmd, uuid, "mod", *cmd_args])
+                except RuntimeError as err:
+                    print(styled_string("MODIFY ERROR: ", fg=1, modifiers=Modifier.BOLD), end="")
+                    print(err)
+                else:
+                    if out_msg:
+                        print(out_msg.splitlines()[-1])
+            elif command in ["complete", "c"]:
+                out_msg = run_and_check([task_cmd, uuid, "done", "reviewed:now"])
+                if out_msg:
+                    print(out_msg.splitlines()[-1])
+                return True
+            elif command in ["delete", "d"]:
+                run([task_cmd, uuid, "delete"])
+                return True
+            elif command in ["print", "p"]:
+                run([task_cmd, uuid])
+            elif command in ["quit", "q"]:
+                print("Quitting...")
+                return None
+            elif command in ["annotate", "a"]:
+                try:
+                    out_msg = run_and_check([task_cmd, uuid, "annotate", *cmd_args])
+                except RuntimeError as err:
+                    print(styled_string("ANNOTATE ERROR: ", fg=1, modifiers=Modifier.BOLD), end="")
+                    print(err)
+                else:
+                    if out_msg:
+                        print(out_msg.splitlines()[-1])
+            else:
+                print(f"Unknown action '{command}'")
+
+
+def end_review(reviewed: int, to_review: int):
+    bg_color = 1
+    reviewed_ratio = reviewed / to_review
+    if reviewed_ratio > 0.9:
+        bg_color = 2
+    elif reviewed_ratio > 0.66:
+        bg_color = 4
+    elif reviewed_ratio > 0.3:
+        bg_color = 3
+    
+    number_str = styled_string(f"{reviewed:d} out of {to_review}", bg=bg_color, modifiers=Modifier.BOLD)
+    print(f"\nReviewed {number_str} tasks...")
+
+
+class Modifier(Flag):
+    BOLD = auto()
+    ITALIC = auto()
+    UNDERLINE = auto()
+
+    def escape_code_array(self):
+        escape_code_arr = []
+        if Modifier.BOLD in self:
+            escape_code_arr.append('1')
+        if Modifier.ITALIC in self:
+            escape_code_arr.append('3')
+        if Modifier.UNDERLINE in self:
+            escape_code_arr.append('4')
+        return escape_code_arr
+
+
+def styled_string(text: str, /,
+                  fg: int | None = None, bg: int | None = None,
+                  modifiers: Modifier | None = None, eol: bool = False) -> str:
+    escape_code_arr = []
+    if fg != None:
+        escape_code_arr.extend(['38', '5', f'{fg:d}'])
+    if bg != None:
+        escape_code_arr.extend(['48', '5', f'{bg:d}'])
+    if modifiers:
+        escape_code_arr.extend(modifiers.escape_code_array())
+    escape_code = ""
+    if escape_code_arr:
+        escape_code_args = ';'.join(escape_code_arr)
+        escape_code += f"\033[{escape_code_args}m"  # ]
+    if eol:
+        escape_code += "\033[0K"  # ]
+
+    return f"{escape_code}{text}\033[0m"  # ]
+
+
+def get_uuids(config: dict):
+    task_cmd = config['task_command']
+    def_interval = config['interval']
+    def_filter = config['filter']
+
+    filter = f"( {def_filter:s} ) and " \
+             f"( ( reviewed.none: and entry.before:now-{def_interval:s} ) " \
+             f"or reviewed.before:now-{def_interval:s} )"
+
+    uuids_str = run_and_check([task_cmd, filter, "uuids"])
+    uuids = set(uuids_str.split())
+    custom_filters = {name: value for name, value in config.items() if isinstance(value, dict)}
+    for filter_name, filter_dict in custom_filters.items():
+        try:
+            filter_val = filter_dict['filter']
+            interval_val = filter_dict['interval']
+            custom_filter = f"( ( {def_filter} ) and ( {filter_val:s} ) ) and " \
+                     f"( ( reviewed.none: and entry.before:now-{interval_val:s} ) " \
+                     f"or reviewed.before:now-{interval_val:s} )"
+        except (KeyError, ValueError):
+            print(styled_string("WARNING: ", fg=3, modifiers=Modifier.BOLD) +
+                  f"filter {filter_name:s} from the config has missing or invalid fields\n")
+        else:
+            try:
+                f_uuids_str = run_and_check([task_cmd, custom_filter, "uuids"])
+            except RuntimeError as err:
+                print(styled_string("WARNING: ", fg=3, modifiers=Modifier.BOLD) +
+                      f"filter {filter_name:s} from the config didn't work:")
+                print(err)
+                print()
+            else:
+                uuids.update(f_uuids_str.split())
+    return uuids
+
+
+def main(cutoff: int | None = None, config_file: Path | None = None):
+    config = get_config(config_file)
+    try:
+        uuids = get_uuids(config)
+    except RuntimeError as err:
+        print(styled_string("REVIEW COMMAND ERROR: ", fg=1, modifiers=Modifier.BOLD), end="")
+        print(err)
+        print("Double check your default filter and interval configuration...")
+        return 1
+    uuids_arg = " ".join(uuids)
+    if not uuids_arg:
+        print(styled_string("No tasks to be reviewed.", fg=2, modifiers=Modifier.BOLD))
+        return 0
+
+    task_cmd = config['task_command']
+    sort = config['sort']
+    rc_columns = "rc.report._review.columns=uuid"
+    rc_sort = f"rc.report._review.sort={sort:s}"
+    try:
+        uuids_str = run_and_check([task_cmd, rc_columns, rc_sort, uuids_arg, "_review"])
+    except RuntimeError as e:
+        print(styled_string("REVIEW COMMAND ERROR: ", fg=1, modifiers=Modifier.BOLD), end="")
+        print(e)
+        print("Double check your default sort configuration...")
+        return 1
+
+    processed = 0
+    reviewed = 0
+    uuids = uuids_str.split()
+    for uuid in uuids:
+        if processed > 0:
+            print()
+        print(styled_string(f"[{processed+1:d} out of {len(uuids):d}]", bg=6, modifiers=Modifier.BOLD), end="")
+        try:
+            task_name = run_and_check([task_cmd, "_get", f"{uuid:s}.description"])
+        except RuntimeError as e:
+            print(styled_string("_GET COMMAND ERROR: ", fg=1, modifiers=Modifier.BOLD), end="")
+            print(e)
+            return 1
+        print(styled_string(task_name, bg=237, modifiers=Modifier.BOLD, eol=True))
+        run([task_cmd, uuid])
+
+        item_reviewed = review_action(uuid, task_cmd)
+
+        if item_reviewed == None:
+            end_review(reviewed, len(uuids))
+            return 0
+        elif item_reviewed == True:
+            reviewed += 1
+
+        processed += 1
+        if cutoff and processed == cutoff:
+            end_review(reviewed, len(uuids))
+            return 0
+
+    end_review(reviewed, len(uuids))
+    return 0
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    exit(main(cutoff=args.cutoff, config_file=args.config))

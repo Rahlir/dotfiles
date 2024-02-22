@@ -113,3 +113,5 @@ context.School.write=+school
 
 # Leave room for sync message
 reserved.lines=2
+uda.reviewed.type=date
+uda.reviewed.label=Reviewed
