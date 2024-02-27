@@ -59,7 +59,23 @@ def main(_, new, command):
 
         prefix = f"{action:s} task {uuid:s}"
         if 'project' in new:
-            prefix += f" in #{new['project']:s} "
+            project_name = new['project']
+            project_name_note = project_name.replace('.', '-')
+            zk_out = subprocess.run(
+                ['zk', 'list', '-f', '{{link}}', '--quiet', f'projects/{project_name_note:s}'],
+                capture_output=True
+            )
+            link = zk_out.stdout.decode('utf-8').strip()
+            if not link and project_name != project_name_note:
+                parent = project_name[0:project_name.index('.')]
+                zk_out = subprocess.run(
+                    ['zk', 'list', '-f', '{{link}}', '--quiet', f'projects/{parent:s}'],
+                    capture_output=True
+                )
+                link = zk_out.stdout.decode('utf-8').strip()
+            if not link:
+                link = f'@{project_name:s}'
+            prefix += f" in {link:s}"
         first_line = prefix + ":" + first_line
 
         daily_note = Path(getenv("ZK_NOTEBOOK_DIR", ".")) / f"daily/{now.strftime('%Y-%m-%d')}.md"
