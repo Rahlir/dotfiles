@@ -285,7 +285,7 @@ def main(cutoff: int | None = None, config_file: Path | None = None):
             print(styled_string("_GET COMMAND ERROR: ", fg=1, modifiers=Modifier.BOLD), end="")
             print(e)
             return 1
-        print(styled_string(task_name, bg=237, modifiers=Modifier.BOLD, eol=True))
+        print(styled_string(" " + task_name, bg=237, modifiers=Modifier.BOLD, eol=True))
         run([task_cmd, uuid])
 
         item_reviewed = review_action(uuid, task_cmd)
