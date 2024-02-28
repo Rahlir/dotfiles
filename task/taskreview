@@ -263,9 +263,10 @@ def main(cutoff: int | None = None, config_file: Path | None = None):
     task_cmd = config['task_command']
     sort = config['sort']
     rc_columns = "rc.report._review.columns=uuid"
+    rc_context = f"rc.report._review.context=0"
     rc_sort = f"rc.report._review.sort={sort:s}"
     try:
-        uuids_str = run_and_check([task_cmd, rc_columns, rc_sort, uuids_arg, "_review"])
+        uuids_str = run_and_check([task_cmd, rc_columns, rc_context, rc_sort, uuids_arg, "_review"])
     except RuntimeError as e:
         print(styled_string("REVIEW COMMAND ERROR: ", fg=1, modifiers=Modifier.BOLD), end="")
         print(e)
