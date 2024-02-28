@@ -66,7 +66,7 @@ confg = '$EDITOR "$XDG_CONFIG_HOME/zk/config.toml"'
 # Note the use of a pipe and the location of $@.
 hist = "zk list --format path --delimiter0 --quiet $@ | xargs -t -0 git log --patch --"
 # View note in pretty format with glow without pager
-cat = "zk list $@ --format {{raw-content}} --quiet --limit 1 | glow -s $THEMEBG"
+cat = "zk list $@ --format {{raw-content}} --quiet | glow -s $THEMEBG"
 # View note in pretty format with glow
 view = "zk list $@ --format {{raw-content}} --quiet --limit 1 | glow -s $THEMEBG --pager"
 # View note in lynx
