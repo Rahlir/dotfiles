@@ -32,6 +32,12 @@ def extract_newest_annotation(json_obj):
     return json_obj['annotations'][-1]
 
 
+def is_annotation_backlink(annotation):
+    if match(r'^Referenced by task://[0-9a-f]{8}$', annotation['description']):
+        return True
+    return False
+
+
 def main(_, new, command):
     if command in ['done', 'annotate', 'start']:
         now = datetime.now().astimezone()
@@ -49,6 +55,9 @@ def main(_, new, command):
             action = "Annotated"
             annotation = extract_newest_annotation(new)
             if annotation:
+                if is_annotation_backlink(annotation):
+                    # Don't write about backlinks to daily note
+                    return
                 detail_lines = wrap(annotation['description'], width=79,
                                     initial_indent="    > ", subsequent_indent="    > ")
                 now = datetime.fromisoformat(annotation['entry']).astimezone()

@@ -1,0 +1,63 @@
+#!/bin/zsh
+
+setopt no_unset
+
+RED='\e[1;38;5;9m'
+RESET='\e[0m'
+
+function process_args()
+{
+    if [[ $# -lt 2 ]]; then
+        print "${RED}ERROR:${RESET} Need to specify both task id and annotation"
+        exit 1
+    fi
+    ANNOTATION_ID=$1
+    shift
+    ANNOTATION_STR=$*
+}
+
+typeset -a IDS
+
+function substitute_links()
+{
+    local fields=$(print $ANNOTATION_STR | grep -oE "id:[[:digit:]]+")
+
+    local field
+    for field in ${(f)fields}; do
+        local id=${${(s.:.)field}[2]}
+        if [[ ${IDS[(i)${id}]} -gt ${#IDS} ]]; then
+            local uuid=$(task _get $id.uuid)
+            if [[ -z $uuid ]]; then
+                print "${RED}ERROR:${RESET} The task $field couldn't be found"
+                exit 1
+            fi
+            IDS+=$id
+            local link=task://${uuid%%-*}
+            ANNOTATION_STR=${ANNOTATION_STR//$field/$link}
+        fi
+    done
+}
+
+function make_backlinks()
+{
+    local annotation_uuid=$(task _get $ANNOTATION_ID.uuid)
+    if [[ -z $annotation_uuid ]]; then
+        print "${RED}ERROR:${RESET} The task with id $ANNOTATION_ID doesn't exist"
+        exit 1
+    fi
+    
+    local id
+    for id in $IDS; do
+        local uuid=$(task _get $id.uuid)
+        print "Backlinking task ${uuid%%-*} \'$(task _get $id.description)\'"
+        task $id annotate Referenced by task://${annotation_uuid%%-*} &> /dev/null
+    done
+}
+
+process_args $@
+
+substitute_links
+
+task $ANNOTATION_ID annotate $ANNOTATION_STR
+
+make_backlinks

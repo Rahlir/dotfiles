@@ -94,6 +94,7 @@ alias.dailystatus=status:completed end.after:today all
 alias.editconf=execute nvim $XDG_CONFIG_HOME/task/taskrc
 alias.review=execute taskreview
 alias.open=execute taskurlopen
+alias.backlink=execute taskbacklink
 
 ### Other ###
 # News version

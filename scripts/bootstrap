@@ -615,7 +615,7 @@ for fn in "${BOOTSTRAP_FILES[@]}"; do
             ;;
         task)
             for _task_f in "$DOTFILES_PATH"/task/*; do
-                if [[ "$_task_f" == */taskurlopen || "$_task_f" == */taskreview ]]; then
+                if [[ "$_task_f" =~ .*/(taskurlopen|taskreview|taskbacklink)$ ]]; then
                     safe_symlink "$_task_f" ""$HOME"/.local/bin/"${_task_f##*/}""
                 else
                     bootstrap_folder "$_task_f" "$XDG_CONFIG_HOME"
