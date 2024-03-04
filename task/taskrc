@@ -85,7 +85,7 @@ report.projectview.sort=project+,start-,depends+
 # Today report showing scheduled tasks and tasks with due dates soon
 report.today.columns=id,priority,scheduled.age,due.relative,start.age,depends,estimate,project,description,urgency
 report.today.labels=ID,!,Sched,Due,Active,Deps,Est,Project,Description,Urg
-report.today.filter=status:pending (scheduled.before:tomorrow or +next or due.before:2weeks)
+report.today.filter=status:pending (scheduled.before:tomorrow or +next or due.before:today+2days)
 report.today.sort=scheduled-,due-,urgency-
 report.today.context=0
 
