@@ -55,7 +55,7 @@ report.next.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Until,Descr
 report.active.sort=start+,project+
 
 # Custom reports
-report.timelog.description=Tasks with times (spend or estimated) logged
+report.timelog.description=Tasks with times (spent or estimated) logged
 report.timelog.columns=uuid.short,id,status.short,end,took,estimate,project,description
 report.timelog.labels=UUID,ID,St,Completed,Spent,Estimated,Project,Description
 report.timelog.filter=estimate.any: or took.any:
@@ -90,7 +90,7 @@ report.today.sort=scheduled-,due-,urgency-
 report.today.context=0
 
 # ### Aliases ###
-alias.dailystatus=status:completed end.after:today all
+alias.dailystatus=status:completed end.after:today timelog
 alias.editconf=execute nvim $XDG_CONFIG_HOME/task/taskrc
 alias.review=execute taskreview
 alias.open=execute taskurlopen
