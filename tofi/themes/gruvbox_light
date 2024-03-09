@@ -1,0 +1,10 @@
+# Window colors
+background-color = #ebdbb2
+outline-color = #f9f5d7
+border-color = #665c54
+# Text colors
+text-color = #3c3836
+alternate-result-color = #665c54
+placeholder-color = #689d6a
+input-color = #689d6a
+selection-color = #427b58
