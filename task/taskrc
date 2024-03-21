@@ -30,6 +30,7 @@ urgency.blocked.coefficient=-0.0
 urgency.project.coefficient=0.8
 urgency.annotations.coefficient=0.5
 urgency.user.tag.bump.coefficient=4.0
+urgency.user.tag.inbox.coefficient=-2.0
 
 ### Calendar setup ###
 # Calendar command shows both holidays and list report of all
@@ -88,8 +89,16 @@ report.projectview.sort=project+,start-,depends+
 report.today.columns=id,priority,scheduled.age,due.relative,start.age,depends,estimate,project,description,urgency
 report.today.labels=ID,!,Sched,Due,Active,Deps,Est,Project,Description,Urg
 report.today.filter=status:pending (scheduled.before:now or +next or due.before:today+2days)
-report.today.sort=scheduled-,due-,urgency-
+report.today.sort=due-,urgency-
 report.today.context=0
+
+# Backlog report showing both waiting and pending tasks in cnext-like report
+report.backlog.description=Compact overview of all open tasks
+report.backlog.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,wait.remaining,until.remaining,description.count,urgency
+report.backlog.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Wait,Until,Description,Urg
+report.backlog.filter=status:pending or status:waiting
+report.backlog.sort=urgency-
+report.backlog.context=1
 
 # ### Aliases ###
 alias.dailystatus=status:completed end.after:today timelog
