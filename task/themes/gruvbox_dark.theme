@@ -17,7 +17,7 @@ color.debug=bold yellow
 # Task state
 color.completed=color2
 color.deleted=color243
-color.active=inverse on color0
+color.active=bold
 color.recurring=color5
 color.scheduled=color166
 color.until=
@@ -35,6 +35,7 @@ color.uda.priority.L=color7
 # Tags
 color.tag.next=color10
 color.tag.none=
+color.tag.inbox=color0 on color5
 color.tagged=
 
 # Due
