@@ -22,6 +22,18 @@ fi
 TYPE="${BLOCK_INSTANCE:-mem}"
 
 awk -v type=$TYPE '
+function round(x, ival, aval, fraction)
+{
+    ival = int(x)
+    if (ival == x)
+        return ival
+
+    fraction = x - ival
+    if (fraction >= .5)
+        return ival + 1
+    else
+        return ival
+}
 /^MemTotal:/ {
 	mem_total=$2
 }
@@ -45,7 +57,8 @@ END {
 	if (type == "swap")
 		printf("%.1fG\n", (swap_total-swap_free)/1024/1024)
 	else
-		printf("%.1fG\n", mem_free/1024/1024)
+            printf("%.1fG ", (mem_total-mem_free)/1024/1024)
+            printf("(%d%%)\n", round((mem_total-mem_free)/mem_total*100))
 
 	# TODO: short text
 
