@@ -16,7 +16,11 @@ if [[ -x ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/fzopen && -n $TMUX ]]; th
     plug+=";p:preview-tui"
     set -- "-a" "$@"
 fi
-plug+=";s:!git s;l:!git lg"
+
+if [[ -n "$plug" ]]; then
+    plug+=";"
+fi
+plug+="s:!git s;l:!git lg"
 
 if [[ -x ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/nuke ]]; then
     NNN_OPENER="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/nuke" GUI=1 \

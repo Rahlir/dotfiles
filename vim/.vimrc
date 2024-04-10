@@ -26,6 +26,7 @@ Plug 'ledger/vim-ledger', {'for': 'ledger'}
 Plug 'mbbill/undotree'
 Plug 'dhruvasagar/vim-table-mode', {'for': ['markdown', 'text', 'rst']}
 Plug 'preservim/tagbar'
+Plug 'sainnhe/everforest'
 
 " Mac specific plugins. This check should work for any recent
 " vim on macOS
@@ -53,7 +54,6 @@ if has('nvim')
   " while nvim-web-devicons is used by Telescope
   Plug 'ryanoasis/vim-devicons'
   Plug 'nvim-tree/nvim-web-devicons'
-  Plug 'windwp/nvim-ts-autotag'
 endif
 
 call plug#end()
@@ -100,8 +100,10 @@ syntax on
 " Dynamic dark/light switching
 if exists('$THEMEBG') && $THEMEBG == 'light'
   set background=light
+  let g:everforest_background = 'soft'
 else
   set background=dark
+  let g:everforest_background = 'hard'
 endif
 
 " Gruvbox options
@@ -113,7 +115,7 @@ let g:gruvbox_invert_selection = 0
 let g:gruvbox_sign_column = 'bg0'
 let g:gruvbox_markdown_ignore_errors = 1
 
-colorscheme gruvbox
+colorscheme everforest
 
 " This function needs to be here since it is used
 " for Indentline options
@@ -436,7 +438,7 @@ let g:separator_bubbles = {
   \ }
 
 let g:lightline = {
-      \ 'colorscheme': 'gruvbox',
+      \ 'colorscheme': 'everforest',
       \ 'separator': g:separator_def['separator'],
       \ 'subseparator': g:separator_def['subseparator'],
       \ 'active': {
@@ -618,8 +620,8 @@ let g:UltiSnipsExpandTrigger = '<M-tab>'
 
 let g:indentLine_char = '┊'
 let g:indentLine_fileTypeExclude = ['startify', 'help', 'json', 'text', 'tex', 'markdown', 'man']
-let g:indentLine_color_term = GetGruvColor('GruvboxBg2')[1]
-let g:indentLine_color_gui = GetGruvColor('GruvboxBg2')[0]
+" let g:indentLine_color_term = GetGruvColor('GruvboxBg2')[1]
+" let g:indentLine_color_gui = GetGruvColor('GruvboxBg2')[0]
 
 " }}}
 " Devicons Options: {{{
@@ -692,6 +694,27 @@ function! SetGruvBackground(bg)
   call lightline#update()
   let g:indentLine_color_term = GetGruvColor('GruvboxBg2')[1]
   let g:indentLine_color_gui = GetGruvColor('GruvboxBg2')[0]
+  do ColorScheme
+endfunction
+
+function! SetEverforestBackground(bg)
+  if a:bg == &background
+    return
+  endif
+
+  if a:bg ==# 'dark'
+    let g:everforest_background = 'hard'
+  elseif a:bg ==# 'light'
+    let g:everforest_background = 'soft'
+  else
+    return
+  endif
+
+  let &background=a:bg
+  source ~/.vim/plugged/everforest/autoload/lightline/colorscheme/everforest.vim
+  call lightline#init()
+  call lightline#colorscheme()
+  call lightline#update()
   do ColorScheme
 endfunction
 

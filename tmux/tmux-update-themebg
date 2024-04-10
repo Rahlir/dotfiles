@@ -13,7 +13,7 @@ done
 
 for v_pane in $vim_p; do
     tmux wait-for -L "lock-${v_pane}"
-    tmux send-keys -t "$v_pane" "Escape" ":call SetGruvBackground('${THEMEBG:-dark}')" "Enter"
+    tmux send-keys -t "$v_pane" "Escape" ":call SetEverforestBackground('${THEMEBG:-dark}')" "Enter"
     tmux send-keys -t "$v_pane" ":silent exec '!tmux wait-for -U lock-${v_pane}' | echo" "Enter"
 done
 

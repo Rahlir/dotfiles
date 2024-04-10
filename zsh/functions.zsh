@@ -50,40 +50,65 @@ function switch-background() {
     fi
 
     [[ "$newbg" == "dark" ]] && local darkmode_bool="true" || local darkmode_bool="false"
+    [[ "$newbg" == "dark" ]] && local gtk_theme="Everforest-Dark-Borderless" || local gtk_theme="Everforest-Light-Borderless"
 
-    local theme_relpath="themes/gruvbox_$newbg.toml"
+    local theme_relpath="themes/everforest_$newbg.toml"
     ln -fs "$theme_relpath" "$alacritty_configdir/theme.toml" &&
         touch "$alacritty_configdir/alacritty.toml" &&
         export THEMEBG=$newbg && export BAT_THEME=gruvbox-$newbg &&
         source ${XDG_CONFIG_HOME:-$HOME/.config}/zsh/p10k.zsh
-
 
     local gtkconfig=${XDG_CONFIG_HOME:-$HOME/.config}/gtk-3.0/settings.ini
     if [[ -f "$gtkconfig" ]]; then
         grep -q "gtk-application-prefer-dark-theme" $gtkconfig && \
             sed -E "s/(gtk-application-prefer-dark-theme[[:space:]]?=[[:space:]]?)(true|false)/\1${darkmode_bool}/" -i $gtkconfig || \
             echo "gtk-application-prefer-dark-theme = $darkmode_bool" >> $gtkconfig
+        grep -q "gtk-theme-name" $gtkconfig && \
+            sed -E "s/(gtk-theme-name[[:space:]]?=[[:space:]]?)(Everforest-(Dark|Light)-Borderless)/\1${gtk_theme}/" -i $gtkconfig || \
+            echo "gtk-theme-name = $gtk_theme" >> $gtkconfig
+        grep -q "gtk-icon-theme-name" $gtkconfig && \
+            sed -E "s/(gtk-icon-theme-name[[:space:]]?=[[:space:]]?)(Everforest-(Dark|Light))/\1${gtk_theme%-*}/" -i $gtkconfig || \
+            echo "gtk-icon-theme-name = ${gtk_theme%-*}" >> $gtkconfig
+    fi
+    if [[ -d ${XDG_CONFIG_HOME:-$HOME/.config}/gtk-3.0/colors/ ]]; then
+        ln -fs "colors/everforest-$newbg.css" ${XDG_CONFIG_HOME:-$HOME/.config}/gtk-3.0/colors.css
+    fi
+    if [[ -d ${XDG_CONFIG_HOME:-$HOME/.config}/gtk-4.0/colors/ ]]; then
+        ln -fs "colors/everforest-$newbg.css" ${XDG_CONFIG_HOME:-$HOME/.config}/gtk-4.0/colors.css
     fi
 
     if [[ "$(uname -s)" == Linux ]]; then
         if [[ "$XDG_SESSION_TYPE" == wayland ]]; then
-            gsettings set org.gnome.desktop.interface color-scheme "prefer-$newbg"
+            gsettings set org.gnome.desktop.interface gtk-theme $gtk_theme
+            gsettings set org.gnome.desktop.interface icon-theme ${gtk_theme%-*}
+            gsettings set org.gnome.desktop.interface color-scheme prefer-$newbg
         fi
-        local wallpaper_path=$HOME/Pictures/.wallpaper
-        ln -fs "Wallpapers/archgruv_$newbg.jpg" $wallpaper_path
-        if [[ -f ${XDG_CONFIG_HOME:-$HOME/.config}/tofi/theme ]]; then
-            ln -fs "themes/gruvbox_$newbg" ${XDG_CONFIG_HOME:-$HOME/.config}/tofi/theme
-        fi
-        if [[ -f ${XDG_CONFIG_HOME:-$HOME/.config}/sway/swaylock.conf ]]; then
-            ln -fs "swaylock/gruvbox_$newbg" ${XDG_CONFIG_HOME:-$HOME/.config}/sway/swaylock.conf
-        fi
+        # local wallpaper_path=$HOME/Pictures/.wallpaper
+        # ln -fs "Wallpapers/archgruv_$newbg.jpg" $wallpaper_path
+        # if [[ -f ${XDG_CONFIG_HOME:-$HOME/.config}/tofi/theme ]]; then
+        #    ln -fs "themes/gruvbox_$newbg" ${XDG_CONFIG_HOME:-$HOME/.config}/tofi/theme
+        # fi
+        # if [[ -f ${XDG_CONFIG_HOME:-$HOME/.config}/sway/swaylock.conf ]]; then
+        #    ln -fs "swaylock/gruvbox_$newbg" ${XDG_CONFIG_HOME:-$HOME/.config}/sway/swaylock.conf
+        # fi
         if [[ -f ${XDG_CONFIG_HOME:-$HOME/.config}/mako/config ]]; then
-            ln -fs "gruvbox_$newbg" ${XDG_CONFIG_HOME:-$HOME/.config}/mako/config
+            ln -fs "everforest_$newbg" ${XDG_CONFIG_HOME:-$HOME/.config}/mako/config
+            (( $+commands[makoctl] )) && makoctl reload
         fi
-        if [[ -f ${XDG_CONFIG_HOME:-$HOME/.config}/sway/theme.conf ]]; then
-            ln -fs "themes/gruvbox_$newbg.conf" ${XDG_CONFIG_HOME:-$HOME/.config}/sway/theme.conf
-            if [[ -n "$SWAYSOCK" ]]; then
-                swaymsg reload && makoctl reload
+        # if [[ -f ${XDG_CONFIG_HOME:-$HOME/.config}/sway/theme.conf ]]; then
+        #     ln -fs "themes/gruvbox_$newbg.conf" ${XDG_CONFIG_HOME:-$HOME/.config}/sway/theme.conf
+        #     if [[ -n "$SWAYSOCK" ]]; then
+        #         swaymsg reload && makoctl reload
+        #     fi
+        # fi
+        if [[ -f ${XDG_CONFIG_HOME:-$HOME/.config}/hypr/theme.conf ]]; then
+            ln -fs "themes/everforest_$newbg.conf" ${XDG_CONFIG_HOME:-$HOME/.config}/hypr/theme.conf
+            if hypr_instances=$(hyprctl instances 2> /dev/null); then
+                if [[ -n $hypr_instances ]]; then
+                    hyprctl reload &> /dev/null
+                    killall waybar
+                    ( waybar &> /dev/null & disown ) &> /dev/null
+                fi
             fi
         fi
     elif [[ "$(uname -s)" == Darwin ]]; then
@@ -119,7 +144,10 @@ function n()
         plug+=";p:preview-tui"
         set -- "-a" "$@"
     fi
-    plug+=";s:!git s;l:!git lg"
+    if [[ -n $plug ]]; then
+        plug+=";";
+    fi
+    plug+="s:!git s;l:!git lg"
     if [[ -x ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/nuke ]]; then
         [[ -n $SSH_CONNECTION ]] || local gui=${GUI:-1}
         NNN_OPENER="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/nuke" GUI=${gui:-0}\
