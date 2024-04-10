@@ -100,6 +100,14 @@ report.backlog.filter=status:pending or status:waiting
 report.backlog.sort=urgency-
 report.backlog.context=1
 
+# Same as backlog, but only show waiting tasks
+report.postponed.description=Compact overview of all open tasks
+report.postponed.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,wait.remaining,until.remaining,description.count,urgency
+report.postponed.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Wait,Until,Description,Urg
+report.postponed.filter=status:waiting
+report.postponed.sort=urgency-,wait-
+report.postponed.context=1
+
 # ### Aliases ###
 alias.dailystatus=status:completed end.after:today timelog
 alias.editconf=execute nvim $XDG_CONFIG_HOME/task/taskrc
