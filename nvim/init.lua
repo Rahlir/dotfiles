@@ -17,7 +17,7 @@ vim.g.python3_host_prog = '$WORKON_HOME/neovim/bin/python'
 -- Autocommands: {{{
 local nvimrc_augroup = vim.api.nvim_create_augroup("nvimrc", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = {"cpp", "java"},
+  pattern = { "cpp", "java", "typescriptreact", "javascriptreact" },
   callback = function()
     vim.wo.foldmethod = "expr"
     vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
@@ -216,10 +216,6 @@ require('nvim-treesitter.configs').setup{
       }
     },
   },
-
-  autotag = {
-    enable = true
-  }
 }
 -- }}}
 -- CMP: {{{
@@ -359,7 +355,11 @@ local on_attach = function(client, bufnr)
 
   -- Filetype specific LSP Actions
   if client.name == 'pyright' then
-    vim.keymap.set('n', '<leader>lpi', vim.cmd.PyrightOrganizeImports, bufopts)
+    vim.keymap.set('n', '<leader>li', vim.cmd.PyrightOrganizeImports, bufopts)
+  end
+
+  if client.name == 'tsserver' then
+    vim.keymap.set('n', '<leader>li', vim.cmd.TsserverOrganizeImports, bufopts)
   end
 
   -- LSP Formatting
@@ -386,12 +386,39 @@ require('lspconfig')['pyright'].setup{
   capabilities = capabilities
 }
 
+local function organize_imports()
+  local params = {
+    command = "_typescript.organizeImports",
+    arguments = {vim.api.nvim_buf_get_name(0)},
+    title = ""
+  }
+  vim.lsp.buf.execute_command(params)
+end
+
 require('lspconfig')['tsserver'].setup{
+  on_attach = on_attach,
+  capabilities = capabilities,
+  settings = {
+    typescript = {
+      format = {
+        semicolons = 'remove'
+      }
+    }
+  },
+  commands = {
+    TsserverOrganizeImports = {
+      organize_imports,
+      description = "Organize TS Imports"
+    }
+  }
+}
+
+require('lspconfig')['jdtls'].setup{
   on_attach = on_attach,
   capabilities = capabilities
 }
 
-require('lspconfig')['jdtls'].setup{
+require('lspconfig')['gopls'].setup{
   on_attach = on_attach,
   capabilities = capabilities
 }
