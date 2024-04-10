@@ -5,3 +5,6 @@ text/javascript=nvim.desktop
 image/jpeg=vimiv.desktop
 image/png=vimiv.desktop
 application/pdf=org.pwmt.zathura-pdf-mupdf.desktop
+x-scheme-handler/msteams=teams-for-linux.desktop
+x-scheme-handler/https=firefox.desktop
+x-scheme-handler/http=firefox.desktop
