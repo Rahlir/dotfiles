@@ -12,7 +12,7 @@ include holidays/holidays.en-US.2024.rc
 include holidays/holidays.cs-CZ.2023.rc
 include holidays/holidays.cs-CZ.2024.rc
 # Color theme
-include themes/everforest_$THEMEBG.theme
+include themes/$THEMENAME-$THEMEBG.theme
 # Task sync config. This is not part of dotfiles as is
 # sensitive and device dependent
 include $XDG_CONFIG_HOME/task/tasksyncrc

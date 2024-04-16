@@ -28,5 +28,6 @@ color = "#fbf1c7"
 index = 229
 
 [env]
-BAT_THEME = "gruvbox-light"
+THEMENAME = "gruvbox"
 THEMEBG = "light"
+BAT_THEME = "gruvbox-light"

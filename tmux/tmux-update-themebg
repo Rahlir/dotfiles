@@ -11,13 +11,24 @@ for m_pane in $mutt_p; do
     tmux send-keys -t "$m_pane" "!tmux wait-for -U lock-${m_pane}" "Enter" "Enter"
 done
 
-for v_pane in $vim_p; do
-    tmux wait-for -L "lock-${v_pane}"
-    tmux send-keys -t "$v_pane" "Escape" ":call SetEverforestBackground('${THEMEBG:-dark}')" "Enter"
-    tmux send-keys -t "$v_pane" ":silent exec '!tmux wait-for -U lock-${v_pane}' | echo" "Enter"
-done
+if [[ $THEMENAME =~ (^everforest$|^gruvbox$) ]]; then
+    for v_pane in $vim_p; do
+        tmux wait-for -L "lock-${v_pane}"
+        if [[ $THEMENAME == "everforest" ]]; then
+            tmux send-keys -t "$v_pane" "Escape" ":call SetEverforestBackground('${THEMEBG:-dark}')" "Enter"
+        else
+            tmux send-keys -t "$v_pane" "Escape" ":call SetGruvBackground('${THEMEBG:-dark}')" "Enter"
+        fi
+        tmux send-keys -t "$v_pane" ":silent exec '!tmux wait-for -U lock-${v_pane}' | echo" "Enter"
+    done
+else
+    print -P "%B%F{red}Error:%b Unknown / missing THEME variable.%f"
+    print -P "%F{red}Vim background cannot be changed%f"
+    ERROR=1
+fi
 
 for pane in $mutt_p $vim_p; do
+    # If pane wasn't unlocked yet, will wait for unlocking
     tmux wait-for -L "lock-${pane}"
     tmux wait-for -U "lock-${pane}"
 done

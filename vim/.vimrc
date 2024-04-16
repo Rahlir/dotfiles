@@ -10,9 +10,10 @@ endif
 call plug#begin('~/.vim/plugged')
  
 " Plugins for all systems and (neo)vims
+Plug 'rahlir/gruvbox', {'branch': 'nvim_features'}
+Plug 'sainnhe/everforest'
 Plug 'tpope/vim-sensible'
 Plug 'itchyny/lightline.vim'
-Plug 'rahlir/gruvbox', {'branch': 'nvim_features'}
 Plug 'raimondi/delimitmate'
 Plug 'yggdroot/indentline'
 Plug 'tpope/vim-surround'
@@ -26,7 +27,6 @@ Plug 'ledger/vim-ledger', {'for': 'ledger'}
 Plug 'mbbill/undotree'
 Plug 'dhruvasagar/vim-table-mode', {'for': ['markdown', 'text', 'rst']}
 Plug 'preservim/tagbar'
-Plug 'sainnhe/everforest'
 
 " Mac specific plugins. This check should work for any recent
 " vim on macOS
@@ -115,7 +115,17 @@ let g:gruvbox_invert_selection = 0
 let g:gruvbox_sign_column = 'bg0'
 let g:gruvbox_markdown_ignore_errors = 1
 
-colorscheme everforest
+" Decide between everforest and gruvbox
+if exists('$THEMENAME') && $THEMENAME == 'everforest'
+  let g:current_colorscheme = 'everforest'
+  colorscheme everforest
+else
+  if !exists('$THEMENAME')
+    echomsg "$THEMENAME is not set, defaulting to gruvbox."
+  endif
+  let g:current_colorscheme = 'gruvbox'
+  colorscheme gruvbox
+endif
 
 " This function needs to be here since it is used
 " for Indentline options
@@ -438,7 +448,7 @@ let g:separator_bubbles = {
   \ }
 
 let g:lightline = {
-      \ 'colorscheme': 'everforest',
+      \ 'colorscheme': g:current_colorscheme,
       \ 'separator': g:separator_def['separator'],
       \ 'subseparator': g:separator_def['subseparator'],
       \ 'active': {
@@ -620,8 +630,11 @@ let g:UltiSnipsExpandTrigger = '<M-tab>'
 
 let g:indentLine_char = '┊'
 let g:indentLine_fileTypeExclude = ['startify', 'help', 'json', 'text', 'tex', 'markdown', 'man']
-" let g:indentLine_color_term = GetGruvColor('GruvboxBg2')[1]
-" let g:indentLine_color_gui = GetGruvColor('GruvboxBg2')[0]
+
+if g:current_colorscheme ==# 'gruvbox'
+  let g:indentLine_color_term = GetGruvColor('GruvboxBg2')[1]
+  let g:indentLine_color_gui = GetGruvColor('GruvboxBg2')[0]
+endif
 
 " }}}
 " Devicons Options: {{{

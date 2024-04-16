@@ -1,0 +1,34 @@
+ [colors.primary]
+background = "#272e33"
+foreground = "#d3c6aa"
+
+[colors.normal]
+black = "#272e33"
+red = "#dc4b4e"
+green = "#82a250"
+yellow = "#cea553"
+blue = "#50978e"
+magenta = "#c46c96"
+cyan = "#60ae73"
+# white = "#beab83"
+white = "#b6a072"
+
+[colors.bright]
+black = "#475258"
+red = "#e67e80"
+green = "#a7c080"
+yellow = "#dbbc7f"
+blue = "#7fbbb3"
+magenta = "#d699b6"
+cyan = "#83c092"
+white = "#d3c6aa"
+
+[[colors.indexed_colors]]
+# Nice darker color used for taskwarrior alternate bg
+color = "#1e2326"
+index = 235
+
+[env]
+THEMENAME = "everforest"
+THEMEBG = "dark"
+BAT_THEME = "gruvbox-dark"
