@@ -294,16 +294,10 @@ done
 [[ -r $XDG_CONFIG_HOME/zsh/command_not_found.zsh ]] && \
     source $XDG_CONFIG_HOME/zsh/command_not_found.zsh
 
-# pipx:
-# Register pipx command completion (register-python-argcomplete is dependency of pipx)
-if (( $+commands[pipx] )); then
-    eval "$(register-python-argcomplete pipx)"
-fi
-
 # zsh-syntax-highlighting:
 _synhl_paths=(
-    $SYNHL_PATH
-    $~PKG_PREFIX/share/(zsh/)#(plugins/)#zsh-syntax-highlighting/zsh-syntax-highlighting.zsh(N)
+    $SYNHL_PATH(-.N)
+    $PKG_PREFIX/share/(zsh/)#(plugins/)#zsh-syntax-highlighting/zsh-syntax-highlighting.zsh(-.N)
 )
 (( $#_synhl_paths )) && [[ -r $_synhl_paths[1] ]] && source $_synhl_paths[1]
 
@@ -321,10 +315,10 @@ fi
 
 # Powerlevel10k:
 _p10k_paths=(
-    $P10K_PATH
-    $~PKG_PREFIX/(share|opt)/(zsh-theme-powerlevel10k|powerlevel10k)/powerlevel10k.zsh-theme(N)
+    $P10K_PATH/powerlevel10k.zsh-theme(-.N)
+    $PKG_PREFIX/(share|opt)/(zsh-theme-powerlevel10k|powerlevel10k)/powerlevel10k.zsh-theme(-.N)
 )
-(( $#_p10k_paths )) && [[ -r $_p10k_paths[1] ]] && source $_p10k_paths[1]
+(( #_p10k_paths )) && [[ -r $_p10k_paths[1] ]] && source $_p10k_paths[1]
 # Load configuration
 [[ -r $XDG_CONFIG_HOME/zsh/p10k.zsh ]] && \
     source $XDG_CONFIG_HOME/zsh/p10k.zsh

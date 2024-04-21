@@ -2,24 +2,24 @@
 [[ -r ~/.profile ]] && source ~/.profile
 
 ##################################################
-###     Package Manager ENV Configuration      ###
-##################################################
-if [[ "$(uname -s)" == Linux ]]; then
-    export PKG_PREFIX=/usr
-elif [[ "$(uname -s)" == Darwin && (( $+commands[brew] )) ]]; then
-    eval "$(brew shellenv)"
-    export PKG_PREFIX=$HOMEBREW_PREFIX
-fi
-
-##################################################
 ###          PATH and FPATH Variables          ###
 ##################################################
+if [[ "$(uname -s)" == Darwin && -n $HOMEBREW_PREFIX ]]; then
+    # Homebrew stores zsh completions here, which is not
+    # in fpath by default.
+    fpath+=$HOMEBREW_PREFIX/share/zsh/site-functions
+fi
+
 typeset -U path; export PATH
 typeset -U fpath; export FPATH
 
 ##################################################
 ###            Other ENV Variables             ###
 ##################################################
+# Docker config home
+export DOCKER_CONFIG="$XDG_CONFIG_HOME"/docker
+# Postgresql history
+export PSQL_HISTORY="$XDG_DATA_HOME"/psql_history
 # NPM config file
 export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/npmrc
 # w3m data directory

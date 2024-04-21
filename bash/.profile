@@ -8,11 +8,34 @@ prepend_path () {
         *:"$1":*)
             ;;
         *)
-            PATH="$1${PATH:+:$PATH}"
+            export PATH="$1${PATH:+:$PATH}"
     esac
 }
 
 prepend_path "$HOME/.local/bin"
+
+##################################################
+###              OS Specific ENVs              ###
+##################################################
+if [ "$(uname -s)" = Darwin ]; then
+    if command -v brew &> /dev/null; then
+        eval "$(brew shellenv)"
+    elif [ -x "/opt/homebrew/bin/brew" ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
+
+    if [ -n "$HOMEBREW_PREFIX" ]; then
+        export PKG_PREFIX=$HOMEBREW_PREFIX
+        prepend_path "$PKG_PREFIX"/opt/coreutils/libexec/gnubin
+    fi
+elif [ "$(uname -s)" = Linux ]; then
+    PKG_PREFIX=/usr
+fi
+
+##################################################
+###                    LANG                    ###
+##################################################
+test -n "${LANG:+1}" || export LANG=en_US.UTF-8
 
 ##################################################
 ###            XDG Base Directories            ###
@@ -41,11 +64,9 @@ else
     export VISUAL=vi
 fi
 
-if test "$(uname -s)" = Darwin; then
-    :
-elif test -n "$WAYLAND_DISPLAY" || test -n "$DISPLAY"; then
+if test -n "$WAYLAND_DISPLAY" || test -n "$DISPLAY"; then
     export BROWSER=firefox
-else
+elif test "$(uname -s)" != Darwin; then
     export BROWSER=lynx
 fi
 
@@ -61,7 +82,5 @@ export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
 # Terminfo directories
 export TERMINFO="$XDG_DATA_HOME"/terminfo
 export TERMINFO_DIRS="$XDG_DATA_HOME"/terminfo:/usr/share/terminfo
-# Docker config home
-export DOCKER_CONFIG="$XDG_CONFIG_HOME"/docker
-# Postgresql history
-export PSQL_HISTORY="$XDG_DATA_HOME"/psql_history
+
+test -r "$HOME"/.profile_local && source "$HOME"/.profile_local
