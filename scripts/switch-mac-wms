@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+
+if pgrep -q Amethyst; then
+    killall Amethyst
+    ( /Applications/Magnet.app/Contents/MacOS/Magnet & disown ) &> /dev/null
+elif pgrep -q Magnet; then
+    killall Magnet
+    ( /Applications/Amethyst.app/Contents/MacOS/Amethyst & disown ) &> /dev/null
+else
+    print -P "%F{red}%BError:%f%b No WM seems to be running."
+fi
