@@ -302,7 +302,7 @@ endfunction
 " Form --- Section ---
 nnoremap <silent> <M-/> :<C-U>call <SID>SectionComment(0, v:count)<CR>
 " Form ### Section ### with commented lines above and below
-nnoremap <silent> <M-?> :<C-U>call <SID>SectionComment(1, v:count)<CR>
+nnoremap <silent> <M-S-?> :<C-U>call <SID>SectionComment(1, v:count)<CR>
 " Add / remove comments from a line or selected block
 nnoremap <silent> + :call <SID>BlockComment('add')<CR>
 nnoremap <silent> - :call <SID>BlockComment('remove')<CR>
