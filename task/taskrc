@@ -101,7 +101,7 @@ report.backlog.sort=urgency-
 report.backlog.context=1
 
 # Same as backlog, but only show waiting tasks
-report.postponed.description=Compact overview of all open tasks
+report.postponed.description=Compact overview of open tasks that are not on the active list
 report.postponed.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,wait.remaining,until.remaining,description.count,urgency
 report.postponed.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Wait,Until,Description,Urg
 report.postponed.filter=status:waiting
@@ -137,3 +137,6 @@ context.School.write=+school
 reserved.lines=2
 uda.reviewed.type=date
 uda.reviewed.label=Reviewed
+
+### Taskwarrior TUI ###
+uda.taskwarrior-tui.task-report.next.filter=status:pending
