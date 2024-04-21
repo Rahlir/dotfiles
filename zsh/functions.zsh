@@ -19,13 +19,13 @@ function rsync-short() {
 
 function switch-background() {
     if [[ $SHLVL != 1 ]]; then
-        print -P "%B%f{red}Error:%b You seem to be in a subshell, run switch-background from top-level shell."
+        print -P "%B%F{red}Error:%b%f You seem to be in a subshell, run switch-background from top-level shell."
         return 1
     elif [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
-        print -P "%B%f{red}Error:%b You seem to be connected over ssh, switch-background on your local machine.%f"
+        print -P "%B%F{red}Error:%b%f You seem to be connected over ssh, switch-background on your local machine."
         return 1
     elif [[ ! -v $THEMENAME ]]; then
-        print -P "%B%f{red}Error:%b THEMENAME variable is not set.%f"
+        print -P "%B%F{red}Error:%b%f THEMENAME variable is not set."
         return 1
     fi
 
