@@ -932,6 +932,11 @@ main()
                     fi
                 done
                 ;;
+            pypoetry)
+                local pypoetry_target_loc=$XDG_CONFIG_HOME
+                [[ "$(uname -s)" == Darwin ]] && pypoetry_target_loc="$HOME/Library/Application Support"
+                bootstrap_generic $DOTFILES_PATH/pypoetry $pypoetry_target_loc
+                ;;
             archlinux)
                 bootstrap_archlinux
                 ;;
