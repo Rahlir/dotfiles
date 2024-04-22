@@ -24,7 +24,7 @@ function switch-background() {
     elif [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
         print -P "%B%F{red}Error:%b%f You seem to be connected over ssh, switch-background on your local machine."
         return 1
-    elif [[ ! -v $THEMENAME ]]; then
+    elif [[ ! -v THEMENAME ]]; then
         print -P "%B%F{red}Error:%b%f THEMENAME variable is not set."
         return 1
     fi
