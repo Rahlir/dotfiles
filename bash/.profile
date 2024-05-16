@@ -29,7 +29,7 @@ if [ "$(uname -s)" = Darwin ]; then
         prepend_path "$PKG_PREFIX"/opt/coreutils/libexec/gnubin
     fi
 elif [ "$(uname -s)" = Linux ]; then
-    PKG_PREFIX=/usr
+    export PKG_PREFIX=/usr
 fi
 
 ##################################################
