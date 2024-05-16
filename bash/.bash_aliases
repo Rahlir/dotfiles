@@ -42,3 +42,6 @@ fi
 if command -v glow &> /dev/null; then
     alias glow="glow -s $THEMEBG"
 fi
+if command -v taskwarrior-tui &> /dev/null; then
+    alias tt="taskwarrior-tui"
+fi
