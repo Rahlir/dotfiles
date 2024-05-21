@@ -4,11 +4,16 @@ set -o nounset
 
 POSITIONAL_ARGS=()
 URLS=()
+NOCONFIRM=0
 
 process_args()
 {
     while [[ $# -gt 0 ]]; do
         case $1 in
+            -o)
+                NOCONFIRM=1
+                shift
+                ;;
             *)
                 POSITIONAL_ARGS+=("$1")
                 shift
@@ -30,7 +35,7 @@ parse_annotation()
     else
         _grep_cmd=grep
     fi
-    for url in $(echo "$1" | "$_grep_cmd" -oP "(?<=\s)((https?://(www\.)?)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}|file:///|note://|task://)\b((\.*[-a-zA-Z0-9()@:%_\+~#?&//=])*)"); do
+    for url in $(echo "$1" | "$_grep_cmd" -oP "(?<=\s)*((https?://(www\.)?)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}|file:///|note://|task://)\b((\.*[-a-zA-Z0-9()@:%_\+~#?&//=])*)"); do
         URLS+=( "$url" )
     done
 }
@@ -56,6 +61,10 @@ pick_to_open()
     if [[ ${#URLS[@]} -eq 0 ]]; then
         echo "No link to open..."
         exit 1
+    fi
+
+    if (( NOCONFIRM )); then
+        "$_open_cmd" "${URLS[0]}"
     elif [[ ${#URLS[@]} -eq 1 ]]; then
         read -p "Open "${URLS[0]}"? [Y/n] " -n 1 -r
         echo
