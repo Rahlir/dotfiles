@@ -8,6 +8,10 @@ if [[ "$(uname -s)" == Darwin && -n $HOMEBREW_PREFIX ]]; then
     # Homebrew stores zsh completions here, which is not
     # in fpath by default.
     fpath+=$HOMEBREW_PREFIX/share/zsh/site-functions
+    # there are also additional completions in zsh-completions
+    if [[ -r $HOMEBREW_PREFIX/share/zsh-completions ]]; then
+        fpath+=$HOMEBREW_PREFIX/share/zsh-completions
+    fi
 fi
 
 typeset -U path; export PATH
@@ -53,3 +57,7 @@ export SQLITE_HISTORY="$XDG_CACHE_HOME"/sqlite_history
 export BUNDLE_USER_CONFIG="$XDG_CONFIG_HOME"/bundle
 export BUNDLE_USER_CACHE="$XDG_CACHE_HOME"/bundle
 export BUNDLE_USER_PLUGIN="$XDG_DATA_HOME"/bundle
+# TLDR C client cache, the variable is setup wrong, since it
+# creates _another_ .tldrc directory within TLDR_CACHE_DIR, hence
+# it needs to be set to XDG_CACHE_HOME
+export TLDR_CACHE_DIR=$XDG_CACHE_HOME
