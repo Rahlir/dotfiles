@@ -6,6 +6,13 @@
 prepend_path () {
     case ":$PATH:" in
         *:"$1":*)
+            case "$PATH" in
+                "$1":*)
+                    ;;
+                *)
+                    export PATH="$1":"${PATH//:"$1"/}"
+                    ;;
+            esac
             ;;
         *)
             export PATH="$1${PATH:+:$PATH}"
