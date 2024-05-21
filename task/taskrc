@@ -140,3 +140,6 @@ uda.reviewed.label=Reviewed
 
 ### Taskwarrior TUI ###
 uda.taskwarrior-tui.task-report.next.filter=status:pending
+uda.taskwarrior-tui.selection.reverse=yes
+uda.taskwarrior-tui.shortcuts.1=~/.local/bin/taskurlopen -o
+uda.taskwarrior-tui.tabs.change-focus-rotate=true
