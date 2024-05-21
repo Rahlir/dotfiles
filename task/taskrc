@@ -49,6 +49,35 @@ uda.took.label=Time Spent
 uda.estimate.type=duration
 uda.estimate.label=Time Estimated
 urgency.uda.estimate.coefficient=0.8
+# Bugwarrior UDAs
+# Default ones
+uda.jiraissuetype.type=string
+uda.jiraissuetype.label=Issue Type
+uda.jirasummary.type=string
+uda.jirasummary.label=Jira Summary
+uda.jiraurl.type=string
+uda.jiraurl.label=Jira URL
+uda.jiradescription.type=string
+uda.jiradescription.label=Jira Description
+uda.jiraid.type=string
+uda.jiraid.label=Jira Issue ID
+uda.jiraestimate.type=numeric
+uda.jiraestimate.label=Estimate
+uda.jirafixversion.type=string
+uda.jirafixversion.label=Fix Version
+uda.jiracreatedts.type=date
+uda.jiracreatedts.label=Created At
+uda.jirastatus.type=string
+uda.jirastatus.label=Jira Status
+uda.jirasubtasks.type=string
+uda.jirasubtasks.label=Jira Subtasks
+uda.jiraparent.type=string
+uda.jiraparent.label=Jira Parent
+# My custom ones
+uda.jiraepic.type=string
+uda.jiraepic.label=Jira Epic ID
+uda.jirastatus.type=string
+uda.jirastatus.label=Jira Status
 
 ### Reports ###
 # Modifications to builtin reports
