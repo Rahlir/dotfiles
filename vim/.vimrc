@@ -115,6 +115,9 @@ let g:gruvbox_invert_selection = 0
 let g:gruvbox_sign_column = 'bg0'
 let g:gruvbox_markdown_ignore_errors = 1
 
+" Everforest options
+let g:everforest_enable_italic = 1
+
 " Decide between everforest and gruvbox
 if exists('$THEMENAME') && $THEMENAME == 'everforest'
   let g:current_colorscheme = 'everforest'
@@ -145,7 +148,7 @@ set breakindent showbreak=+  " match indentation of the line and show '+' charac
 set laststatus=2  " always show status line
 set title  " set window title, by default has the form 'filename [+=-] (path) - NVIM'
 set mouse=a  " enable mouse for all modes
-if has('vim_starting')
+if has('vim_starting')  " do not override filetype specific settings
   set tabstop=8 softtabstop=4 shiftwidth=4 expandtab  " indentation with 4 spaces by default
 endif
 set noshowmode  " don't show -- INSERT --
@@ -167,6 +170,7 @@ set cinoptions=(0,N-s,g0.5s,h0.5s,:0,  " C(++) indentation configuration
 set guioptions-=rL  " no scrollbars
 set guifont=SFMonoNF-Regular:h13  " SFMono on macOS patched with nerdfonts
 set undofile  " store undo data persistently
+set clipboard^=unnamed,unnamedplus  " yanking and pasting using system clipboard
 
 " }}}
 " Custom Mappings: {{{
