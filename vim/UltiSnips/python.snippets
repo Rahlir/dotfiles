@@ -1,19 +1,3 @@
-snippet todo "todo"
-# TODO: $1
-endsnippet
-
-snippet docstring "docstring format"
-"""
-$1
-
-Parameters
-----------
-
-Returns
--------
-"""
-endsnippet
-
 priority -50
 
 ###########################################################################
@@ -514,7 +498,7 @@ def ${1:fname}(`!p snip.rv = vim.eval('indent(".") ? "self" : ""')`$2):
 	$0
 endsnippet
 
-snippet def "function with docstrings" b
+snippet Udef "function with docstrings" b
 def ${1:function}(`!p
 if snip.indent:
 	snip.rv = 'self' + (", " if len(t[2]) else "")`${2:arg1}):
@@ -524,7 +508,7 @@ write_function_docstring(t, snip) `
 endsnippet
 
 
-snippet defc "class method with docstrings" b
+snippet Udefc "class method with docstrings" b
 @classmethod
 def ${1:function}(`!p
 if snip.indent:
@@ -535,7 +519,7 @@ write_function_docstring(t, snip) `
 endsnippet
 
 
-snippet defs "static method with docstrings" b
+snippet Udefs "static method with docstrings" b
 @staticmethod
 def ${1:function}(${2:arg1}):
 	`!p snip.rv = triple_quotes(snip)`${4:TODO: Docstring for $1.}`!p
