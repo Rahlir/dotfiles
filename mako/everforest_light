@@ -1,0 +1,12 @@
+border-radius=10
+border-size=2
+default-timeout=7000
+margin=20,30
+border-color=#5c6a72cc
+background-color=#5c6a7266
+text-color=#fffbef
+font=IBM Plex Sans Text 12
+icon-path=/usr/share/icons/Everforest-Light
+padding=10
+width=320
+height=200

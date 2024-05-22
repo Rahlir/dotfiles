@@ -940,6 +940,23 @@ main()
             archlinux)
                 bootstrap_archlinux
                 ;;
+            mako)
+                bootstrap_generic $DOTFILES_PATH/mako $XDG_CONFIG_HOME
+                local themename=${THEMENAME:-everforest}
+                local themebg=${THEMEBG:-dark}
+                local theme_file=${themename}_${themebg}
+                if [[ -h $XDG_CONFIG_HOME/mako/$theme_file ]]; then
+                    if [[ ! -h $XDG_CONFIG_HOME/mako/config ]]; then
+                        ln -fs $theme_file $XDG_CONFIG_HOME/mako/config
+                        (( VERBOSE )) && print -Pn "\n    Setting current config to %U$theme_file%u."
+                    fi
+                else
+                    (( VERBOSE )) && print -n "\n    " || print
+                    print -Pn "%F{yellow}%BWarning:%f%b There is no config file \'$theme_file\' for current theme -> no current mako config set."
+                    (( VERBOSE )) || print
+                fi
+                makoctl reload
+                ;;
             scripts)
                 local -a excluded=( "bootstrap(|.zsh)" )
                 if [[ "$(uname -s)" != Darwin ]]; then

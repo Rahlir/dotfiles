@@ -1,0 +1,13 @@
+border-radius=10
+border-size=2
+default-timeout=7000
+margin=20,30
+border-color=#1d2021ff
+background-color=#83a598ff
+text-color=#282828ff
+progress-color=over #fe8019
+font=IBM Plex Sans Text 12
+icon-path=/usr/share/icons/Papirus
+padding=10
+width=320
+height=200
