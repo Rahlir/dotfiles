@@ -160,3 +160,17 @@ function n()
             rm -f "$NNN_TMPFILE" > /dev/null
     fi
 }
+
+function bugwarrior {
+    local bugwarrior_cmd=${WORKON_HOME:-$XDG_DATA_HOME/virtualenvs}/bugwarrior/bin/bugwarrior
+    if [[ ! -x $bugwarrior_cmd ]]; then
+        print -P "%F{red}%BERROR:%f%b bugwarrior command not found in \$WORKON_HOME."
+        return 1
+    fi
+    sed -E 's/(taskrc = ).*/\1"\/tmp\/bugwarrior-taskrc"/' $XDG_CONFIG_HOME/bugwarrior/bugwarrior.toml > /tmp/bugwarrior.toml
+    envsubst < $XDG_CONFIG_HOME/task/taskrc > /tmp/bugwarrior-taskrc
+    local original_wd=$(pwd)
+    cd $XDG_CONFIG_HOME/task
+    BUGWARRIORRC=/tmp/bugwarrior.toml $bugwarrior_cmd $@
+    cd $original_wd
+}
