@@ -97,8 +97,8 @@ function switch-background() {
             if hypr_instances=$(hyprctl instances 2> /dev/null); then
                 if [[ -n $hypr_instances ]]; then
                     hyprctl reload &> /dev/null
-                    killall waybar
-                    ( waybar &> /dev/null & disown ) &> /dev/null
+                    systemctl is-active --user waybar.service &> /dev/null && \
+                        systemctl restart --user waybar.service
                 fi
             fi
         fi
