@@ -193,8 +193,8 @@ ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;&'
 # - https://github.com/dotphiles/dotzsh/blob/master/modules/completion/init.zsh
 
 # Adding custom completion functions if they exist
-[[ -d $XDG_DATA_HOME/zsh/completions ]] && \
-    fpath+=$XDG_DATA_HOME/zsh/completions
+[[ -d $XDG_DATA_HOME/zsh/site-functions ]] && \
+    fpath+=$XDG_DATA_HOME/zsh/site-functions
 
 zstyle ':completion:*' completer _complete _match _approximate
 zstyle ':completion:*' use-cache on
