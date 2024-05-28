@@ -295,15 +295,6 @@ cmp.setup {
   }
 }
 
--- Needed for zk autocompletion to work
-cmp.setup.filetype({'markdown'}, {
-  completion = {
-    autocomplete = {
-      "TextChanged"
-    },
-  }
-})
-
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 -- }}}
 -- LspConfig: {{{
