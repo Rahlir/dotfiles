@@ -299,6 +299,34 @@ function! s:ToggleColorColumn() abort
   endif
 endfunction
 
+function! s:QuickFixJump(movement) abort
+  let l:qf_size = getqflist({'size': 1}).size
+  if qf_size == 0
+    echo "Note: nothing in the quickfix list"
+    return
+  endif
+  let l:cur_qidx = getqflist({'idx': 0}).idx
+  let l:new_qidx = cur_qidx + a:movement
+  while new_qidx <= 0 || new_qidx > qf_size
+    let l:new_qidx = new_qidx <= 0 ? new_qidx + qf_size : new_qidx - qf_size
+  endwhile
+  execute new_qidx . 'cc'
+endfunction
+
+function! s:LocListJump(movement) abort
+  let l:qf_size = getloclist(0, {'size': 1}).size
+  if qf_size == 0
+    echo "Note: nothing in the quickfix list"
+    return
+  endif
+  let l:cur_qidx = getloclist(0, {'idx': 0}).idx
+  let l:new_qidx = cur_qidx + a:movement
+  while new_qidx <= 0 || new_qidx > qf_size
+    let l:new_qidx = new_qidx <= 0 ? new_qidx + qf_size : new_qidx - qf_size
+  endwhile
+  execute new_qidx . 'll'
+endfunction
+
 " }}}
 
 " Commenting:
@@ -338,11 +366,11 @@ nnoremap <silent> <leader>eh :Hexplore<CR>
 nnoremap <silent> ]t :call <SID>FindTodo(0)<CR>
 nnoremap <silent> [t :call <SID>FindTodo(1)<CR>
 " Quickfix items
-nnoremap <silent> [q :cprev<CR>
-nnoremap <silent> ]q :cnext<CR>
+nnoremap <silent> [q <Cmd>call <SID>QuickFixJump(-1 * v:count1)<CR>
+nnoremap <silent> ]q <Cmd>call <SID>QuickFixJump(v:count1)<CR>
 " Location list items
-nnoremap <silent> [l :lprev<CR>
-nnoremap <silent> ]l :lnext<CR>
+nnoremap <silent> [l <Cmd>call <SID>LocListJump(-1 * v:count1)<CR>
+nnoremap <silent> ]l <Cmd>call <SID>LocListJump(v:count1)<CR>
 " Buffers
 nnoremap <silent> [b :bprev<CR>
 nnoremap <silent> ]b :bnext<CR>
@@ -357,14 +385,15 @@ nnoremap <silent> <leader>qc :cclose<CR>
 nnoremap <silent> <leader>qw :cwindow<CR>
 nnoremap <silent> <leader>qf :cfirst<CR>
 nnoremap <silent> <leader>qF :clast<CR>
+nnoremap <silent> <leader>qL :packadd cfilter<CR>
 
 " Location List:
-nnoremap <silent> <leader>ll :<C-U><C-R>=v:count ? 'll' . v:count : 'll'<CR><CR>
-nnoremap <silent> <leader>lo :lopen<CR>
-nnoremap <silent> <leader>lc :lclose<CR>
-nnoremap <silent> <leader>lw :lwindow<CR>
-nnoremap <silent> <leader>lf :lfirst<CR>
-nnoremap <silent> <leader>lF :llast<CR>
+nnoremap <silent> <leader>Ll :<C-U><C-R>=v:count ? 'll' . v:count : 'll'<CR><CR>
+nnoremap <silent> <leader>Lo :lopen<CR>
+nnoremap <silent> <leader>Lc :lclose<CR>
+nnoremap <silent> <leader>Lw :lwindow<CR>
+nnoremap <silent> <leader>Lf :lfirst<CR>
+nnoremap <silent> <leader>LF :llast<CR>
 
 " Buffer List:
 nnoremap <silent> <leader>bb :buffer #<CR>
