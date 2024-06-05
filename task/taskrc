@@ -81,7 +81,7 @@ uda.jirastatus.label=Jira Status
 
 ### Reports ###
 # Modifications to builtin reports
-report.next.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,until.remaining,description,urgency
+report.next.columns=id,start.age,entry.age,depends,estimate,priority,tags.count,project,recur,scheduled.countdown,due.relative,until.remaining,description,urgency
 report.next.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Until,Description,Urg
 
 report.active.sort=start+,project+
@@ -143,6 +143,7 @@ alias.editconf=execute nvim $XDG_CONFIG_HOME/task/taskrc
 alias.review=execute taskreview
 alias.open=execute taskurlopen
 alias.backlink=execute taskbacklink
+alias.bl=backlog
 
 ### Other ###
 # News version
