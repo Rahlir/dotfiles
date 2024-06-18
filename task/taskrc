@@ -31,6 +31,7 @@ urgency.project.coefficient=0.8
 urgency.annotations.coefficient=0.5
 urgency.user.tag.bump.coefficient=4.0
 urgency.user.tag.inbox.coefficient=-2.0
+urgency.user.tag.stale.coefficient=-1.0
 
 ### Calendar setup ###
 # Calendar command shows both holidays and list report of all
@@ -133,7 +134,7 @@ report.backlog.context=1
 report.postponed.description=Compact overview of open tasks that are not on the active list
 report.postponed.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,wait.remaining,until.remaining,description.count,urgency
 report.postponed.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Wait,Until,Description,Urg
-report.postponed.filter=status:waiting
+report.postponed.filter=status:waiting -delegated
 report.postponed.sort=urgency-,wait-
 report.postponed.context=1
 
@@ -167,6 +168,14 @@ context.School.write=+school
 reserved.lines=2
 uda.reviewed.type=date
 uda.reviewed.label=Reviewed
+
+# Default next-like report
+report._ttreview.description=Default next view used for taskwarrior-tui review
+report._ttreview.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,until.remaining,description,urgency
+report._ttreview.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Until,Description,Urg
+report._ttreview.filter=status:pending
+report._ttreview.sort=urgency-
+report._ttreview.context=1
 
 ### Taskwarrior TUI ###
 uda.taskwarrior-tui.task-report.next.filter=status:pending
