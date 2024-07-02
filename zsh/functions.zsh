@@ -53,7 +53,7 @@ function switch-background() {
     fi
 
     [[ "$newbg" == "dark" ]] && local darkmode_bool="true" || local darkmode_bool="false"
-    [[ "$newbg" == "dark" ]] && local gtk_theme="${(C)THEMENAME}-Dark-Borderless" || local gtk_theme="${(C)THEMENAME}-Light-Borderless"
+    [[ "$newbg" == "dark" ]] && local gtk_theme="${(C)THEMENAME}-Dark" || local gtk_theme="${(C)THEMENAME}-Light"
 
     local theme_relpath="themes/${THEMENAME}_$newbg.toml"
     ln -fs "$theme_relpath" "$alacritty_configdir/theme.toml" &&
@@ -67,7 +67,7 @@ function switch-background() {
             sed -E "s/(gtk-application-prefer-dark-theme[[:space:]]?=[[:space:]]?)(true|false)/\1${darkmode_bool}/" -i $gtkconfig || \
             echo "gtk-application-prefer-dark-theme = $darkmode_bool" >> $gtkconfig
         grep -q "gtk-theme-name" $gtkconfig && \
-            sed -E "s/(gtk-theme-name[[:space:]]?=[[:space:]]?)(${(C)THEMENAME}-(Dark|Light)-Borderless)/\1${gtk_theme}/" -i $gtkconfig || \
+            sed -E "s/(gtk-theme-name[[:space:]]?=[[:space:]]?)(${(C)THEMENAME}-(Dark|Light))/\1${gtk_theme}/" -i $gtkconfig || \
             echo "gtk-theme-name = $gtk_theme" >> $gtkconfig
         grep -q "gtk-icon-theme-name" $gtkconfig && \
             sed -E "s/(gtk-icon-theme-name[[:space:]]?=[[:space:]]?)(${(C)THEMENAME}-(Dark|Light))/\1${gtk_theme%-*}/" -i $gtkconfig || \
