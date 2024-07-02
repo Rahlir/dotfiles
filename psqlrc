@@ -1,0 +1,64 @@
+-- Basic PSQLRC
+--
+-- Inspired by: https://gist.github.com/jaytaylor/e5aa89c8f3aaab3f576f
+--              https://github.com/companygardener/dotfiles/blob/master/home/psqlrc
+--              https://github.com/thoughtbot/dotfiles/blob/main/psqlrc
+--
+-- by Tadeas Uhlir <tadeas.uhlir@gmail.com>
+
+-- Silence \set notifications
+\set QUIET ON
+
+-- Configure histsize
+\getenv XDG_DATA_HOME XDG_DATA_HOME
+\set HISTFILE :XDG_DATA_HOME /psql/history- :USER
+\set HISTCONTROL ignoredups
+\set HISTSIZE 10000
+
+-- Other options
+\set VERBOSITY verbose
+\set paste
+
+-- Time queries
+\timing
+
+-- Output formatting
+\pset xheader_width page
+\pset null '[NULL]'
+\pset format wrapped
+\pset expanded auto
+\pset linestyle unicode
+
+\set QUIET OFF
+
+--  Define administrative queries
+\set settings 'SELECT name, setting, unit, context FROM pg_settings;'
+\set started 'SELECT pg_postmaster_start_time() AS start_time;'
+\set uptime 'SELECT now() - pg_postmaster_start_time() AS uptime;'
+\set dbsize 'SELECT CURRENT_DATABASE() as db_name, pg_size_pretty(pg_database_size(CURRENT_DATABASE())) as db_size;'
+\set conninfo 'SELECT usename, count(*) FROM pg_stat_activity group by usename;'
+\set activity 'SELECT datname, pid, usename, application_name, client_addr, client_hostname, client_port, query, state FROM pg_stat_activity;'
+
+-- Define tablesizes queries
+\set _tablesizesraw '( SELECT table_schema AS sch, table_name AS rel, pg_relation_size(quote_ident(table_schema) || \'.\' || quote_ident(table_name)) AS relation_size, pg_table_size(quote_ident(table_schema) || \'.\' || quote_ident(table_name)) AS table_size, pg_total_relation_size(quote_ident(table_schema) || \'.\' || quote_ident(table_name)) AS total_size FROM information_schema.tables WHERE table_type = \'BASE TABLE\' AND table_schema NOT IN (\'information_schema\', \'pg_catalog\', \'to_delete\', \'cnu_report\') ORDER BY pg_total_relation_size(quote_ident(table_schema) || \'.\' || quote_ident(table_name)) DESC, table_schema, table_name )'
+\set _tablesizes '( SELECT sch, rel, pg_size_pretty(relation_size) as relation_size, pg_size_pretty(table_size) as table_size, pg_size_pretty(total_size) as total_size FROM (:_tablesizesraw) raw ORDER BY raw.total_size DESC, raw.relation_size DESC, sch, rel )'
+\set tablesizes ':_tablesizes;'
+
+-- Configure prompts
+\set PROMPT1 '%[%033[1;34m%][%`date +%H:%M:%S`]%[%033[0m%] %[%033[1;36m%]%m%[%033[0m%] %[%033[36m%]%/%[%033[0m%] %R%x%# '
+\set PROMPT2 '%w'
+
+-- Print welcome message
+\echo '\n========== Welcome to PSQL ==========\n'
+\echo 'Administrative queries:'
+\echo '\t:settings \t-- Server settings'
+\echo '\t:started \t-- Server start time'
+\echo '\t:uptime \t-- Server uptime'
+\echo '\t:dbsize \t-- Size of current database'
+\echo '\t:conninfo \t-- Server connections'
+\echo '\t:activity \t-- Activity on the server'
+\echo '\t:tablesizes \t-- Size of each table'
+\echo ''
+\echo 'Table aliases:'
+\echo '\t:_tablesizes \t-- Table with sizes of each table'
+\echo ''
