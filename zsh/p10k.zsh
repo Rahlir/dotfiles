@@ -31,6 +31,7 @@
     # =========================[ Line #2 ]=========================
     newline                 # \n
     os_icon                 # os identifier
+    context                 # user@hostname
     prompt_char             # prompt symbol
   )
 
@@ -40,10 +41,8 @@
   # last prompt line gets hidden if it would overlap with left prompt.
   typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
-    status                  # exit code of the last command
-    command_execution_time  # duration of the last command
+    pyenv                   # python environment (https://github.com/pyenv/pyenv)
     background_jobs         # presence of background jobs
-    # kubecontext             # current kubernetes context (https://kubernetes.io/)
     nnn                     # nnn shell (https://github.com/jarun/nnn)
     vim_shell               # vim shell indicator (:sh)
     timewarrior             # timewarrior tracking status (https://timewarrior.net/)
@@ -51,7 +50,8 @@
     time                    # current time
     # =========================[ Line #2 ]=========================
     newline
-    context                 # user@hostname
+    status                  # exit code of the last command
+    command_execution_time  # duration of the last command
   )
 
   # Defines character set used by powerlevel10k. It's best to let `p10k configure` set it for you.
@@ -522,11 +522,38 @@
   typeset -g POWERLEVEL9K_VIRTUALENV_SHOW_PYTHON_VERSION=false
   # If set to "false", won't show virtualenv if pyenv is already shown.
   # If set to "if-different", won't show virtualenv if it's the same as pyenv.
-  typeset -g POWERLEVEL9K_VIRTUALENV_SHOW_WITH_PYENV=false
+  typeset -g POWERLEVEL9K_VIRTUALENV_SHOW_WITH_PYENV=true
   # Separate environment name from Python version only with a space.
   typeset -g POWERLEVEL9K_VIRTUALENV_{LEFT,RIGHT}_DELIMITER=
   # Custom icon.
   typeset -g POWERLEVEL9K_VIRTUALENV_VISUAL_IDENTIFIER_EXPANSION=''
+
+  ################[ pyenv: python environment (https://github.com/pyenv/pyenv) ]################
+  # Pyenv color.
+  typeset -g POWERLEVEL9K_PYENV_FOREGROUND=11
+  # Hide python version if it doesn't come from one of these sources.
+  typeset -g POWERLEVEL9K_PYENV_SOURCES=(shell local global)
+  # If set to false, hide python version if it's the same as global:
+  # $(pyenv version-name) == $(pyenv global).
+  typeset -g POWERLEVEL9K_PYENV_PROMPT_ALWAYS_SHOW=true
+  # If set to false, hide python version if it's equal to "system".
+  typeset -g POWERLEVEL9K_PYENV_SHOW_SYSTEM=false
+  typeset -g POWERLEVEL9K_PYENV_PREFIX='%fon '
+
+  # Pyenv segment format. The following parameters are available within the expansion.
+  #
+  # - P9K_CONTENT                Current pyenv environment (pyenv version-name).
+  # - P9K_PYENV_PYTHON_VERSION   Current python version (python --version).
+  #
+  # The default format has the following logic:
+  #
+  # 1. Display just "$P9K_CONTENT" if it's equal to "$P9K_PYENV_PYTHON_VERSION" or
+  #    starts with "$P9K_PYENV_PYTHON_VERSION/".
+  # 2. Otherwise display "$P9K_CONTENT $P9K_PYENV_PYTHON_VERSION".
+  typeset -g POWERLEVEL9K_PYENV_CONTENT_EXPANSION='${P9K_CONTENT}${${P9K_CONTENT:#$P9K_PYENV_PYTHON_VERSION(|/*)}:+$P9K_PYENV_PYTHON_VERSION}'
+
+  # Custom icon.
+  typeset -g POWERLEVEL9K_PYENV_VISUAL_IDENTIFIER_EXPANSION=''
 
   ####################################[ time: current time ]####################################
   # Current time color.
