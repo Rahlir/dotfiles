@@ -22,8 +22,8 @@ typeset -U fpath; export FPATH
 ##################################################
 # Docker config home
 export DOCKER_CONFIG="$XDG_CONFIG_HOME"/docker
-# Postgresql history
-export PSQL_HISTORY="$XDG_DATA_HOME"/psql_history
+# Postgresrc file
+export PSQLRC=$XDG_CONFIG_HOME/psqlrc
 # NPM config file
 export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/npmrc
 # w3m data directory
