@@ -16,6 +16,9 @@
 # Linux
 *~
 
+# pyenv
+.python-version
+
 # Vim & NeoVim
 *.swp
 tags

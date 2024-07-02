@@ -301,6 +301,10 @@ _synhl_paths=(
 )
 (( $#_synhl_paths )) && [[ -r $_synhl_paths[1] ]] && source $_synhl_paths[1]
 
+# Pyenv:
+if (( $+commands[pyenv] )); then
+    eval "$(pyenv init -)"
+fi
 # Virtualenvwrapper script:
 _virtualenvwrapper_path=${VIRTUALENVWRAPPER_PATH:-$PKG_PREFIX/bin/virtualenvwrapper_lazy.sh}
 [[ -r $_virtualenvwrapper_path ]] && source $_virtualenvwrapper_path

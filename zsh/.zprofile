@@ -61,3 +61,6 @@ export BUNDLE_USER_PLUGIN="$XDG_DATA_HOME"/bundle
 # creates _another_ .tldrc directory within TLDR_CACHE_DIR, hence
 # it needs to be set to XDG_CACHE_HOME
 export TLDR_CACHE_DIR=$XDG_CACHE_HOME
+# pyenv variables
+export PYENV_ROOT=$XDG_DATA_HOME/pyenv
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
