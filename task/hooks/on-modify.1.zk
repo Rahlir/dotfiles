@@ -78,12 +78,11 @@ def main(_, new, command):
         if not link:
             link = f'@{project_name:s}'
         prefix += f" in {link:s}"
-    first_line = prefix + ":" + first_line
+    first_line = f"{now.strftime('%I:%M %p')} - " + prefix + ":" + first_line
+    first_line_wrapped = wrap(first_line, width=79, initial_indent="* ", subsequent_indent="  ")
 
     daily_note = Path(getenv("ZK_NOTEBOOK_DIR", ".")) / f"daily/{now.strftime('%Y-%m-%d')}.md"
     if daily_note.is_file():
-        first_line = f"{now.strftime('%I:%M %p')} - " + first_line
-        first_line_wrapped = wrap(first_line, width=79, initial_indent="* ", subsequent_indent="  ")
         with open(daily_note, "a") as df:
             for line in first_line_wrapped:
                 df.write(line + "\n")
@@ -95,7 +94,7 @@ def main(_, new, command):
             ['zk', 'new', '--interactive', '--no-input', '--date', now.isoformat(), 'daily', '--print-path'],
             text=True, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL
         )
-        input_wrapped = wrap(first_line, width=79)
+        input_wrapped = first_line_wrapped
         input_wrapped.extend(detail_lines)
         proc.communicate(input="\n".join(input_wrapped))
     print(f"Event written to daily note: '{prefix:s}'")
