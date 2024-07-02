@@ -122,6 +122,14 @@ report.today.filter=status:pending (scheduled.before:now or +next or due.before:
 report.today.sort=due-,urgency-
 report.today.context=0
 
+# Report for zk daily page. Very similar to today report, except it doesn't show overdue tasks as they
+# are printed separately in zk
+report._zk.description=Report for daily note template generation
+report._zk.columns=uuid
+report._zk.filter=status:pending ( ( due.before:today+2days and due.after:now ) or scheduled.before:now or +next )
+report._zk.sort=due-,urgency-
+report._zk.context=0
+
 # Backlog report showing both waiting and pending tasks in cnext-like report
 report.backlog.description=Compact overview of all open tasks
 report.backlog.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,wait.remaining,until.remaining,description.count,urgency
@@ -135,7 +143,7 @@ report.postponed.description=Compact overview of open tasks that are not on the 
 report.postponed.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,wait.remaining,until.remaining,description.count,urgency
 report.postponed.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Wait,Until,Description,Urg
 report.postponed.filter=status:waiting -delegated
-report.postponed.sort=urgency-,wait-
+report.postponed.sort=wait-,urgency-
 report.postponed.context=1
 
 # ### Aliases ###
