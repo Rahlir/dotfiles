@@ -11,6 +11,8 @@
 
 -- Configure histsize
 \getenv XDG_DATA_HOME XDG_DATA_HOME
+-- Make sure the psql directory exists
+\! [ -d $XDG_DATA_HOME/psql ] || mkdir $XDG_DATA_HOME/psql
 \set HISTFILE :XDG_DATA_HOME /psql/history- :USER
 \set HISTCONTROL ignoredups
 \set HISTSIZE 10000
