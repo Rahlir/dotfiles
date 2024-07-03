@@ -287,6 +287,11 @@ for bashcompl_f in $XDG_DATA_HOME/bash/bash_completion.d/*(N); do
     . $bashcompl_f
 done
 
+# For pipx completion, you need to register the completion
+if (( $+commands[pipx] )); then
+    eval "$(register-python-argcomplete pipx)"
+fi
+
 ################################################################################
 #####                       Utilities Configuration                        #####
 ################################################################################
