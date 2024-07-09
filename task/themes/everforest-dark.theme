@@ -19,7 +19,7 @@ color.completed=color2
 color.deleted=color243
 color.active=bold
 color.recurring=color5
-color.scheduled=color166
+color.scheduled=color215
 color.until=
 color.blocked=color246 on color8
 color.blocking=color230 on color8
@@ -65,7 +65,7 @@ color.calendar.due.today=color0 on color1
 color.calendar.overdue=color0 on color9
 color.calendar.today=color0 on color12
 color.calendar.holiday=color0 on color8
-color.calendar.scheduled=color0 on color166
+color.calendar.scheduled=color0 on color215
 
 # Command: sync
 # This does not seem to work. Sync information seems to be printed

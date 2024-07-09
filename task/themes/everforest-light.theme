@@ -19,7 +19,7 @@ color.completed=color2
 color.deleted=color249
 color.active=bold
 color.recurring=color5
-color.scheduled=color166
+color.scheduled=color215
 color.until=
 color.blocked=color7 on color8
 color.blocking=color229 on color8
@@ -65,7 +65,7 @@ color.calendar.due.today=color0 on color1
 color.calendar.overdue=color0 on color9
 color.calendar.today=color0 on color12
 color.calendar.holiday=color0 on color8
-color.calendar.scheduled=color0 on color166
+color.calendar.scheduled=color0 on color215
 
 # Command: sync
 color.sync.added=color14

@@ -24,10 +24,15 @@ magenta = "#df69ba"
 cyan = "#35a77c"
 white = "#5c6a72"
 
-[[colors.indexed_colors]]
 # Nice lighter color used for taskwarrior alternate bg and blocking fg
+[[colors.indexed_colors]]
 color = "#f6f0df"
 index = 229
+
+# Everforest orange color
+[[colors.indexed_colors]]
+color = "#e69875"
+index = 215
 
 [env]
 THEMENAME = "everforest"
