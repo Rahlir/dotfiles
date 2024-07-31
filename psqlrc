@@ -40,6 +40,8 @@
 \set dbsize 'SELECT CURRENT_DATABASE() as db_name, pg_size_pretty(pg_database_size(CURRENT_DATABASE())) as db_size;'
 \set conninfo 'SELECT usename, count(*) FROM pg_stat_activity group by usename;'
 \set activity 'SELECT datname, pid, usename, application_name, client_addr, client_hostname, client_port, query, state FROM pg_stat_activity;'
+\set serverversion 'SELECT version();'
+\set extensions 'SELECT * FROM pg_available_extensions;'
 
 -- Define tablesizes queries
 \set _tablesizesraw '( SELECT table_schema AS sch, table_name AS rel, pg_relation_size(quote_ident(table_schema) || \'.\' || quote_ident(table_name)) AS relation_size, pg_table_size(quote_ident(table_schema) || \'.\' || quote_ident(table_name)) AS table_size, pg_total_relation_size(quote_ident(table_schema) || \'.\' || quote_ident(table_name)) AS total_size FROM information_schema.tables WHERE table_type = \'BASE TABLE\' AND table_schema NOT IN (\'information_schema\', \'pg_catalog\', \'to_delete\', \'cnu_report\') ORDER BY pg_total_relation_size(quote_ident(table_schema) || \'.\' || quote_ident(table_name)) DESC, table_schema, table_name )'
@@ -51,16 +53,21 @@
 \set PROMPT2 '%w'
 
 -- Print welcome message
-\echo '\n========== Welcome to PSQL ==========\n'
-\echo 'Administrative queries:'
-\echo '\t:settings \t-- Server settings'
-\echo '\t:started \t-- Server start time'
-\echo '\t:uptime \t-- Server uptime'
-\echo '\t:dbsize \t-- Size of current database'
-\echo '\t:conninfo \t-- Server connections'
-\echo '\t:activity \t-- Activity on the server'
-\echo '\t:tablesizes \t-- Size of each table'
-\echo ''
-\echo 'Table aliases:'
-\echo '\t:_tablesizes \t-- Table with sizes of each table'
-\echo ''
+\if :{?quietstartup}
+\else
+    \echo '========== Welcome to PSQL ==========\n'
+    \echo 'Administrative queries:'
+    \echo '\t:settings \t-- Server settings'
+    \echo '\t:started \t-- Server start time'
+    \echo '\t:uptime \t-- Server uptime'
+    \echo '\t:dbsize \t-- Size of current database'
+    \echo '\t:conninfo \t-- Server connections'
+    \echo '\t:activity \t-- Activity on the server'
+    \echo '\t:tablesizes \t-- Size of each table'
+    \echo '\t:serverversion \t--Postgres version on the server'
+    \echo '\t:extensions \t--Available extensions'
+    \echo ''
+    \echo 'Table aliases:'
+    \echo '\t:_tablesizes \t-- Table with sizes of each table'
+    \echo ''
+\endif
