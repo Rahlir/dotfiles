@@ -38,6 +38,7 @@ urgency.user.tag.stale.coefficient=-1.0
 # due tasks that fall within the calendar time window
 calendar.details=full
 calendar.holidays=full
+calendar.details.report=cnext
 
 ### UDAs ###
 # Low priority means task is less important than no priority
@@ -85,6 +86,8 @@ uda.jirastatus.label=Jira Status
 report.next.columns=id,start.age,entry.age,depends,estimate,priority,tags.count,project,recur,scheduled.countdown,due.relative,until.remaining,description,urgency
 report.next.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Until,Description,Urg
 
+# Only show tags count
+report.active.columns=id,start,start.age,entry.age,depends.indicator,priority,project,tags.count,recur,wait,scheduled.remaining,due,until,description
 report.active.sort=start+,project+
 
 # Custom reports
@@ -104,7 +107,7 @@ report.estimates.context=1
 
 # Next-like report with annotations shown as count to be more compact
 report.cnext.description=Compact overview of most urgent tasks (compact next)
-report.cnext.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,until.remaining,description.count,urgency
+report.cnext.columns=id,start.age,entry.age,depends,estimate,priority,tags.count,project,recur,scheduled.countdown,due.relative,until.remaining,description.count,urgency
 report.cnext.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Until,Description,Urg
 report.cnext.filter=status:pending -WAITING limit:page
 report.cnext.sort=urgency-
@@ -156,7 +159,7 @@ alias.bl=backlog
 
 ### Other ###
 # News version
-news.version=2.6.0
+news.version=3.0.2
 
 # Show all projects on summary. Why would you want to complete
 # a project if you don't get to see the satisfying 100% completion
