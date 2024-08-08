@@ -64,3 +64,10 @@ export TLDR_CACHE_DIR=$XDG_CACHE_HOME
 # pyenv variables
 export PYENV_ROOT=$XDG_DATA_HOME/pyenv
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+# Kube config for kubectl
+export KUBECONFIG=$XDG_CONFIG_HOME/kube/config
+export KUBECACHEDIR=$XDG_CACHE_HOME/kube
+if [[ "$(uname -s)" == Darwin ]]; then
+    # Use keychain with pip
+    export PIP_USE_FEATURE=truststore
+fi
