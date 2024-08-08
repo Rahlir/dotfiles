@@ -64,6 +64,8 @@
     # this can be overriden with --no-follow-tags if you want to
     # ignore local tags
     followTags = true
+    # Check that your submodules do not contain unpushed commits
+    recurseSubmodules = check
 
 [fetch]
     # Automatically remove any remote tracking branches that no longer
@@ -77,6 +79,8 @@
     tool = vimdiff
     # Detect moved lines and display them with different colors
     colorMoved = zebra
+    # When showing submodule diff, show also commit log, not just SHA
+    submodule = log
 
 [merge]
     tool = fugitive
