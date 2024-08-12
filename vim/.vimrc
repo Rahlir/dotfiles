@@ -60,19 +60,23 @@ call plug#end()
 " }}}
 
 " ---------------------------General Vim Settings-----------------------------
+"  Setup Statedir: {{{
+
+if !empty($XDG_STATE_HOME)
+  let s:statedir = $XDG_STATE_HOME . '/vim'
+else
+  let s:statedir = $HOME . '/.local/state/vim'
+endif
+if !isdirectory(s:statedir)
+  call mkdir(s:statedir)
+endif
+
+" }}}
 " Different Vim Versions Compatibility: {{{
 
 " Settings for regular vim
 if !has('nvim')
-  " Store viminfo and undo data in XDG_STATE_HOME directory
-  if !empty($XDG_STATE_HOME)
-    let s:statedir = $XDG_STATE_HOME . '/vim'
-  else
-    let s:statedir = $HOME . '/.local/state/vim'
-  endif
-  if !isdirectory(s:statedir)
-    call mkdir(s:statedir)
-  endif
+  " Store viminfo and undo data in XDG_STATE_HOME/vim directory
   let &viminfofile=s:statedir . '/viminfo'
   let &undodir=s:statedir . '/undo'
   if !isdirectory(&undodir)
@@ -178,6 +182,10 @@ set clipboard^=unnamed,unnamedplus  " yanking and pasting using system clipboard
 " Configuring <space> as mapleader
 nnoremap <space> <Nop>
 let g:mapleader = ' '
+
+" Add increment and decrement maps that work with modifier key instead of ctrl
+nnoremap <M-a> <C-a>
+nnoremap <M-x> <C-x>
 
 " Mapable Functions: {{{
 
@@ -662,7 +670,11 @@ let g:UltiSnipsExpandTrigger = '<M-tab>'
 " Indentline Options: {{{
 
 let g:indentLine_char = '┊'
-let g:indentLine_fileTypeExclude = ['startify', 'help', 'json', 'text', 'tex', 'markdown', 'man']
+let g:indentLine_fileTypeExclude = [
+      \ 'startify', 'help', 'json',
+      \ 'text', 'tex', 'markdown',
+      \ 'man', 'dockerfile'
+      \ ]
 
 if g:current_colorscheme ==# 'gruvbox'
   let g:indentLine_color_term = GetGruvColor('GruvboxBg2')[1]
@@ -676,6 +688,7 @@ endif
 let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {} " needed
 let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['m'] = ''
 let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['mat'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['vue'] = ''
 
 if exists('g:loaded_webdevicons')
   call webdevicons#refresh()
