@@ -29,10 +29,9 @@ urgency.blocking.coefficient=0.0
 urgency.blocked.coefficient=-0.0
 urgency.project.coefficient=0.8
 urgency.annotations.coefficient=0.5
-urgency.user.tag.bump.coefficient=4.0
-urgency.user.tag.inbox.coefficient=-2.0
 urgency.user.tag.stale.coefficient=-1.0
 
+indent.annotation=4
 ### Calendar setup ###
 # Calendar command shows both holidays and list report of all
 # due tasks that fall within the calendar time window
@@ -51,6 +50,12 @@ uda.took.label=Time Spent
 uda.estimate.type=duration
 uda.estimate.label=Time Estimated
 urgency.uda.estimate.coefficient=0.8
+uda.agilestatus.type=string
+uda.agilestatus.label=Agile Status
+uda.agilestatus.values=inbox,backlog,active
+uda.agilestatus.default=inbox
+urgency.uda.agilestatus.backlog.coefficient=-1.0
+urgency.uda.agilestatus.inbox.coefficient=20.0
 # Bugwarrior UDAs
 # Default ones
 uda.jiraissuetype.type=string
@@ -78,76 +83,99 @@ uda.jiraparent.label=Jira Parent
 # My custom ones
 uda.jiraepic.type=string
 uda.jiraepic.label=Jira Epic ID
-uda.jirastatus.type=string
-uda.jirastatus.label=Jira Status
 
 ### Reports ###
-# Modifications to builtin reports
-report.next.columns=id,start.age,entry.age,depends,estimate,priority,tags.count,project,recur,scheduled.countdown,due.relative,until.remaining,description,urgency
-report.next.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Until,Description,Urg
 
-# Only show tags count
-report.active.columns=id,start,start.age,entry.age,depends.indicator,priority,project,tags.count,recur,wait,scheduled.remaining,due,until,description
-report.active.sort=start+,project+
+## Builtin reports ##
 
-# Custom reports
-report.timelog.description=Tasks with times (spent or estimated) logged
-report.timelog.columns=uuid.short,id,status.short,end,took,estimate,project,description
-report.timelog.labels=UUID,ID,St,Completed,Spent,Estimated,Project,Description
-report.timelog.filter=estimate.any: or took.any:
-report.timelog.sort=took-,estimate-
+# Next overhaul
+report.next.columns=id,start.age,depends,project,priority,recur,description.count,tags.count,took,estimate,scheduled.countdown,due.relative,until.remaining,urgency
+report.next.labels=ID,Active,Deps,Project,Prio,Recur,Description,Tags,Spent,Estimate,Sch,Due,Until,Urg
+report.next.filter=status:pending -WAITING limit:page agilestatus:active
+
+# Only show tags count, only show # of annotations, sort by start, then age (ignore project)
+report.active.columns=id,entry.age,start.age,depends.indicator,project,priority,recur,description.count,tags.count,scheduled.remaining,due,until
+report.active.labels=ID,Age,Active,D,Project,Prio,Recur,Description,Tags,Sch,Due,Until
+report.active.sort=start+,entry+
+
+report.blocked.columns=id,depends,project,priority,due,start.active,description
+report.blocked.labels=ID,Deps,Project,Prio,Due,Act,Description
+
+report.blocking.columns=id,uuid.short,depends,start.active,project,priority,scheduled.remaining,due.relative,until.remaining,description,urgency
+report.blocking.labels=ID,UUID,Deps,Act,Project,Prio,Sch,Due,Until,Description,Urg
+
+report.list.columns=id,agilestatus,entry.age,start.age,depends.indicator,project,priority,description,tags.count,recur.indicator,scheduled,due,until.remaining,urgency
+report.list.labels=ID,Status,Age,Active,D,Project,Prio,Description,Tags,R,Sch,Due,Until,Urg
+report.list.sort=urgency-,due+,entry+
+
+## Custom reports ##
+
+# Today report showing scheduled tasks and tasks with due dates soon
+report.today.description=Tasks to work on today
+report.today.columns=id,start.age,depends,project,priority,description,took,estimate,scheduled.age,due.relative,urgency
+report.today.labels=ID,Active,Deps,Project,Prio,Description,Spent,Est,Sched,Due,Urg
+report.today.filter=status:pending (scheduled.before:now or (+next and agilestatus:active) or due.before:today+2days)
+report.today.sort=due+,urgency-
+report.today.context=0
+
+# Inbox report showing tasks to be processed
+report.inbox.description=Detailed view of tasks in the inbox
+report.inbox.columns=id,start.active,entry.age,depends,estimate,priority,project,tags,recur,due,wait.remaining,until.remaining,description,urgency
+report.inbox.labels=ID,Act,Age,Deps,Est,Prio,Project,Tags,Recur,Due,Wait,Until,Description,Urg
+report.inbox.filter=(status:pending or status:waiting) agilestatus:inbox
+report.inbox.sort=entry+,urgency-
+report.inbox.context=0
+
+# Backlog report showing both waiting and pending tasks in cnext-like report
+report.backlog.description=Compact overview of all open tasks
+report.backlog.columns=id,agilestatus,entry.age,start.active,depends,project,priority,tags,description.count,took,estimate,recur,scheduled.countdown,due.relative,until.remaining,urgency
+report.backlog.labels=ID,Status,Age,Act,Deps,Project,Prio,Tags,Description,Spent,Est,Recur,Sch,Due,Until,Urg
+report.backlog.filter=status:pending -WAITING
+report.backlog.sort=urgency-,entry+
+report.backlog.context=1
+
+# Same as backlog, but only show waiting tasks
+report.backburner.description=Compact overview of open tasks that are not on the active list
+report.backburner.columns=id,entry.age,start.age,depends,project,priority,description.count,tags.count,took,estimate,scheduled.countdown,due.relative,until.remaining,urgency
+report.backburner.labels=ID,Age,Active,Deps,Project,Prio,Description,Tags,Spent,Estimate,Sch,Due,Until,Urg
+report.backburner.filter=status:pending -WAITING agilestatus:backlog
+report.backburner.sort=urgency-,entry+
+report.backburner.context=1
+
+report.timelog.description=Finished tasks with times (spent or estimated) logged
+report.timelog.columns=uuid.short,id,status.short,project,priority,description.count,end,took,estimate
+report.timelog.labels=UUID,ID,St,Project,Prio,Description,Completed,Spent,Estimated
+report.timelog.filter=(estimate.any: or took.any: ) (status:completed or status:deleted)
+report.timelog.sort=end-,took-,estimate-
 report.timelog.context=1
 
 report.estimates.description=Tasks with time estimates
-report.estimates.columns=id,start.age,priority,tags,project,description,estimate,urgency
-report.estimates.labels=ID,Active,P,Tag,Project,Description,Estimated,Urg
+report.estimates.columns=id,start.age,project,priority,description.count,tags.count,estimate,urgency
+report.estimates.labels=ID,Active,Project,Prio,Description,Tag,Estimated,Urg
 report.estimates.filter=estimate.any: status:pending
 report.estimates.sort=estimate-,urgency-
 report.estimates.context=1
 
-# Next-like report with annotations shown as count to be more compact
-report.cnext.description=Compact overview of most urgent tasks (compact next)
-report.cnext.columns=id,start.age,entry.age,depends,estimate,priority,tags.count,project,recur,scheduled.countdown,due.relative,until.remaining,description.count,urgency
-report.cnext.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Until,Description,Urg
-report.cnext.filter=status:pending -WAITING limit:page
-report.cnext.sort=urgency-
-report.cnext.context=1
-
-report.projectview.columns=id,start.active,depends.count,recur.indicator,scheduled.countdown,due.countdown,until.countdown,estimate,tags,project.indented,description.count
-report.projectview.labels=ID,A,Dep,R,S,Due,Until,Est,Tags,Project,Description
+report.projectview.columns=id,start.active,depends.count,project.indented,description.count,tags.count,took,estimate,recur.indicator,scheduled.countdown,due.countdown,until.countdown
+report.projectview.labels=ID,A,Dep,Project,Description,Tags,Spent,Est,R,Sch,Due,Until
 report.projectview.filter=project.any: status:pending
-report.projectview.sort=project+,start-,depends+
-
-# Today report showing scheduled tasks and tasks with due dates soon
-report.today.columns=id,priority,scheduled.age,due.relative,start.age,depends,estimate,project,description,urgency
-report.today.labels=ID,!,Sched,Due,Active,Deps,Est,Project,Description,Urg
-report.today.filter=status:pending (scheduled.before:now or +next or due.before:today+2days)
-report.today.sort=due-,urgency-
-report.today.context=0
+report.projectview.sort=project+,depends+
 
 # Report for zk daily page. Very similar to today report, except it doesn't show overdue tasks as they
 # are printed separately in zk
 report._zk.description=Report for daily note template generation
 report._zk.columns=uuid
-report._zk.filter=status:pending ( ( due.before:today+2days and due.after:now ) or scheduled.before:now or +next )
-report._zk.sort=due-,urgency-
+report._zk.filter=status:pending ((due.before:today+2days and due.after:now) or scheduled.before:now or (+next and agilestatus:active))
+report._zk.sort=due+,urgency-
 report._zk.context=0
 
-# Backlog report showing both waiting and pending tasks in cnext-like report
-report.backlog.description=Compact overview of all open tasks
-report.backlog.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,wait.remaining,until.remaining,description.count,urgency
-report.backlog.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Wait,Until,Description,Urg
-report.backlog.filter=status:pending or status:waiting
-report.backlog.sort=urgency-
-report.backlog.context=1
-
-# Same as backlog, but only show waiting tasks
-report.postponed.description=Compact overview of open tasks that are not on the active list
-report.postponed.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,wait.remaining,until.remaining,description.count,urgency
-report.postponed.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Wait,Until,Description,Urg
-report.postponed.filter=status:waiting -delegated
-report.postponed.sort=wait-,urgency-
-report.postponed.context=1
+# Default next-like report for taskwarrior-tui review
+report._ttreview.description=Default next view used for taskwarrior-tui review
+report._ttreview.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,until.remaining,description,urgency
+report._ttreview.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Until,Description,Urg
+report._ttreview.filter=status:pending
+report._ttreview.sort=urgency-
+report._ttreview.context=1
 
 # ### Aliases ###
 alias.dailystatus=status:completed end.after:today timelog
@@ -156,6 +184,7 @@ alias.review=execute taskreview
 alias.open=execute taskurlopen
 alias.backlink=execute taskbacklink
 alias.bl=backlog
+alias.bb=backburner
 
 ### Other ###
 # News version
@@ -180,16 +209,8 @@ reserved.lines=2
 uda.reviewed.type=date
 uda.reviewed.label=Reviewed
 
-# Default next-like report
-report._ttreview.description=Default next view used for taskwarrior-tui review
-report._ttreview.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,until.remaining,description,urgency
-report._ttreview.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Until,Description,Urg
-report._ttreview.filter=status:pending
-report._ttreview.sort=urgency-
-report._ttreview.context=1
-
 ### Taskwarrior TUI ###
-uda.taskwarrior-tui.task-report.next.filter=status:pending
+uda.taskwarrior-tui.task-report.next.filter=status:pending agilestatus:active
 uda.taskwarrior-tui.selection.reverse=yes
 uda.taskwarrior-tui.tabs.change-focus-rotate=true
 uda.taskwarrior-tui.shortcuts.1=taskurlopen -o
