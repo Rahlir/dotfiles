@@ -188,7 +188,7 @@ alias.bb=backburner
 
 ### Other ###
 # News version
-news.version=3.0.2
+news.version=3.1.0
 
 # Show all projects on summary. Why would you want to complete
 # a project if you don't get to see the satisfying 100% completion
