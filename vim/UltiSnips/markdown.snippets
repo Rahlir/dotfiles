@@ -1,6 +1,13 @@
 snippet Ublock "Code block" b
 \`\`\`$1
-${2:${VISUAL}}
+${2:${VISUAL:Code}}
 \`\`\`
+$0
+endsnippet
+
+snippet Unote "Note section"
+> [!NOTE]
+> ${1:${VISUAL:Note content}}
+
 $0
 endsnippet
