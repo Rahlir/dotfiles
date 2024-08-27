@@ -32,10 +32,12 @@ color.uda.priority.H=color14
 color.uda.priority.M=color12
 color.uda.priority.L=color247
 
+# Agile status
+color.uda.agilestatus.inbox=color0 on color5
+
 # Tags
 color.tag.next=color10
 color.tag.none=
-color.tag.inbox=color0 on color5
 color.tagged=
 
 # Due

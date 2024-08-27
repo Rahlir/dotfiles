@@ -38,7 +38,7 @@ def shift_due(task):
 if __name__ == "__main__":
     old = json.loads(stdin.buffer.readline().decode('utf-8', errors='replace'))
     new = json.loads(stdin.buffer.readline().decode('utf-8', errors='replace'))
-    if 'due' in new and 'due' not in old:
+    if 'due' in new:
         shift_due(new)
     print(json.dumps(new))
     exit(0)

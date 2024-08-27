@@ -54,10 +54,6 @@ get_urls()
 pick_to_open()
 {
     local _open_cmd="urlopen"
-    if [[ "$(uname -s)" == Darwin ]]; then
-        _open_cmd=open
-    fi
-
     if [[ ${#URLS[@]} -eq 0 ]]; then
         echo "No link to open..."
         exit 1

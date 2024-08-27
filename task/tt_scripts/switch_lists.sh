@@ -1,4 +1,4 @@
-#!/usr/bin/zsh
+#!/usr/bin/env zsh
 
 for id in $@; do
     wait_date=$(task _get $id.wait)

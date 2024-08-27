@@ -57,6 +57,7 @@ uda.agilestatus.default=inbox
 urgency.uda.agilestatus.backlog.coefficient=-1.0
 urgency.uda.agilestatus.inbox.coefficient=20.0
 # Bugwarrior UDAs
+# JIRA
 # Default ones
 uda.jiraissuetype.type=string
 uda.jiraissuetype.label=Issue Type
@@ -76,6 +77,7 @@ uda.jiracreatedts.type=date
 uda.jiracreatedts.label=Created At
 uda.jirastatus.type=string
 uda.jirastatus.label=Jira Status
+uda.jirastatus.values=New,To Do,In Progress,Waiting,Code review,Testing,Ready for release
 uda.jirasubtasks.type=string
 uda.jirasubtasks.label=Jira Subtasks
 uda.jiraparent.type=string
@@ -83,6 +85,76 @@ uda.jiraparent.label=Jira Parent
 # My custom ones
 uda.jiraepic.type=string
 uda.jiraepic.label=Jira Epic ID
+uda.jirapriority.type=string
+uda.jirapriority.label=Jira Priority
+# GITLAB
+# Default ones
+uda.gitlabtitle.type=string
+uda.gitlabtitle.label=Gitlab Title
+uda.gitlabdescription.type=string
+uda.gitlabdescription.label=Gitlab Description
+uda.gitlabcreatedon.type=date
+uda.gitlabcreatedon.label=Gitlab Created
+uda.gitlabupdatedat.type=date
+uda.gitlabupdatedat.label=Gitlab Updated
+uda.gitlabduedate.type=date
+uda.gitlabduedate.label=Gitlab Due Date
+uda.gitlabmilestone.type=string
+uda.gitlabmilestone.label=Gitlab Milestone
+uda.gitlaburl.type=string
+uda.gitlaburl.label=Gitlab URL
+uda.gitlabrepo.type=string
+uda.gitlabrepo.label=Gitlab Repo Slug
+uda.gitlabtype.type=string
+uda.gitlabtype.label=Gitlab Type
+uda.gitlabnumber.type=string
+uda.gitlabnumber.label=Gitlab Issue/MR #
+uda.gitlabstate.type=string
+uda.gitlabstate.label=Gitlab Issue/MR State
+uda.gitlabupvotes.type=numeric
+uda.gitlabupvotes.label=Gitlab Upvotes
+uda.gitlabdownvotes.type=numeric
+uda.gitlabdownvotes.label=Gitlab Downvotes
+uda.gitlabwip.type=numeric
+uda.gitlabwip.label=Gitlab MR Work-In-Progress Flag
+uda.gitlabauthor.type=string
+uda.gitlabauthor.label=Gitlab Author
+uda.gitlabassignee.type=string
+uda.gitlabassignee.label=Gitlab Assignee
+uda.gitlabnamespace.type=string
+uda.gitlabnamespace.label=Gitlab Namespace
+uda.gitlabweight.type=numeric
+uda.gitlabweight.label=Gitlab Weight
+# GITHUB
+# Default ones
+uda.githubtitle.type=string
+uda.githubtitle.label=Github Title
+uda.githubbody.type=string
+uda.githubbody.label=Github Body
+uda.githubcreatedon.type=date
+uda.githubcreatedon.label=Github Created
+uda.githubupdatedat.type=date
+uda.githubupdatedat.label=Github Updated
+uda.githubclosedon.type=date
+uda.githubclosedon.label=GitHub Closed
+uda.githubmilestone.type=string
+uda.githubmilestone.label=Github Milestone
+uda.githubrepo.type=string
+uda.githubrepo.label=Github Repo Slug
+uda.githuburl.type=string
+uda.githuburl.label=Github URL
+uda.githubtype.type=string
+uda.githubtype.label=Github Type
+uda.githubnumber.type=numeric
+uda.githubnumber.label=Github Issue/PR #
+uda.githubuser.type=string
+uda.githubuser.label=Github User
+uda.githubnamespace.type=string
+uda.githubnamespace.label=Github Namespace
+uda.githubstate.type=string
+uda.githubstate.label=GitHub State
+uda.githubdraft.type=numeric
+uda.githubdraft.label=GitHub Draft
 
 ### Reports ###
 
@@ -125,6 +197,13 @@ report.inbox.labels=ID,Act,Age,Deps,Est,Prio,Project,Tags,Recur,Due,Wait,Until,D
 report.inbox.filter=(status:pending or status:waiting) agilestatus:inbox
 report.inbox.sort=entry+,urgency-
 report.inbox.context=0
+
+report.jira.description=Report for jira issues
+report.jira.columns=id,jiraissuetype,agilestatus,jirastatus,entry.age,start.age,depends,project,priority,jirapriority,description.count,tags.count,took,estimate,scheduled.countdown,due.relative,urgency
+report.jira.labels=ID,Type,Status,Jira Status,Age,Active,Deps,Project,Prio,Jira P,Description,Tags,Spent,Estimate,Sch,Due,Urg
+report.jira.filter=status:pending -WAITING +jira
+report.jira.sort=agilestatus+,jirastatus-,urgency-
+report.jira.context=1
 
 # Backlog report showing both waiting and pending tasks in cnext-like report
 report.backlog.description=Compact overview of all open tasks
