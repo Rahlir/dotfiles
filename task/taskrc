@@ -248,13 +248,20 @@ report._zk.filter=status:pending ((due.before:today+2days and due.after:now) or 
 report._zk.sort=due+,urgency-
 report._zk.context=0
 
-# Default next-like report for taskwarrior-tui review
+# Default next-like reports for taskwarrior-tui review
 report._ttreview.description=Default next view used for taskwarrior-tui review
-report._ttreview.columns=id,start.age,entry.age,depends,estimate,priority,tags,project,recur,scheduled.countdown,due.relative,until.remaining,description,urgency
-report._ttreview.labels=ID,Active,Age,Deps,Est,!,Tags,Project,Recur,S,Due,Until,Description,Urg
-report._ttreview.filter=status:pending
+report._ttreview.columns=id,entry.age,start.age,depends,project,priority,recur,description.count,tags,took,estimate,scheduled.countdown,due.relative,until.remaining,urgency
+report._ttreview.labels=ID,Age,Active,Deps,Project,Prio,Recur,Description,Tags,Spent,Estimate,Sch,Due,Until,Urg
+report._ttreview.filter=status:pending agilestatus:active
 report._ttreview.sort=urgency-
 report._ttreview.context=1
+
+report._ttreview2.description=Default next view used for second taskwarrior-tui review screen
+report._ttreview2.columns=id,agilestatus,entry.age,start.age,depends,project,priority,recur,description.count,tags,took,estimate,scheduled.countdown,due.relative,until.remaining,urgency
+report._ttreview2.labels=ID,Status,Age,Active,Deps,Project,Prio,Recur,Description,Tags,Spent,Estimate,Sch,Due,Until,Urg
+report._ttreview2.filter=status:pending ( agilestatus:active or agilestatus:inbox )
+report._ttreview2.sort=urgency-
+report._ttreview2.context=1
 
 # ### Aliases ###
 alias.dailystatus=status:completed end.after:today timelog
