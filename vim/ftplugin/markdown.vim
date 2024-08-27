@@ -14,3 +14,5 @@ if !has('nvim')
         \ 'cpp',
         \ 'c']
 endif
+" Turn on spelling in markdown files
+setlocal spell
