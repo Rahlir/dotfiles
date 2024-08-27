@@ -101,10 +101,12 @@ def review_action(uuid: str, task_cmd: str = "task") -> bool | None:
 
     """
     while True:
-        header_str = styled_string("Action: ", fg=2, bg=237, modifiers=Modifier.BOLD)
+        theme_bg = environ.get("THEMEBG", "dark")
+        str_bg = 237 if theme_bg == "dark" else 231
+        header_str = styled_string("Action: ", fg=2, bg=str_bg, modifiers=Modifier.BOLD)
         actions_str = styled_string(
-            "r(eview) m(odify) s(kip) c(omplete) a(nnotate) e(dit) d(elete) p(rint) q(uit) -> ",
-            bg=237
+            "r(eview) m(odify) s(kip) c(omplete) a(nnotate) e(dit) d(elete) o(pen) p(rint) q(uit) -> ",
+            bg=str_bg
         )
         try:
             action = input(f"{header_str}{actions_str}")
@@ -143,6 +145,8 @@ def review_action(uuid: str, task_cmd: str = "task") -> bool | None:
             elif command in ["delete", "d"]:
                 run([task_cmd, uuid, "delete"])
                 return True
+            elif command in ["open", "o"]:
+                run(["taskurlopen", uuid])
             elif command in ["print", "p"]:
                 run([task_cmd, uuid])
             elif command in ["quit", "q"]:
@@ -286,7 +290,10 @@ def main(cutoff: int | None = None, config_file: Path | None = None):
             print(styled_string("_GET COMMAND ERROR: ", fg=1, modifiers=Modifier.BOLD), end="")
             print(e)
             return 1
-        print(styled_string(" " + task_name, bg=237, modifiers=Modifier.BOLD, eol=True))
+        theme_bg = environ.get("THEMEBG", "dark")
+        print(
+            styled_string(" " + task_name, bg=237 if theme_bg == "dark" else 231, modifiers=Modifier.BOLD, eol=True)
+        )
         run([task_cmd, uuid])
 
         item_reviewed = review_action(uuid, task_cmd)
