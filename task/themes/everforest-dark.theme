@@ -37,6 +37,7 @@ color.uda.agilestatus.inbox=color0 on color5
 
 # Tags
 color.tag.next=color10
+color.tag.nextweek=color6
 color.tag.none=
 color.tagged=
 

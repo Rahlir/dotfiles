@@ -1,10 +1,10 @@
 #!/usr/bin/env zsh
 
 for id in $@; do
-    wait_date=$(task _get $id.wait)
-    if [[ -n "$wait_date" ]]; then
-        task rc.verbose=nothing $id mod wait:
+    agilestatus=$(task _get $id.agilestatus)
+    if [[ $agilestatus == "active" ]]; then
+        task rc.verbose=nothing $id mod agilestatus:backlog
     else
-        task rc.verbose=nothing $id mod wait:later
+        task rc.verbose=nothing $id mod agilestatus:active -nextweek
     fi
 done

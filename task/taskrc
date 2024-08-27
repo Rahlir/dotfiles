@@ -30,6 +30,7 @@ urgency.blocked.coefficient=-0.0
 urgency.project.coefficient=0.8
 urgency.annotations.coefficient=0.5
 urgency.user.tag.stale.coefficient=-1.0
+urgency.user.tag.nextweek.coefficient=10
 
 indent.annotation=4
 ### Calendar setup ###
@@ -259,7 +260,7 @@ report._ttreview.context=1
 report._ttreview2.description=Default next view used for second taskwarrior-tui review screen
 report._ttreview2.columns=id,agilestatus,entry.age,start.age,depends,project,priority,recur,description.count,tags,took,estimate,scheduled.countdown,due.relative,until.remaining,urgency
 report._ttreview2.labels=ID,Status,Age,Active,Deps,Project,Prio,Recur,Description,Tags,Spent,Estimate,Sch,Due,Until,Urg
-report._ttreview2.filter=status:pending ( agilestatus:active or agilestatus:inbox )
+report._ttreview2.filter=status:pending ( agilestatus:backlog or agilestatus:inbox )
 report._ttreview2.sort=urgency-
 report._ttreview2.context=1
 
@@ -303,3 +304,5 @@ uda.taskwarrior-tui.shortcuts.1=taskurlopen -o
 uda.taskwarrior-tui.keyconfig.shortcut1=O
 uda.taskwarrior-tui.shortcuts.2=$XDG_CONFIG_HOME/task/tt_scripts/switch_lists.sh
 uda.taskwarrior-tui.keyconfig.shortcut2=>
+uda.taskwarrior-tui.tick-rate=2000
+uda.taskwarrior-tui.task-detail-prefetch=false
