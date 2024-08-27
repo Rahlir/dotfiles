@@ -11,3 +11,19 @@ snippet Unote "Note section"
 
 $0
 endsnippet
+
+snippet Udtomorrow "Tomorrow daily note"
+`date '+[[daily/%Y-%m-%d]]' -d tomorrow`
+endsnippet
+
+snippet Udyesterday "Yesterday daily note"
+`date '+[[daily/%Y-%m-%d]]' -d yesterday`
+endsnippet
+
+snippet Udtwodays "Day after tomorrow daily note"
+`date '+[[daily/%Y-%m-%d]]' -d "2 days"`
+endsnippet
+
+snippet Udsonw "Start of next week daily note"
+`date '+[[daily/%Y-%m-%d]]' -d "next Monday"`
+endsnippet
