@@ -924,7 +924,8 @@ main()
                     if [[ ${nnn_fn:t} == nscript ]]; then
                         safe_symlink $nnn_fn $HOME/.local/bin/nscript
                     elif [[ ${nnn_fn:t} == nnn.desktop ]]; then
-                        safe_symlink $nnn_fn $XDG_DATA_HOME/applications/nnn.desktop
+                        [[ "$(uname -s)" != Darwin ]] && \
+                            safe_symlink $nnn_fn $XDG_DATA_HOME/applications/nnn.desktop
                     else
                         (( VERBOSE )) && print -n "\n    " || print
                         print -Pn "%F{yellow}%BWarning:%f%b Unknown nnn config file $nnn_fn."
