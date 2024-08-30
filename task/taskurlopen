@@ -22,6 +22,16 @@ process_args()
     done
 }
 
+parse_urlfields()
+{
+    local task="$1"
+    local _urlfields=(jiraurl githuburl gitlaburl)
+    for urlfield in ${_urlfields[@]}; do
+        local _url="$(task _get "$task"."$urlfield")"
+        [[ -n "$_url" ]] && URLS+=( "$_url" )
+    done
+}
+
 parse_annotation()
 {
     local _grep_cmd
@@ -42,6 +52,7 @@ parse_annotation()
 
 get_urls()
 {
+    parse_urlfields "$1"
     local index=1;
     local annotation=$(task _get "$1".annotations."$index".description)
     while [[ -n "$annotation" ]]; do
