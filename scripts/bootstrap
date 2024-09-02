@@ -678,10 +678,15 @@ bootstrap_file()
 bootstrap_generic()
 {
     local -i bootstrap_whole_dir=0
+    local -a exclude=()
     while [[ $1 = -* ]]; do
         case $1 in
             -d)
                 bootstrap_whole_dir=1
+                ;;
+            -x)
+                exclude+=$2
+                shift
                 ;;
             -*)
                 throw_script_err "Function ${funcstack[1]} doesn't accept option $1."
@@ -905,6 +910,10 @@ main()
                 for task_fn in $DOTFILES_PATH/task/*; do
                     if [[ ! -d $task_fn && -x $task_fn ]]; then
                         safe_symlink $task_fn $HOME/.local/bin/${task_fn:t}
+                    elif [[ $task_fn == */hooks ]]; then
+                        for hook_fn in $task_fn/*; do
+                            safe_symlink $hook_fn $XDG_CONFIG_HOME/task/hooks/${hook_fn:t}
+                        done
                     else
                         bootstrap_generic $task_fn $XDG_CONFIG_HOME
                     fi

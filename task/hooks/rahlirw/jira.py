@@ -3,7 +3,6 @@ from json import loads
 from os import environ
 from pathlib import Path
 import ssl
-import subprocess
 from tomllib import load
 import unicodedata
 
@@ -15,6 +14,8 @@ from rahlirw.dateutils import (
     taskdate_to_datetime,
     timedelta_to_isostring,
 )
+from rahlirw.utils import get_task_data, run_task_cmd
+
 
 CONFIG = None
 
@@ -66,20 +67,6 @@ def api_get(path: str, query: str | None = None) -> dict:
     response = http.request("GET", url, headers=headers)
 
     return loads(response.data)
-
-
-def run_task_cmd(args: list[str]) -> str:
-    task_cmd = subprocess.run(
-        ["task", *args],
-        capture_output=True
-    )
-
-    return task_cmd.stdout.decode('utf-8').strip()
-
-
-def get_task_data(task_identifier: str) -> list[dict]:
-    raw_result = run_task_cmd([task_identifier, "export"])
-    return loads(raw_result)
 
 
 def tasks_by_jids(jids: str | list[str], get_uuids=False) -> list[str]:
@@ -230,18 +217,16 @@ def resolve_parent(task: dict):
         if parent_ids := tasks_by_jids(parent):
             parent_id = parent_ids[0]
 
-            parent_data = get_task_data(parent_id)[0]
-            parent_proj = parent_data.get("project")
-            if task.get("project") != parent_proj:
-                print(f"Inheritting parent project {parent_proj}")
-                task["project"] = parent_proj
-            
-            parent_depends = parent_data.get("depends")
-            if not parent_depends:
-                parent_depends = []
-            if task["uuid"] not in parent_depends:
-                print(f"Adding dependency of {task['uuid'].split('-')[0]} to task {parent_id}.")
-                run_task_cmd([parent_id, "modify", f"depends:{task['uuid']}"])
+            if parent_data := get_task_data(parent_id):
+                parent_proj = parent_data.get("project")
+                if task.get("project") != parent_proj:
+                    print(f"Inheritting parent project {parent_proj}")
+                    task["project"] = parent_proj
+                
+                parent_depends = parent_data.get("depends", [])
+                if task["uuid"] not in parent_depends:
+                    print(f"Adding dependency of {task['uuid'].split('-')[0]} to task {parent_id}.")
+                    run_task_cmd([parent_id, "modify", f"depends:{task['uuid']}"])
 
 
 def set_estimate(task: dict):

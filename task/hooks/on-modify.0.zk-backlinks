@@ -1,0 +1,113 @@
+#!/usr/bin/env python3
+
+import json
+from os import getenv
+from pathlib import Path
+from re import compile
+import subprocess
+from sys import exit, stdin
+from textwrap import wrap
+
+from rahlirw import dateutils, utils, zk
+
+
+def check_task_links(task: dict, annotation: dict):
+    annotation_text = annotation["description"]
+    tasklink_pat = compile(r"\b(id:\d+)\b")
+    referenced = set()
+    while tasklink := tasklink_pat.search(annotation_text):
+        taskid = tasklink.group().split(":")[1]
+        if taskout := utils.get_task_data(taskid):
+            task_uid = taskout["uuid"].split("-")[0]
+            original = annotation_text
+            annotation_text = original[:tasklink.start()]
+            annotation_text += f"task://{task_uid:s} ({taskout["description"]})"
+            annotation_text += original[tasklink.end():]
+            referenced.add((task_uid, taskout["description"]))
+    for ref_uid, ref_desc in referenced:
+        s_uid = task["uuid"].split("-")[0]
+        print(f"Backlinking task {ref_uid} '({ref_desc})'.")
+        utils.run_task_cmd(
+            [f"{ref_uid}", "annotate",
+             f"Referenced by task://{s_uid} ({task["description"]})."]
+        )
+    annotation["description"] = annotation_text
+
+
+def log_action(task, action, annotation=None):
+    if action == "done":
+        ts = dateutils.taskdate_to_datetime(task["end"])
+    elif action == "start":
+        ts = dateutils.taskdate_to_datetime(task["start"])
+    elif action == "annotate":
+        if not annotation:
+            raise ValueError(f"When action = annotate, you must supply annotation arg.")
+        ts = dateutils.taskdate_to_datetime(annotation["entry"])
+    else:
+        raise ValueError(f"Action must be one of done, start, annotate, not '{action}'.")
+
+    uuid = task['uuid'].split('-')[0]
+    desc = task['description']
+    first_line = ""
+    detail_lines = []
+
+    if action == 'done':
+        action_name = "Completed"
+        first_line = " **" + desc + "**"
+    elif action == 'annotate':
+        action_name = "Annotated"
+        # We've already checked that in the beginning, this is for pyright to be happy.
+        assert annotation  
+        if zk.is_annotation_backlink(annotation):
+            # Don't write about backlinks to daily note
+            return
+        detail_lines = wrap(annotation['description'], width=79,
+                            initial_indent="    > ", subsequent_indent="    > ")
+    else:
+        action_name = "Started"
+        first_line = " **" + desc + "**"
+
+    prefix = f"{action_name:s} task {uuid:s}"
+    if "project" in task:
+        project_link = zk.generate_project_string(task["project"])
+        prefix += project_link
+
+    first_line = f"{ts.strftime('%I:%M %p')} - " + prefix + ":" + first_line
+    first_line_wrapped = wrap(first_line, width=79, initial_indent="* ", subsequent_indent="  ")
+
+    daily_note = Path(getenv("ZK_NOTEBOOK_DIR", ".")) / f"daily/{ts.strftime('%Y-%m-%d')}.md"
+    if daily_note.is_file():
+        with open(daily_note, "a") as df:
+            for line in first_line_wrapped:
+                df.write(line + "\n")
+            for line in detail_lines:
+                df.write(line + "\n")
+    else:
+        print("New daily note created.")
+        proc = subprocess.Popen(
+            ['zk', 'new', '--interactive', '--no-input',
+             '--date', ts.isoformat(), 'daily', '--print-path'],
+            text=True, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL
+        )
+        input_wrapped = first_line_wrapped
+        input_wrapped.extend(detail_lines)
+        proc.communicate(input="\n".join(input_wrapped))
+
+    print(f"Event written to daily note: '{prefix:s}'")
+
+if __name__ == "__main__":
+    old = json.loads(stdin.buffer.readline().decode('utf-8', errors='replace'))
+    new = json.loads(stdin.buffer.readline().decode('utf-8', errors='replace'))
+    # When doing en-passant annotations, I want the following order in zk daily note log:
+    # 1. annotation 2. task started / completed
+    for annot in utils.get_new_annotations(new, old):
+        check_task_links(new, annot)
+        log_action(new, "annotate", annot)
+    if "start" in new and "start" not in old:
+        # add start zk log
+        log_action(new, "start")
+    if "end" in new and "end" not in old and new["status"] == "completed":
+        # add completed zk log
+        log_action(new, "done")
+    print(json.dumps(new))
+    exit(0)
