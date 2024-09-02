@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+
+import json
+from sys import exit, stdin
+
+from rahlirw.dateutils import shift_due
+
+
+if __name__ == "__main__":
+    old = json.loads(stdin.buffer.readline().decode("utf-8", errors="replace"))
+    new = json.loads(stdin.buffer.readline().decode("utf-8", errors="replace"))
+    if "due" in new:
+        shift_due(new)
+    print(json.dumps(new))
+    exit(0)

@@ -2,42 +2,13 @@
 
 import json
 from sys import exit, stdin
-from datetime import datetime, time, timezone
 
-
-DEFAULT_TIME = time(23, 59, 59)
-
-
-def set_default_time(timestamp, tz_info):
-    parsed_old = datetime.fromisoformat(timestamp)
-    parsed_new = parsed_old.astimezone(tz_info).replace(
-        hour=DEFAULT_TIME.hour,
-        minute=DEFAULT_TIME.minute,
-        second=DEFAULT_TIME.second
-    )
-    return parsed_new.astimezone(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
-
-
-def is_midnight(timestamp, tz_info):
-    parsed = datetime.fromisoformat(timestamp)
-    return parsed.astimezone(tz_info).time() == time(0, 0, 0)
-
-
-def shift_due(task):
-    local_zone = datetime.now().astimezone().tzinfo
-    if is_midnight(task['due'], local_zone):
-        old_due = datetime.fromisoformat(task['due']).astimezone(local_zone)
-        task['due'] = set_default_time(task['due'], local_zone)
-        new_due = datetime.fromisoformat(task['due']).astimezone(local_zone)
-        print(
-            "Due time shifted from "
-            f"{old_due.strftime('%H:%M:%S')} to {new_due.strftime('%H:%M:%S')}"
-        )
+from rahlirw.dateutils import shift_due
 
 
 if __name__ == "__main__":
-    new_task = json.loads(stdin.buffer.readline().decode('utf-8', errors='replace'))
-    if 'due' in new_task:
+    new_task = json.loads(stdin.buffer.readline().decode("utf-8", errors="replace"))
+    if "due" in new_task:
         shift_due(new_task)
     print(json.dumps(new_task))
     exit(0)
