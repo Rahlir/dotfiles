@@ -6,3 +6,6 @@
 " to make it more readable
 setlocal softtabstop=2
 setlocal shiftwidth=2
+
+set foldmethod=syntax
+set foldlevel=99

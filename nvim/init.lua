@@ -17,7 +17,7 @@ vim.g.python3_host_prog = '$WORKON_HOME/neovim/bin/python'
 -- Autocommands: {{{
 local nvimrc_augroup = vim.api.nvim_create_augroup("nvimrc", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "cpp", "java", "typescriptreact", "javascriptreact" },
+  pattern = { "cpp", "java", "typescriptreact", "javascriptreact", "python" },
   callback = function()
     vim.wo.foldmethod = "expr"
     vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
