@@ -21,7 +21,7 @@ def check_task_links(task: dict, annotation: dict):
             task_uid = taskout["uuid"].split("-")[0]
             original = annotation_text
             annotation_text = original[:tasklink.start()]
-            annotation_text += f"task://{task_uid:s} ({taskout["description"]})"
+            annotation_text += f"task://{task_uid:s} ({taskout['description']})"
             annotation_text += original[tasklink.end():]
             referenced.add((task_uid, taskout["description"]))
     for ref_uid, ref_desc in referenced:
@@ -29,7 +29,7 @@ def check_task_links(task: dict, annotation: dict):
         print(f"Backlinking task {ref_uid} '({ref_desc})'.")
         utils.run_task_cmd(
             [f"{ref_uid}", "annotate",
-             f"Referenced by task://{s_uid} ({task["description"]})."]
+             f"Referenced by task://{s_uid} ({task['description']})."]
         )
     annotation["description"] = annotation_text
 
