@@ -203,7 +203,7 @@ report.jira.description=Report for jira issues
 report.jira.columns=id,jiraissuetype,agilestatus,jirastatus,entry.age,start.age,depends,project,priority,jirapriority,description.count,tags.count,took,estimate,scheduled.countdown,due.relative,urgency
 report.jira.labels=ID,Type,Status,Jira Status,Age,Active,Deps,Project,Prio,Jira P,Description,Tags,Spent,Estimate,Sch,Due,Urg
 report.jira.filter=status:pending -WAITING +jira
-report.jira.sort=agilestatus+,jirastatus-,urgency-
+report.jira.sort=agilestatus+,jirastatus+,urgency-
 report.jira.context=1
 
 # Backlog report showing both waiting and pending tasks in cnext-like report
