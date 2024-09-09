@@ -154,7 +154,7 @@ def review_action(uuid: str, task_cmd: str = "task") -> bool | None:
                 return None
             elif command in ["annotate", "a"]:
                 try:
-                    out_msg = run_and_check([task_cmd, uuid, "annotate", *cmd_args])
+                    out_msg = run_and_check([task_cmd, uuid, "annotate", " ".join(cmd_args)])
                 except RuntimeError as err:
                     print(styled_string("ANNOTATE ERROR: ", fg=1, modifiers=Modifier.BOLD), end="")
                     print(err)
