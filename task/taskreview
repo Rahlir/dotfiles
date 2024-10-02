@@ -110,7 +110,7 @@ def review_action(uuid: str, task_cmd: str = "task") -> bool | None:
         )
         try:
             action = input(f"{header_str}{actions_str}")
-        except EOFError:
+        except (EOFError, KeyboardInterrupt):
             print("\nQuitting...")
             return None
 
