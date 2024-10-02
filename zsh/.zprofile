@@ -34,6 +34,11 @@ export ELINKS_CONFDIR=$XDG_CONFIG_HOME/elinks
 export IPYTHONDIR=$XDG_CONFIG_HOME/ipython
 # directory for virtualenvs of virtualenvwrapper 
 export WORKON_HOME=$XDG_DATA_HOME/virtualenvs
+# Without this, virtualenvwrapper and pyenv together on arch
+# throw error
+if [[ "$(uname -s)" == Linux ]]; then
+    export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
+fi
 # GO language data directory
 export GOPATH=$XDG_DATA_HOME/go
 # NBRC for nb.sh utility
