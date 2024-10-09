@@ -76,7 +76,7 @@
     # Use (i)ndex, (c)ommit, (w)orking, and (o)bject in diff
     mnemonicPrefix = true
     # Vimdiff tool to use when running git difftool
-    tool = vimdiff
+    tool = nvimdiff
     # Detect moved lines and display them with different colors
     colorMoved = zebra
     # When showing submodule diff, show also commit log, not just SHA
