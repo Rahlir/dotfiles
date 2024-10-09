@@ -33,7 +33,10 @@ if [ "$(uname -s)" = Darwin ]; then
 
     if [ -n "$HOMEBREW_PREFIX" ]; then
         export PKG_PREFIX=$HOMEBREW_PREFIX
-        prepend_path "$PKG_PREFIX"/opt/coreutils/libexec/gnubin
+        [ -d "$PKG_PREFIX"/opt/coreutils/libexec/gnubin ] && \
+            prepend_path "$PKG_PREFIX"/opt/coreutils/libexec/gnubin
+        [ -d "$PKG_PREFIX"/opt/gnu-sed/libexec/gnubin ] && \
+            prepend_path "$PKG_PREFIX"/opt/gnu-sed/libexec/gnubin
     fi
 elif [ "$(uname -s)" = Linux ]; then
     export PKG_PREFIX=/usr
