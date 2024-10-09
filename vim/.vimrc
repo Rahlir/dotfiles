@@ -710,6 +710,8 @@ let g:startify_files_number = 5
 " Ledger Options: {{{
 
 let g:ledger_bin = 'ledger'
+let g:ledger_date_format = '%Y-%m-%d'
+let g:ledger_extra_options = '--pedantic'
 
 " }}}
 " Tagbar Options: {{{
@@ -726,6 +728,13 @@ let g:tagbar_sort = 0
 
 " Default is <space> which conflicts with my <leader>
 let g:tagbar_map_showproto = 'K'
+
+" }}}
+" Tablemode Options: {{{
+
+" Default is <leader>t which conflicts with my tagbbar mappings
+let g:table_mode_map_prefix = '<leader>,'
+let g:table_mode_tableize_d_map = '<Leader><'
 
 " }}}
 
