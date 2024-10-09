@@ -25,4 +25,6 @@ augroup filetypedetect
   au! BufNewFile,BufRead */tridactyl/tridactylrc setf vim
 
   au! BufNewFile,BufRead */task/*/*.theme setf taskrc
+
+  au! BufNewFile,BufRead $XDG_CONFIG_HOME/kube/config setf yaml
 augroup END
