@@ -20,6 +20,25 @@ typeset -U fpath; export FPATH
 ##################################################
 ###            Other ENV Variables             ###
 ##################################################
+
+# If an application is installed, check that the
+# parent directory for its state file exists. If
+# not, create it
+#
+# * $1: Binary name of the application
+# * $2: Variable specifying location of a state file
+function _check_parent() {
+    if (( # != 2 )); then
+        print -P "%B%F{RED}ERROR:%b Need to specify two args for _check_parent%f"
+        return 1
+    fi
+    local app=$1
+    local statefile=$2
+    if (( $+commands[$app] )); then
+        [[ -d ${statefile:h} ]] || mkdir -p ${statefile:h}
+    fi
+}
+
 # Docker config home
 export DOCKER_CONFIG="$XDG_CONFIG_HOME"/docker
 # Postgresrc file
@@ -57,7 +76,8 @@ export CARGO_HOME="$XDG_DATA_HOME"/cargo
 # Texlive cache
 export TEXMFVAR="$XDG_CACHE_HOME"/texlive/texmf-var
 # SQLite history
-export SQLITE_HISTORY="$XDG_CACHE_HOME"/sqlite_history
+export SQLITE_HISTORY=$XDG_STATE_HOME/sqlite/history
+_check_parent sqlite3 $SQLITE_HISTORY
 # Ruby bundler
 export BUNDLE_USER_CONFIG="$XDG_CONFIG_HOME"/bundle
 export BUNDLE_USER_CACHE="$XDG_CACHE_HOME"/bundle
@@ -68,7 +88,7 @@ export BUNDLE_USER_PLUGIN="$XDG_DATA_HOME"/bundle
 export TLDR_CACHE_DIR=$XDG_CACHE_HOME
 # pyenv variables
 export PYENV_ROOT=$XDG_DATA_HOME/pyenv
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+[[ -d $PYENV_ROOT/bin ]] && export PATH=$PYENV_ROOT/bin:$PATH
 # Kube config for kubectl
 export KUBECONFIG=$XDG_CONFIG_HOME/kube/config
 export KUBECACHEDIR=$XDG_CACHE_HOME/kube
@@ -76,3 +96,9 @@ if [[ "$(uname -s)" == Darwin ]]; then
     # Use keychain with pip
     export PIP_USE_FEATURE=truststore
 fi
+# Alternative location for USQL history
+export USQL_HISTORY=$XDG_STATE_HOME/usql/history
+_check_parent usql $USQL_HISTORY
+
+# Unload local function
+unset _check_parent
