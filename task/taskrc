@@ -38,7 +38,7 @@ indent.annotation=4
 # due tasks that fall within the calendar time window
 calendar.details=full
 calendar.holidays=full
-calendar.details.report=cnext
+calendar.details.report=calreport
 
 ### UDAs ###
 # Low priority means task is less important than no priority
@@ -183,13 +183,21 @@ report.list.sort=urgency-,due+,entry+
 
 ## Custom reports ##
 
+# Report for the calendar
+report.calreport.description=Report for the calendar view
+report.calreport.columns=id,start.age,depends,project,priority,recur,description.count,took,scheduled,due,until,urgency
+report.calreport.labels=ID,Active,Deps,Project,Prio,Recur,Description,Spent,Sch,Due,Until,Urg
+report.calreport.filter=status:pending -WAITING
+report.calreport.sort=due+,scheduled+
+report.calreport.context=1
+
 # Today report showing scheduled tasks and tasks with due dates soon
 report.today.description=Tasks to work on today
 report.today.columns=id,start.age,depends,project,priority,description,took,estimate,scheduled.age,due.relative,urgency
 report.today.labels=ID,Active,Deps,Project,Prio,Description,Spent,Est,Sched,Due,Urg
 report.today.filter=status:pending (scheduled.before:now or (+next and agilestatus:active) or due.before:today+2days)
 report.today.sort=due+,urgency-
-report.today.context=0
+report.today.context=1
 
 # Inbox report showing tasks to be processed
 report.inbox.description=Detailed view of tasks in the inbox
@@ -251,9 +259,9 @@ report._zk.context=0
 
 # Default next-like reports for taskwarrior-tui review
 report._ttreview.description=Default next view used for taskwarrior-tui review
-report._ttreview.columns=id,entry.age,start.age,depends,project,priority,recur,description.count,tags,took,estimate,scheduled.countdown,due.relative,until.remaining,urgency
-report._ttreview.labels=ID,Age,Active,Deps,Project,Prio,Recur,Description,Tags,Spent,Estimate,Sch,Due,Until,Urg
-report._ttreview.filter=status:pending agilestatus:active
+report._ttreview.columns=id,entry.age,start.age,wait.remaining,depends,project,priority,recur,description.count,tags,took,estimate,scheduled.countdown,due.relative,until.remaining,urgency
+report._ttreview.labels=ID,Age,Active,Wait,Deps,Project,Prio,Recur,Description,Tags,Spent,Estimate,Sch,Due,Until,Urg
+report._ttreview.filter=(status:pending or ( status:waiting and wait.before:eow )) agilestatus:active
 report._ttreview.sort=urgency-
 report._ttreview.context=1
 
@@ -287,9 +295,17 @@ summary.all.projects=1
 # context.<name>.rc.<key>=<value>. Might be interesting to think about this
 context.AtWork.read=(+work or +office) and -docbrown
 context.AtWork.write=+work
+
 context.Workflow.read=+dotfiles or +meta or +notes
+
 context.School.read=+school
 context.School.write=+school
+
+context.TTC.read=+ttc
+context.TTC.write=+ttc +work
+
+context.TMobile.read=+tmobile
+context.TMobile.write=+tmobile +work
 
 # Leave room for sync message
 reserved.lines=2
