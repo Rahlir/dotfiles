@@ -45,8 +45,8 @@ if [[ -r $XDG_CONFIG_HOME/zsh/aliases.zsh ]]; then
 fi
 
 # Load custom zsh functions
-if [[ -r $XDG_DATA_HOME/zsh/functions.zsh ]]; then
-    source $XDG_DATA_HOME/zsh/functions.zsh
+if [[ -r $XDG_CONFIG_HOME/zsh/functions.zsh ]]; then
+    source $XDG_CONFIG_HOME/zsh/functions.zsh
 fi
 
 # Load useful autoloadable zsh functions
@@ -194,7 +194,7 @@ ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;&'
 
 # Adding custom completion functions if they exist
 [[ -d $XDG_DATA_HOME/zsh/site-functions ]] && \
-    fpath+=$XDG_DATA_HOME/zsh/site-functions
+    fpath=($XDG_DATA_HOME/zsh/site-functions $fpath)
 
 zstyle ':completion:*' completer _complete _match _approximate
 zstyle ':completion:*' use-cache on

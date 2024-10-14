@@ -99,6 +99,7 @@ fi
 # Alternative location for USQL history
 export USQL_HISTORY=$XDG_STATE_HOME/usql/history
 _check_parent usql $USQL_HISTORY
+export REDISCLI_HISTFILE=$XDG_DATA_HOME/redis/rediscli_history
 
 # Unload local function
 unset _check_parent
