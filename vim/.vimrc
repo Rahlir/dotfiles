@@ -637,6 +637,12 @@ function! LightlineCurrentScope()
     let icon = get(g:tagbar_scopestrs, tagtype, "\uf420")
   endif
   let tag = tagbar#currenttag('%s', '', 'f', 'scoped-stl')
+
+  " Customizations for different filetypes
+  if &filetype ==# "markdown"
+    let tag = substitute(tag, '""', ' # ', 'g')
+  endif
+
   if icon == '' && tag == ''
     return ''
   else
@@ -756,7 +762,13 @@ let g:tagbar_scopestrs = {
       \ 'func': "\Uf0295",
       \ 'function': "\Uf0295",
       \ 'member': "\Uf0ae7",
-      \ 'variable': "\Uf05c0"
+      \ 'variable': "\Uf05c0",
+      \ 'chapter': "\uf48a",
+      \ 'section': "\Uf026c",
+      \ 'subsection': "\Uf026d",
+      \ 'subsubsection': "\Uf026e",
+      \ 'l3subsection': "\Uf026f",
+      \ 'l4subsection': "\Uf0270"
       \ }
 
 " Keep sort as defined in the source file
