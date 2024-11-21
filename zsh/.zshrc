@@ -119,6 +119,33 @@ if (( $+commands[pacman] )) && [[ -f /etc/pacman.d/hooks/zsh.hook ]]; then
     add-zsh-hook -Uz precmd _rehash_precmd
 fi
 
+_check_for_active_venv() {
+    if [[ ${VIRTUAL_ENV:-novenv} == ${CHPWD_HOOK_VENV:-nohookvenv} ]]; then
+        if [[ $PWD != $CHPWD_HOOK_VENV:h && $PWD != ${CHPWD_HOOK_VENV:h}/* ]]; then
+            print -P "%F{blue}Deactivating virtual environment.%f"
+            deactivate && unset CHPWD_HOOK_VENV
+        fi
+    fi
+}
+
+_check_for_venv() {
+    local tocheck=$PWD
+
+    while [[ $tocheck != $HOME && -z $VIRTUAL_ENV ]]; do
+        if [[ -r $tocheck/.venv/bin/activate ]]; then
+            print -P "%F{blue}Activating virtual environment.%f"
+            source $tocheck/.venv/bin/activate && typeset -g CHPWD_HOOK_VENV=$tocheck/.venv
+        fi
+        tocheck=${tocheck:h}
+    done
+}
+
+# Check for venv once on starting the shell
+_check_for_venv > /dev/null
+
+add-zsh-hook -Uz chpwd _check_for_active_venv
+add-zsh-hook -Uz chpwd _check_for_venv
+
 ################################################################################
 #####                          ZLE Configuration                           #####
 ################################################################################
