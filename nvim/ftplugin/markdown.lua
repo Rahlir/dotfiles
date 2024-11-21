@@ -1,5 +1,8 @@
 -- Markdown filetype plugin for neovim
 --
+-- This plugin contains mostly setup for zk notes since that relies on ZK LSP.
+-- Hence it needs to be in the neovim specific ftplugin.
+--
 -- by Tadeas Uhlir <tadeas.uhlir@gmail.com>
 
 -- ZK keymaps:
@@ -25,6 +28,7 @@ if require("zk.util").notebook_root(vim.fn.expand('%:p')) ~= nil then
     end
     vim.cmd.normal('o')
   end, bufopts)
-  vim.keymap.set("n", "<leader>zb", "<Cmd>ZkBacklinks<CR>", bufopts)
-  vim.keymap.set("v", "<leader>zN", ":'<,'>ZkNewFromTitleSelection<CR>", bufopts)
+  vim.keymap.set("n", "<leader>zL", "<Cmd>ZkLinks<CR>", { desc = "Links outgoing from this note", unpack(bufopts) })
+  vim.keymap.set("n", "<leader>zb", "<Cmd>ZkBacklinks<CR>", { desc = "Backlinks to this note", unpack(bufopts) })
+  vim.keymap.set("v", "<leader>zN", ":'<,'>ZkNewFromTitleSelection<CR>", { desc = "New note with title of selection", unpack(bufopts) })
 end

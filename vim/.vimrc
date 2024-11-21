@@ -15,7 +15,6 @@ Plug 'sainnhe/everforest'
 Plug 'tpope/vim-sensible'
 Plug 'itchyny/lightline.vim'
 Plug 'raimondi/delimitmate'
-Plug 'yggdroot/indentline'
 Plug 'tpope/vim-surround'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'mhinz/vim-startify'
@@ -27,6 +26,8 @@ Plug 'ledger/vim-ledger', {'for': 'ledger'}
 Plug 'mbbill/undotree'
 Plug 'dhruvasagar/vim-table-mode', {'for': ['markdown', 'text', 'rst']}
 Plug 'preservim/tagbar'
+Plug 'kshenoy/vim-signature'
+Plug 'psliwka/vim-smoothie'
 
 " Mac specific plugins. This check should work for any recent
 " vim on macOS
@@ -36,9 +37,18 @@ endif
 
 " Neovim specific plugins
 if has('nvim')
+  Plug 'lukas-reineke/indent-blankline.nvim'
   Plug 'neovim/nvim-lspconfig'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+
+  " This is not a neovim specific plugin, but I am using it as a
+  " replacement of pyright's (LSP) organize import command. Hence I
+  " moved it to neovim specific section.
+  Plug 'brentyi/isort.vim', {'for': 'python'}
+
+  Plug 'folke/which-key.nvim'
+  Plug 'mickael-menu/zk-nvim'
 
   Plug 'hrsh7th/cmp-nvim-lsp'
   Plug 'quangnguyen30192/cmp-nvim-ultisnips'
@@ -48,7 +58,6 @@ if has('nvim')
   Plug 'nvim-lua/plenary.nvim'
   Plug 'nvim-telescope/telescope.nvim'
 
-  Plug 'mickael-menu/zk-nvim'
   " Unfortunately needs both devicons right now: vim-devicons is used by
   " lightline (and porting is not possible for fileformat) and startify,
   " while nvim-web-devicons is used by Telescope
@@ -146,7 +155,7 @@ endfunction
 " Setting Options: {{{
 
 set number relativenumber  " show relative numbers and line number on current line
-set signcolumn=number  " signcolumn for gitgutter signs and diagnostics in number column
+set signcolumn=yes  " signcolumn for gitgutter signs and diagnostics in number column
 set linebreak  " visually break long lines at 'breakat'
 set breakindent showbreak=+  " match indentation of the line and show '+' character on breakline
 set laststatus=2  " always show status line
@@ -163,7 +172,7 @@ set hidden  " keep buffer when switching to another file/buffer
 set foldmethod=marker  " markers (three braces) create folds"
 set modeline  " enable setting options with modeline
 set cursorline  " highlight the current line of cursor
-set updatetime=750  " after what delay should swap be written to
+set updatetime=750  " after what delay should swap be written to and how long until gitgutter is updated
 set exrc secure  " enable secure execution of .nvimrc and .vimrc in current directory
 set completeopt+=longest
 set wildmode=longest,full
@@ -175,6 +184,9 @@ set guioptions-=rL  " no scrollbars
 set guifont=SFMonoNF-Regular:h13  " SFMono on macOS patched with nerdfonts
 set undofile  " store undo data persistently
 set clipboard^=unnamed,unnamedplus  " yanking and pasting using system clipboard
+" how long to wait for next key in mappings. Default of 1000 is too long.
+" Note that it affects which-key when which-key maps overlap with other plugins (such as y and ys)
+set timeoutlen=500
 
 " }}}
 " Custom Mappings: {{{
@@ -349,8 +361,7 @@ nnoremap <silent> - :call <SID>BlockComment('remove')<CR>
 vnoremap <silent> + :call <SID>BlockComment('add')<CR>
 vnoremap <silent> - :call <SID>BlockComment('remove')<CR>
 
-" Toggling Options:
-nnoremap <silent> <leader>sh :call <SID>ToggleOption('hlsearch')<CR>
+"s Toggling Options:
 nnoremap <silent> <leader>ss :call <SID>ToggleOption('spell')<CR>
 nnoremap <silent> <leader>si :call <SID>ToggleOption('ignorecase')<CR>
 nnoremap <silent> <leader>sc :call <SID>ToggleColorColumn()<CR>
@@ -392,7 +403,7 @@ nnoremap <silent> <leader>qo :copen<CR>
 nnoremap <silent> <leader>qc :cclose<CR>
 nnoremap <silent> <leader>qw :cwindow<CR>
 nnoremap <silent> <leader>qf :cfirst<CR>
-nnoremap <silent> <leader>qF :clast<CR>
+nnoremap <silent> <leader>ql :clast<CR>
 nnoremap <silent> <leader>qL :packadd cfilter<CR>
 
 " Location List:
@@ -473,9 +484,16 @@ let g:vimtex_format_enabled = 1
 
 " }}}
 " GitGutter Options: {{{
-let g:gitgutter_sign_added = "\Uf0419"
-let g:gitgutter_sign_modified = "\Uf0377"
-let g:gitgutter_sign_removed = "\Uf015a"
+
+let g:gitgutter_sign_added = "┃"
+let g:gitgutter_sign_modified = "┃"
+let g:gitgutter_sign_modified_removed   = '~'
+
+" The following signs are used for lightline gitgutter status
+let g:gitgutter_lightline_sign_added = "\Uf0419"
+let g:gitgutter_lightline_sign_modified = "\Uf0377"
+let g:gitgutter_lightline_sign_removed = "\Uf015a"
+
 " }}}
 " Lightline Options: {{{
 
@@ -523,17 +541,17 @@ function! LightLineGitGutter()
     if added == 0
       let added_s = ''
     else
-      let added_s = printf('%s %d', g:gitgutter_sign_added, added)
+      let added_s = printf('%s %d', g:gitgutter_lightline_sign_added, added)
     endif
     if modified == 0
       let modified_s = ''
     else
-      let modified_s = printf('%s %d', g:gitgutter_sign_modified, modified)
+      let modified_s = printf('%s %d', g:gitgutter_lightline_sign_modified, modified)
     endif
     if removed == 0
       let removed_s = ''
     else
-      let removed_s = printf('%s %d', g:gitgutter_sign_removed, removed)
+      let removed_s = printf('%s %d', g:gitgutter_lightline_sign_removed, removed)
     endif
   endif
   return [added_s, modified_s, removed_s]
@@ -737,7 +755,33 @@ let g:table_mode_map_prefix = '<leader>,'
 let g:table_mode_tableize_d_map = '<Leader><'
 
 " }}}
+" Isort Options: {{{
 
+let g:isort_vim_options = '--profile black'
+
+" }}}
+" Smoothie Options: {{{
+
+let g:smoothie_update_interval = 18
+let g:smoothie_speed_constant_factor = 15
+let g:smoothie_speed_linear_factor = 15
+
+" }}}
+" Signature Options: {{{
+
+let g:SignatureMarkTextHLDynamic = 1
+let g:SignatureMarkerTextHLDynamic = 1
+
+" Set color of marks to orange (instead of blue)
+highlight! link SignatureMarkText OrangeSign
+" Need to also setup autocmd to have orange marks after colorscheme change.
+augroup vimrc_signature
+  autocmd!
+  autocmd ColorScheme * highlight! link SignatureMarkText OrangeSign
+  autocmd User GitGutter call signature#sign#Refresh(1)
+augroup END
+
+"}}}
 " --------------------------------Functions-----------------------------------
 " Global Functions: {{{
 
