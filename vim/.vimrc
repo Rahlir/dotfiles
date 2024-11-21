@@ -512,7 +512,7 @@ let g:lightline = {
       \ 'subseparator': g:separator_def['subseparator'],
       \ 'active': {
       \ 'left': [['mode', 'paste'],
-      \          ['readonly', 'filename', 'gitbranch', 'tagbarsort'],
+      \          ['readonly', 'filename', 'currentscope', 'gitbranch', 'tagbarsort'],
       \          ['gitsummary', 'tagbarflags']],
       \ 'right': [[],
       \           ['lineinfo', 'percent'],
@@ -528,6 +528,7 @@ let g:lightline = {
       \       'tagbarsort': 'LightlineTagbarsort',
       \       'fileencoding': 'LightlineFileencoding',
       \       'tagbarflags': 'LightlineTagbarflags',
+      \       'currentscope': 'LightlineCurrentScope'
       \ },
       \ 'component_expand': {
       \       'gitsummary': 'LightLineGitGutter',
@@ -626,6 +627,21 @@ function! LightlineTagbarflags()
     return join(flags, '')
   endif
   return ''
+endfunction
+
+function! LightlineCurrentScope()
+  let tagtype = tagbar#currenttagtype('%s', '')
+  if tagtype == ''
+    let icon = ''
+  else
+    let icon = get(g:tagbar_scopestrs, tagtype, "\uf420")
+  endif
+  let tag = tagbar#currenttag('%s', '', 'f', 'scoped-stl')
+  if icon == '' && tag == ''
+    return ''
+  else
+    return icon . ' ' . tag
+  endif
 endfunction
 
 let g:tagbar_status_func = 'TagbarStatusFunc'
@@ -736,9 +752,11 @@ let g:ledger_extra_options = '--pedantic'
 
 let g:tagbar_scopestrs = {
       \ 'namespace': "\uea8b",
-      \ 'class': "\ueb5b",
+      \ 'class': "\Uf01bc",
       \ 'func': "\Uf0295",
       \ 'function': "\Uf0295",
+      \ 'member': "\Uf0ae7",
+      \ 'variable': "\Uf05c0"
       \ }
 
 " Keep sort as defined in the source file
@@ -746,6 +764,14 @@ let g:tagbar_sort = 0
 
 " Default is <space> which conflicts with my <leader>
 let g:tagbar_map_showproto = 'K'
+
+" Set color of protected tagbar icons to purple
+highlight! link TagbarVisibilityProtected Purple
+" Need to also setup autocmd to have orange marks after colorscheme change.
+augroup vimrc_tagbar
+  autocmd!
+  autocmd ColorScheme * highlight! link TagbarVisibilityProtected Purple
+augroup END
 
 " }}}
 " Tablemode Options: {{{
