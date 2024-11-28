@@ -361,7 +361,8 @@ nnoremap <silent> - :call <SID>BlockComment('remove')<CR>
 vnoremap <silent> + :call <SID>BlockComment('add')<CR>
 vnoremap <silent> - :call <SID>BlockComment('remove')<CR>
 
-"s Toggling Options:
+" Toggling Options:
+nnoremap <silent> <leader>sh :call <SID>ToggleOption('hlsearch')<CR>
 nnoremap <silent> <leader>ss :call <SID>ToggleOption('spell')<CR>
 nnoremap <silent> <leader>si :call <SID>ToggleOption('ignorecase')<CR>
 nnoremap <silent> <leader>sc :call <SID>ToggleColorColumn()<CR>
@@ -568,7 +569,7 @@ endfunction
 
 function! WebDevFileformat()
     if exists('*WebDevIconsGetFileFormatSymbol')
-        return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
+        return winwidth(0) > 119 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
     else
         return &fileformat
     endif
@@ -597,7 +598,7 @@ function! LightlineFilename()
 endfunction
 
 function! LightLineGitBranch()
-  if expand('%:t') !~# '^__Tagbar__' && exists('*FugitiveHead')
+  if expand('%:t') !~# '^__Tagbar__' && exists('*FugitiveHead') && winwidth(0) > 119
     let branch = FugitiveHead()
     return branch !=# '' ? ' '.branch : ''
   endif
@@ -605,14 +606,16 @@ function! LightLineGitBranch()
 endfunction
 
 function! LightlineFileencoding()
-  return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
+  return winwidth(0) > 119 ? (&fenc !=# '' ? &fenc : &enc) : ''
 endfunction
 
 function! LightlineTagbarsort()
   if expand('%:t') =~# '^__Tagbar__'
     let fileinfo = tagbar#state#get_current_file(0)
-    let sorted = get(fileinfo.typeinfo, 'sort', g:tagbar_sort)
-    return sorted ? 'Name' : 'Order'
+    if !empty(fileinfo)
+      let sorted = get(fileinfo.typeinfo, 'sort', g:tagbar_sort)
+      return sorted ? 'Name' : 'Order'
+    endif
   endif
   return ''
 endfunction
@@ -630,24 +633,7 @@ function! LightlineTagbarflags()
 endfunction
 
 function! LightlineCurrentScope()
-  let tagtype = tagbar#currenttagtype('%s', '')
-  if tagtype == ''
-    let icon = ''
-  else
-    let icon = get(g:tagbar_scopestrs, tagtype, "\uf420")
-  endif
-  let tag = tagbar#currenttag('%s', '', 'f', 'scoped-stl')
-
-  " Customizations for different filetypes
-  if &filetype ==# "markdown"
-    let tag = substitute(tag, '""', ' # ', 'g')
-  endif
-
-  if icon == '' && tag == ''
-    return ''
-  else
-    return icon . ' ' . tag
-  endif
+  return exists('b:lightline_current_scope') ? b:lightline_current_scope : ""
 endfunction
 
 let g:tagbar_status_func = 'TagbarStatusFunc'
@@ -667,9 +653,50 @@ function! TagbarStatusFunc(current, sort, fname, flags, ...) abort
       return 'TB [' . a:sort . ']%= %<' . a:fname
 endfunction
 
+function! s:UpdateCurrentScope()
+  let tag = tagbar#currenttag('%s', '', 'f', 'scoped-stl')
+  if tag == ''
+    let b:lightline_current_scope = ''
+    call lightline#update()
+  else
+    let tagtype = tagbar#currenttagtype('%s', '')
+    if tagtype == ''
+      let icon = ''
+    else
+      let icon = get(g:tagbar_scopestrs, tagtype, "\uf420")
+    endif
+
+    let shortened = 0
+    while len(tag) > 40
+      let sro = get(tagbar#state#get_current_file(1).typeinfo, "sro", " ")
+      let taglist = split(tag, escape(sro, '.'))
+      let replacement = sro ==# '.' ? '>' : '...'
+      let tag = join([replacement] + taglist[1+shortened:], sro)
+      let shortened = 1
+    endwhile
+
+    " Customizations for different filetypes
+    if &filetype ==# "markdown"
+      let tag = substitute(tag, '""', ' # ', 'g')
+    endif
+
+    let b:lightline_current_scope = icon . ' ' . tag
+  endif
+  call lightline#update()
+endfunction
+
 augroup vimrc_lightline
   autocmd!
   autocmd User GitGutter call lightline#update()
+  " Tagbar autoloads for prototypes/* are slow. If you have to
+  " initialize them on startup, you will get a significant slowdown of
+  " startuptime. Hence, we only enable the lightline segment (and load
+  " autoload functions) on the first CursorHold autocmd. Moreover,
+  " tagbar#currenttag is an expensive function especially in large
+  " files. Hence, we cache the current tag in a buffer variable and do
+  " the update only on CursorHold events.
+  "autocmd CursorHold <buffer> call s:UpdateCurrentScope()
+  autocmd CursorHold * call s:UpdateCurrentScope()
 augroup END
 
 " }}}
@@ -777,6 +804,8 @@ let g:tagbar_sort = 0
 " Default is <space> which conflicts with my <leader>
 let g:tagbar_map_showproto = 'K'
 
+let g:tagbar_file_size_limit = 100000
+
 " Set color of protected tagbar icons to purple
 highlight! link TagbarVisibilityProtected Purple
 " Need to also setup autocmd to have orange marks after colorscheme change.
@@ -800,7 +829,7 @@ let g:isort_vim_options = '--profile black'
 " }}}
 " Smoothie Options: {{{
 
-let g:smoothie_update_interval = 18
+let g:smoothie_update_interval = 16
 let g:smoothie_speed_constant_factor = 15
 let g:smoothie_speed_linear_factor = 15
 
