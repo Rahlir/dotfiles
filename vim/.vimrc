@@ -477,7 +477,11 @@ nmap <silent> <c-e> <Plug>NetrwRefresh
 " }}}
 " Vimtex Options: {{{
 
-let g:vimtex_view_method = 'skim'
+if has('mac')
+  let g:vimtex_view_method = 'skim'
+else
+  let g:vimtex_view_method = 'zathura'
+endif
 let g:vimtex_quickfix_open_on_warning = 0
 let g:vimtex_fold_manual = 1
 let g:vimtex_format_enabled = 1
@@ -756,6 +760,7 @@ let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {} " needed
 let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['m'] = ''
 let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['mat'] = ''
 let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['vue'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['tex'] = ''
 
 if exists('g:loaded_webdevicons')
   call webdevicons#refresh()
