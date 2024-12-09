@@ -2,6 +2,7 @@
 #
 # by Tadeas Uhlir <tadeas.uhlir@gmail.com>
 
+[general]
 # Import theme
 import = ["~/.config/alacritty/theme.toml"]
 
@@ -28,5 +29,3 @@ style = "Bold Italic"
 [window]
 # Make option act as alt. macOS only option.
 option_as_alt = "Both"
-# This fixes stuttering when entering mission control from alacritty.
-opacity = 0.9999999
