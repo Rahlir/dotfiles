@@ -17,4 +17,16 @@ module.get_diagnostic_count = function(severity)
   end
 end
 
+local luasnip = require("luasnip")
+local i = luasnip.insert_node
+local sn = luasnip.snippet_node
+
+module.get_visual = function(args, parent)
+  if #parent.snippet.env.LS_SELECT_RAW > 0 then
+    return sn(nil, i(1, parent.snippet.env.LS_SELECT_RAW))
+  else
+    return sn(nil, i(1))
+  end
+end
+
 return module

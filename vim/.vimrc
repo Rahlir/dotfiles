@@ -20,7 +20,6 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'mhinz/vim-startify'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
-Plug 'SirVer/ultisnips'
 Plug 'lervag/vimtex', {'for': 'tex'}
 Plug 'ledger/vim-ledger', {'for': 'ledger'}
 Plug 'mbbill/undotree'
@@ -38,6 +37,8 @@ endif
 " Neovim specific plugins
 if has('nvim')
   Plug 'lukas-reineke/indent-blankline.nvim'
+  Plug 'L3MON4D3/LuaSnip', {'tag': 'v2.*', 'do': 'make install_jsregexp'}
+  Plug 'danymat/neogen'
   Plug 'neovim/nvim-lspconfig'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   Plug 'nvim-treesitter/nvim-treesitter-textobjects'
@@ -51,7 +52,7 @@ if has('nvim')
   Plug 'mickael-menu/zk-nvim'
 
   Plug 'hrsh7th/cmp-nvim-lsp'
-  Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+  Plug 'saadparwaiz1/cmp_luasnip'
   Plug 'hrsh7th/cmp-omni'
   Plug 'hrsh7th/nvim-cmp'
 
@@ -194,6 +195,7 @@ set timeoutlen=500
 " Configuring <space> as mapleader
 nnoremap <space> <Nop>
 let g:mapleader = ' '
+let g:maplocalleader = ' '
 
 " Add increment and decrement maps that work with modifier key instead of ctrl
 nnoremap <M-a> <C-a>
@@ -483,6 +485,7 @@ else
   let g:vimtex_view_method = 'zathura'
 endif
 let g:vimtex_quickfix_open_on_warning = 0
+let g:vimtex_fold_enabled = 1
 let g:vimtex_fold_manual = 1
 let g:vimtex_format_enabled = 1
 
@@ -824,7 +827,7 @@ augroup END
 
 " Default is <leader>t which conflicts with my tagbbar mappings
 let g:table_mode_map_prefix = '<leader>,'
-let g:table_mode_tableize_d_map = '<Leader><'
+let g:table_mode_tableize_d_map = '<leader><'
 
 " }}}
 " Isort Options: {{{

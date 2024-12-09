@@ -19,6 +19,7 @@ vim.g.python3_host_prog = '$WORKON_HOME/neovim/bin/python'
 -- }}}
 -- Autocommands: {{{
 local nvimrc_augroup = vim.api.nvim_create_augroup("nvimrc", { clear = true })
+-- Autocommand to use treesitter for folding where useful
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "cpp", "java", "typescriptreact", "javascriptreact", "python" },
   callback = function()
@@ -79,6 +80,132 @@ end
 -- }}}
 
 -- ------------------------------Plugin Options--------------------------------
+-- which-key: {{{
+local wk = require("which-key")
+wk.setup{
+  preset = "helix",
+  delay = function(ctx)
+    return ctx.plugin and 0 or 500
+  end,
+  triggers = {
+    { "<auto>", mode = "no" }
+  },
+  icons = { rules = {
+    { pattern = "location", icon = "󱚐", color = "yellow" },
+    { pattern = "fix", icon = "󱚊", color = "orange" },
+    { pattern = "lsp", icon = " ", color = "orange" },
+    { pattern = "netrw", icon = "", color = "blue" },
+    { pattern = "note", icon = "󰠮", color = "purple" },
+    { pattern = "workspace", icon = "󰙅", color = "orange" },
+    { pattern = "tagbar", icon = "", color = "purple" },
+    { pattern = "undotree", icon = "", color = "purple" },
+    { pattern = "todo", icon = "", color = "cyan" },
+    { pattern = "hunk", cat = "filetype", name = "git" },
+    { pattern = "marker", icon = "󱘈", color = "orange" },
+    { pattern = "mark", icon = "󰍎", color = "yellow" },
+    { pattern = "vimtex", cat = "filetype", name = "tex", color = "green" }, 
+  }},
+  spec = {
+    { "<leader>f", group = "telescope" },
+    { "<leader>d", group = "diagnostics" },
+    { "<leader>z", group = "notes"},
+    { "<leader>n", group = "neogen", icon = "" },
+    -- { "<leader>lI", desc = "Organize imports" },
+
+    { "<leader>h", group = "gitgutter" },
+    { "<leader>hp", desc = "Preview hunk" },
+    { "<leader>hs", desc = "Stage hunk" },
+    { "<leader>hu", desc = "Undo hunk" },
+
+    { "<leader>s", group = "options", icon = "" },
+    { "<leader>sh", desc = "Toggle hlsearch" },
+    { "<leader>ss", desc = "Toggle spell" },
+    { "<leader>si", desc = "Toggle ignorecase" },
+    { "<leader>sc", desc = "Toggle colorcolumn" },
+
+    { "<leader>r", group = "formatting" },
+    { "<leader>rs", desc = "Remove trailing spaces in line" },
+    { "<leader>rS", desc = "Remove trailing spaces globally" },
+
+    { "<leader>i", group = "insert-shortcuts", icon = "" },
+    { "<leader>ip", desc = "Insert mode at paragraph start" },
+    { "<leader>iP", desc = "Insert mode at paragraph end" },
+
+    { "<leader>e", group = "netrw" },
+    { "<leader>ee", desc = "Open netrw" },
+    { "<leader>el", desc = "Toggle netrw in left split" },
+    { "<leader>eh", desc = "Open netrw in horizontal split" },
+
+    { "<leader>q", group = "quickfix" },
+    { "<leader>qq", desc = "Show count-th error" },
+    { "<leader>qo", desc = "Open quickfix window" },
+    { "<leader>qc", desc = "Close quickfix window" },
+    { "<leader>qw", desc = "Toggle quickfix window (if errors)" },
+    { "<leader>qf", desc = "Show first error" },
+    { "<leader>ql", desc = "Show last error" },
+    { "<leader>qL", desc = "Load cfilter plugin" },
+
+    { "<leader>L", group = "locationlist" },
+    { "<leader>Ll", desc = "Show count-th location" },
+    { "<leader>Lo", desc = "Open location window" },
+    { "<leader>Lc", desc = "Close location window" },
+    { "<leader>Lw", desc = "Toggle location window (if locations)" },
+    { "<leader>Lf", desc = "Show first location" },
+    { "<leader>LF", desc = "Show last location" },
+
+    { "<leader>b", group = "buffers" },
+    { "<leader>bb", desc = "Switch to # buffer" },
+    { "<leader>bf", desc = "Switch to first buffer" },
+    { "<leader>bl", desc = "Switch to last buffer" },
+
+    { "<leader>a", group = "files" },
+    { "<leader>af", desc = "Switch to first file" },
+    { "<leader>al", desc = "Switch to last file" },
+
+    { "<leader>k", desc = "Move line up", icon = "" },
+    { "<leader>j", desc = "Move line down", icon = "" },
+
+    { "<leader>,", group = "tablemode" },
+
+    { "<leader>u", group = "undotree" },
+    { "<leader>uu", desc = "Toggle undotree" },
+    { "<leader>uO", desc = "Open and focus undotree" },
+    { "<leader>uo", desc = "Open undotree" },
+    { "<leader>uf", desc = "Focus undotree" },
+    { "<leader>uc", desc = "Close undotree" },
+
+    { "<leader>t", group = "tagbar" },
+    { "<leader>tt", desc = "Toggle tagbar" },
+    { "<leader>tf", desc = "Open and focus tagbar" },
+    { "<leader>tp", desc = "Toggle tagbar pause" },
+
+    { "]f", desc = "Next file" },
+    { "[f", desc = "Previous file" },
+    { "]b", desc = "Next buffer" },
+    { "[b", desc = "Previous buffer" },
+    { "]l", desc = "Location list forward" },
+    { "[l", desc = "Location list backward" },
+    { "]q", desc = "Quickfix list forward" },
+    { "[q", desc = "Quickfix list backward" },
+    { "]t", desc = "Next todo" },
+    { "[t", desc = "Previous todo" },
+    { "]c", desc = "Next git hunk" },
+    { "[c", desc = "Previous git hunk" },
+    { "]`", desc = "Next mark" },
+    { "[`", desc = "Previous mark" },
+    { "]'", desc = "Next line with mark" },
+    { "['", desc = "Previous line with mark" },
+    { "]=", desc = "Next marker" },
+    { "[=", desc = "Previous marker" },
+    { "]-", desc = "Next marker of same type" },
+    { "[-", desc = "Previous marker of same type" },
+  },
+}
+
+vim.api.nvim_set_hl(0, "WhichKeyNormal", { link = "Normal", default = true })
+vim.api.nvim_set_hl(0, "WhichKeyBorder", { link = "Grey", default = true })
+vim.api.nvim_set_hl(0, "WhichKeyTitle", { fg = "fg", bg = "bg", bold = true, default = true })
+-- }}}
 -- Telescope: {{{
 local themes = require('telescope.themes')
 local builtin = require('telescope.builtin')
@@ -158,7 +285,7 @@ end, { noremap=true, silent=true, desc = "Toggle treesitter indent" })
 
 require('nvim-treesitter.configs').setup{
   ensure_installed = { "bash", "c", "cpp", "python", "vim", "make", "cmake",
-                       "comment", "lua", "ledger", "latex", "markdown",
+                       "comment", "lua", "ledger", "markdown",
                        "markdown_inline", "javascript", "typescript", "tsx" },
 
   -- I think this could solve the error on updates when upgrading treesitter with plug
@@ -228,6 +355,79 @@ require('nvim-treesitter.configs').setup{
   },
 }
 -- }}}
+-- Neogen: {{{
+
+-- Remove @brief text from doxygen template
+local doxygen = require("neogen.templates.doxygen")
+doxygen[3] = { nil, " * $1", { no_results = true, type = { "func", "file", "class" } } }
+doxygen[9] = { nil, " * $1", { type = { "func", "class", "type" } } }
+
+local neogen = require("neogen")
+neogen.setup{
+  snippet_engine = "luasnip",
+
+  languages = {
+    python = {
+      template = {
+        annotation_convention = "reST"
+      }
+    },
+  }
+}
+
+-- Keymaps:
+vim.keymap.set("n", "<leader>nn", neogen.generate, { desc = "Generate for current obj", unpack(diagopts) })
+vim.keymap.set("n", "<leader>nf", function()
+  neogen.generate({ type = "func" })
+end, { desc = "Generate for function", unpack(diagopts) })
+vim.keymap.set("n", "<leader>nc", function()
+  neogen.generate({ type = "class" })
+end, { desc = "Generate for class", unpack(diagopts) })
+vim.keymap.set("n", "<leader>nl", function()
+  neogen.generate({ type = "file" })
+end, { desc = "Generate for file", unpack(diagopts) })
+vim.keymap.set("n", "<leader>nt", function()
+  neogen.generate({ type = "type" })
+end, { desc = "Generate for type", unpack(diagopts) })
+-- }}}
+-- LuaSnip: {{{
+local luasnip = require('luasnip')
+local types = require("luasnip.util.types")
+
+luasnip.setup{
+  enable_autosnippets = true,
+
+  -- Update repeated tabstops on all text changes
+  update_events = "TextChanged,TextChangedI",
+  -- Check whether snippet has been deleted (don't want deleted snippets mess
+  -- up <C-J>, etc.)
+  delete_check_events = "TextChanged",
+
+  -- Virtual mode uses <TAB> for snippets
+  store_selection_keys = "<Tab>",
+
+  -- Show "<- choice node" virtual text next to choice nodes
+  ext_opts = {
+    [types.choiceNode] = {
+      active = {
+        virt_text = { { "<- choice node", { "Comment", "CursorLine"  } } },
+      },
+    },
+  },
+}
+
+-- Keymaps:
+vim.keymap.set({"i", "s"}, "<C-K>", function() luasnip.jump(-1) end, { silent = true })
+vim.keymap.set({"i", "s"}, "<C-J>", function() luasnip.jump(1) end, { silent = true })
+vim.keymap.set({"i", "s"}, "<C-E>", function()
+  if luasnip.choice_active() then
+    luasnip.change_choice(1)
+  end
+end, { silent = true })
+
+-- Load snippets at ~/.config/nvim/snippets
+require("luasnip.loaders.from_lua").lazy_load({ paths = vim.env["XDG_CONFIG_HOME"] .. "/nvim/snippets" })
+-- }}}
 -- CMP: {{{
 local cmp = require('cmp')
 
@@ -236,37 +436,24 @@ local has_words_before = function()
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
 end
 
-local cmp_ultisnips_mappings = require('cmp_nvim_ultisnips.mappings')
-
--- See here: https://github.com/hrsh7th/nvim-cmp/issues/1251
-local fixed_abort = function()
-  cmp.abort()
-  cmp.core:reset()
-end
-
 cmp.setup {
   snippet = {
-    expand = function(args) vim.fn["UltiSnips#Anon"](args.body) end
+    expand = function(args) luasnip.lsp_expand(args.body) end
   },
 
   mapping = {
-    ["<Tab>"] = cmp.mapping(
-    function(fallback)
-      if has_words_before() then
-        cmp_ultisnips_mappings.compose{"select_next_item", "expand"}(function()
-          if cmp.visible() then
-            if #cmp.get_entries() == 1 then
-              cmp.confirm({ select = true })
-            else
-              cmp.select_next_item()
-            end
-          else
-            cmp.complete()
-            if #cmp.get_entries() == 1 then
-              cmp.confirm({ select = true })
-            end
-          end
-        end)
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        if #cmp.get_entries() == 1 then
+          cmp.confirm({ select = true })
+        else
+          cmp.select_next_item()
+        end
+      elseif has_words_before() then
+        cmp.complete()
+        if #cmp.get_entries() == 1 then
+          cmp.confirm({ select = true })
+        end
       else
         fallback()
       end
@@ -281,18 +468,22 @@ cmp.setup {
       end
     end, {'i', 's'}),
 
-    ['<C-y>'] = cmp.mapping(cmp.mapping.confirm({
-      behavior = cmp.ConfirmBehavior.Replace, select = false}),
-    {'i', 'c'}),
+    ['<CR>'] = cmp.mapping(function(fallback)
+      if cmp.visible() and cmp.get_active_entry() then
+        cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+      else
+        fallback()
+      end
+    end, {'i'}),
 
     ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), {'i'}),
     ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), {'i'}),
-    ['<C-u>'] = cmp.mapping(fixed_abort, {'i', 's'}),
+    ['<C-u>'] = cmp.mapping(function(fallback) cmp.abort() end, {'i', 's'}),
   },
 
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
-    { name = 'ultisnips' },
+    { name = 'luasnip' },
     { name = 'omni' }
   }),
 
@@ -313,6 +504,12 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local on_attach = function(client, bufnr)
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  wk.add({
+    { "<leader>l", group = "lsp" },
+    { "<leader>g", group = "lsp-goto-ext" },
+    { "<leader>lw", group = "workspace" },
+  })
 
   -- Mappings:
   local bufopts = { noremap=true, silent=true, buffer=bufnr }
@@ -457,7 +654,9 @@ vim.keymap.set("n", "<leader>zt", "<Cmd>ZkTags<CR>", { desc = "List of tags", un
 local ibl = require("ibl")
 
 ibl.setup{
-  indent = { char = "▏", highlight = "Conceal" },
+  -- Using "LineNr" highlight group instead of Conceal because I am customizing
+  -- Conceal highlight when editting tex buffers.
+  indent = { char = "▏", highlight = "LineNr" },
   scope = { show_start = false, show_end = false },
 }
 
@@ -465,131 +664,4 @@ ibl.setup{
 ibl.update{
   exclude = { filetypes = { "startify", "markdown" } }
 }
--- }}}
--- which-key: {{{
-local wk = require("which-key")
-wk.setup{
-  preset = "helix",
-  delay = function(ctx)
-    return ctx.plugin and 0 or 500
-  end,
-  triggers = {
-    { "<auto>", mode = "no" }
-  },
-  icons = { rules = {
-    { pattern = "location", icon = "󱚐", color = "yellow" },
-    { pattern = "fix", icon = "󱚊", color = "orange" },
-    { pattern = "lsp", icon = " ", color = "orange" },
-    { pattern = "netrw", icon = "", color = "blue" },
-    { pattern = "note", icon = "󰠮", color = "purple" },
-    { pattern = "workspace", icon = "󰙅", color = "orange" },
-    { pattern = "tagbar", icon = "", color = "purple" },
-    { pattern = "undotree", icon = "", color = "purple" },
-    { pattern = "todo", icon = "", color = "cyan" },
-    { pattern = "hunk", cat = "filetype", name = "git" },
-    { pattern = "marker", icon = "󱘈", color = "orange" },
-    { pattern = "mark", icon = "󰍎", color = "yellow" },
-  }},
-  spec = {
-    { "<leader>f", group = "telescope" },
-    { "<leader>d", group = "diagnostics" },
-    { "<leader>z", group = "notes"},
-    { "<leader>g", group = "lsp-goto-ext" },
-    { "<leader>l", group = "lsp" },
-    { "<leader>lw", group = "workspace" },
-    -- { "<leader>lI", desc = "Organize imports" },
-
-    { "<leader>h", group = "gitgutter" },
-    { "<leader>hp", group = "Preview hunk" },
-    { "<leader>hs", group = "Stage hunk" },
-    { "<leader>hu", group = "Undo hunk" },
-
-    { "<leader>s", group = "options", icon = "" },
-    { "<leader>sh", desc = "Toggle hlsearch" },
-    { "<leader>ss", desc = "Toggle spell" },
-    { "<leader>si", desc = "Toggle ignorecase" },
-    { "<leader>sc", desc = "Toggle colorcolumn" },
-
-    { "<leader>r", group = "formatting" },
-    { "<leader>rs", desc = "Remove trailing spaces in line" },
-    { "<leader>rS", desc = "Remove trailing spaces globally" },
-
-    { "<leader>i", group = "insert-shortcuts", icon = "" },
-    { "<leader>ip", desc = "Insert mode at paragraph start" },
-    { "<leader>iP", desc = "Insert mode at paragraph end" },
-
-    { "<leader>e", group = "netrw" },
-    { "<leader>ee", desc = "Open netrw" },
-    { "<leader>el", desc = "Toggle netrw in left split" },
-    { "<leader>eh", desc = "Open netrw in horizontal split" },
-
-    { "<leader>q", group = "quickfix" },
-    { "<leader>qq", desc = "Show count-th error" },
-    { "<leader>qo", desc = "Open quickfix window" },
-    { "<leader>qc", desc = "Close quickfix window" },
-    { "<leader>qw", desc = "Toggle quickfix window (if errors)" },
-    { "<leader>qf", desc = "Show first error" },
-    { "<leader>ql", desc = "Show last error" },
-    { "<leader>qL", desc = "Load cfilter plugin" },
-
-    { "<leader>L", group = "locationlist" },
-    { "<leader>Ll", desc = "Show count-th location" },
-    { "<leader>Lo", desc = "Open location window" },
-    { "<leader>Lc", desc = "Close location window" },
-    { "<leader>Lw", desc = "Toggle location window (if locations)" },
-    { "<leader>Lf", desc = "Show first location" },
-    { "<leader>LF", desc = "Show last location" },
-
-    { "<leader>b", group = "buffers" },
-    { "<leader>bb", desc = "Switch to # buffer" },
-    { "<leader>bf", desc = "Switch to first buffer" },
-    { "<leader>bl", desc = "Switch to last buffer" },
-
-    { "<leader>a", group = "files" },
-    { "<leader>af", desc = "Switch to first file" },
-    { "<leader>al", desc = "Switch to last file" },
-
-    { "<leader>k", desc = "Move line up", icon = "" },
-    { "<leader>j", desc = "Move line down", icon = "" },
-
-    { "<leader>,", group = "tablemode" },
-
-    { "<leader>u", group = "undotree" },
-    { "<leader>uu", desc = "Toggle undotree" },
-    { "<leader>uO", desc = "Open and focus undotree" },
-    { "<leader>uo", desc = "Open undotree" },
-    { "<leader>uf", desc = "Focus undotree" },
-    { "<leader>uc", desc = "Close undotree" },
-
-    { "<leader>t", group = "tagbar" },
-    { "<leader>tt", desc = "Toggle tagbar" },
-    { "<leader>tf", desc = "Open and focus tagbar" },
-    { "<leader>tp", desc = "Toggle tagbar pause" },
-
-    { "]f", desc = "Next file" },
-    { "[f", desc = "Previous file" },
-    { "]b", desc = "Next buffer" },
-    { "[b", desc = "Previous buffer" },
-    { "]l", desc = "Location list forward" },
-    { "[l", desc = "Location list backward" },
-    { "]q", desc = "Quickfix list forward" },
-    { "[q", desc = "Quickfix list backward" },
-    { "]t", desc = "Next todo" },
-    { "[t", desc = "Previous todo" },
-    { "]c", desc = "Next git hunk" },
-    { "[c", desc = "Previous git hunk" },
-    { "]`", desc = "Next mark" },
-    { "[`", desc = "Previous mark" },
-    { "]'", desc = "Next line with mark" },
-    { "['", desc = "Previous line with mark" },
-    { "]=", desc = "Next marker" },
-    { "[=", desc = "Previous marker" },
-    { "]-", desc = "Next marker of same type" },
-    { "[-", desc = "Previous marker of same type" },
-  },
-}
-
-vim.api.nvim_set_hl(0, "WhichKeyNormal", { link = "Normal", default = true })
-vim.api.nvim_set_hl(0, "WhichKeyBorder", { link = "Grey", default = true })
-vim.api.nvim_set_hl(0, "WhichKeyTitle", { fg = "fg", bg = "bg", bold = true, default = true })
 -- }}}
