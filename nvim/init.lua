@@ -103,7 +103,7 @@ wk.setup{
     { pattern = "hunk", cat = "filetype", name = "git" },
     { pattern = "marker", icon = "󱘈", color = "orange" },
     { pattern = "mark", icon = "󰍎", color = "yellow" },
-    { pattern = "vimtex", cat = "filetype", name = "tex", color = "green" }, 
+    { pattern = "vimtex", cat = "filetype", name = "tex", color = "green" },
   }},
   spec = {
     { "<leader>f", group = "telescope" },
@@ -303,7 +303,7 @@ require('nvim-treesitter.configs').setup{
   textobjects = {
     select = {
       enable = true,
-      -- Automatically jump forward to textobj, similar to targets.vim 
+      -- Automatically jump forward to textobj, similar to targets.vim
       lookahead = true,
       keymaps = {
         -- You can use the capture groups defined in textobjects.scm
@@ -490,7 +490,7 @@ cmp.setup {
   completion = {
     autocomplete = false
   },
-  
+
   matching = {
     disallow_fuzzy_matching = true,
   }
