@@ -245,10 +245,10 @@ report.backburner.sort=urgency-,entry+
 report.backburner.context=1
 
 report.timelog.description=Finished tasks with times (spent or estimated) logged
-report.timelog.columns=uuid.short,id,status.short,project,priority,description.count,end,took,estimate
-report.timelog.labels=UUID,ID,St,Project,Prio,Description,Completed,Spent,Estimated
+report.timelog.columns=uuid.short,end,status.short,project,description.count,priority,estimate,took
+report.timelog.labels=UUID,Completed,St,Project,Description,Prio,Estimated,Spent
 report.timelog.filter=(estimate.any: or took.any: ) (status:completed or status:deleted)
-report.timelog.sort=end-,took-,estimate-
+report.timelog.sort=end-
 report.timelog.context=1
 
 report.estimates.description=Tasks with time estimates
