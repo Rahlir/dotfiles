@@ -202,6 +202,14 @@ report.today.filter=status:pending (scheduled.before:now or (+next and agilestat
 report.today.sort=due+,urgency-
 report.today.context=1
 
+# Today report showing most urgent scheduled tasks and tasks with due dates soon that ARE NOT BLOCKED
+report.now.description=Urgent and unblocked tasks to work on today
+report.now.columns=id,start.age,project,priority,description,took,estimate,scheduled.age,due.relative,urgency
+report.now.labels=ID,Active,Project,Prio,Description,Spent,Est,Sched,Due,Urg
+report.now.filter=status:pending (scheduled.before:now or (+next and agilestatus:active) or due.before:today+2days) +READY
+report.now.sort=urgency-
+report.now.context=1
+
 # Inbox report showing tasks to be processed
 report.inbox.description=Detailed view of tasks in the inbox
 report.inbox.columns=id,start.active,entry.age,depends,estimate,priority,project,tags,recur,due,wait.remaining,until.remaining,description,urgency
@@ -307,7 +315,7 @@ context.School.write=+school
 context.TTC.read=+ttc
 context.TTC.write=+ttc +work
 
-context.TMobile.read=+tmobile
+context.TMobile.read=+tmobile or +tmobilemac
 context.TMobile.write=+tmobile +work
 
 # Leave room for sync message
