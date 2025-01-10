@@ -170,7 +170,7 @@ report.next.labels=ID,Active,Deps,Project,Prio,Recur,Description,Tags,Spent,Esti
 report.next.filter=status:pending -WAITING limit:page agilestatus:active
 
 # Only show tags count, only show # of annotations, sort by start, then age (ignore project)
-report.active.columns=id,entry.age,start.age,agilestatus,depends.indicator,project,priority,recur,description.count,tags.count,scheduled.remaining,due,until
+report.active.columns=id,entry.age,start.age,agilestatus,depends.count,project,priority,recur,description.count,tags.count,scheduled.remaining,due,until
 report.active.labels=ID,Age,Active,Status,D,Project,Prio,Recur,Description,Tags,Sch,Due,Until
 report.active.sort=start+,entry+
 
