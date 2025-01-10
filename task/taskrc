@@ -78,7 +78,7 @@ uda.jiracreatedts.type=date
 uda.jiracreatedts.label=Created At
 uda.jirastatus.type=string
 uda.jirastatus.label=Jira Status
-uda.jirastatus.values=New,To Do,In Progress,Waiting,Code review,Testing,Ready for release
+uda.jirastatus.values=Waiting,Released,Code review,To Do,New,Testing,In Solution,In Progress
 uda.jirasubtasks.type=string
 uda.jirasubtasks.label=Jira Subtasks
 uda.jiraparent.type=string
@@ -157,6 +157,9 @@ uda.githubstate.label=GitHub State
 uda.githubdraft.type=numeric
 uda.githubdraft.label=GitHub Draft
 
+# Urgency setup for bugwarrior UDAs
+urgency.uda.jirastatus.Code review.coefficient=-5.0
+
 ### Reports ###
 
 ## Builtin reports ##
@@ -208,9 +211,9 @@ report.inbox.sort=entry+,urgency-
 report.inbox.context=0
 
 report.jira.description=Report for jira issues
-report.jira.columns=id,jiraissuetype,agilestatus,jirastatus,entry.age,start.age,depends,project,priority,jirapriority,description.count,tags.count,took,estimate,scheduled.countdown,due.relative,urgency
-report.jira.labels=ID,Type,Status,Jira Status,Age,Active,Deps,Project,Prio,Jira P,Description,Tags,Spent,Estimate,Sch,Due,Urg
-report.jira.filter=status:pending -WAITING +jira
+report.jira.columns=agilestatus,id,jiraissuetype,depends,jirastatus,wait.remaining,start.age,project,priority,jirapriority,description.count,tags.count,entry.age,took,estimate,scheduled.countdown,due.relative,urgency
+report.jira.labels=Status,ID,Type,Deps,Jira Status,Wait,Active,Project,Prio,Jira P,Description,Tags,Age,Spent,Estimate,Sch,Due,Urg
+report.jira.filter=(status:pending or status:waiting) +jira
 report.jira.sort=agilestatus+,jirastatus+,urgency-
 report.jira.context=1
 
