@@ -101,6 +101,8 @@ def set_agilestatus(task: dict):
             break
 
     if sprint_id:
+        print("Setting jirasprintupdate UDA.")
+        task["jirasprintupdate"] = datetime_to_taskdate(datetime.now())
         old_agilestatus = task.get("agilestatus")
         sprint_field = api_get(f"issue/{task["jiraid"]:s}", f"fields={sprint_id:s}")
         for sprint_str in sprint_field["fields"][sprint_id]:

@@ -88,6 +88,9 @@ uda.jiraepic.type=string
 uda.jiraepic.label=Jira Epic ID
 uda.jirapriority.type=string
 uda.jirapriority.label=Jira Priority
+# Used for updating info regarding jira sprints
+uda.jirasprintupdate.type=date
+uda.jirasprintupdate.label=Jira Sprints Updated
 # GITLAB
 # Default ones
 uda.gitlabtitle.type=string
