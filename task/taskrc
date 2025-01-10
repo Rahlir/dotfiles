@@ -184,6 +184,9 @@ report.list.columns=id,agilestatus,entry.age,start.age,depends.indicator,project
 report.list.labels=ID,Status,Age,Active,D,Project,Prio,Description,Tags,R,Sch,Due,Until,Urg
 report.list.sort=urgency-,due+,entry+
 
+# Extend timesheet history from 4 weeks to 6 weeks
+report.timesheet.filter=(+PENDING -WAITING start.after:now-6wks) or (+COMPLETED -WAITING end.after:now-6wks)
+
 ## Custom reports ##
 
 # Report for the calendar
