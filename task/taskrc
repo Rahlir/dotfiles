@@ -78,7 +78,7 @@ uda.jiracreatedts.type=date
 uda.jiracreatedts.label=Created At
 uda.jirastatus.type=string
 uda.jirastatus.label=Jira Status
-uda.jirastatus.values=New,To Do,In Progress,Waiting,Code review,Testing,Ready for release
+uda.jirastatus.values=Waiting,Released,Code review,To Do,New,Testing,In Solution,In Progress
 uda.jirasubtasks.type=string
 uda.jirasubtasks.label=Jira Subtasks
 uda.jiraparent.type=string
@@ -88,6 +88,9 @@ uda.jiraepic.type=string
 uda.jiraepic.label=Jira Epic ID
 uda.jirapriority.type=string
 uda.jirapriority.label=Jira Priority
+# Used for updating info regarding jira sprints
+uda.jirasprintupdate.type=date
+uda.jirasprintupdate.label=Jira Sprints Updated
 # GITLAB
 # Default ones
 uda.gitlabtitle.type=string
@@ -157,6 +160,9 @@ uda.githubstate.label=GitHub State
 uda.githubdraft.type=numeric
 uda.githubdraft.label=GitHub Draft
 
+# Urgency setup for bugwarrior UDAs
+urgency.uda.jirastatus.Code review.coefficient=-5.0
+
 ### Reports ###
 
 ## Builtin reports ##
@@ -167,8 +173,8 @@ report.next.labels=ID,Active,Deps,Project,Prio,Recur,Description,Tags,Spent,Esti
 report.next.filter=status:pending -WAITING limit:page agilestatus:active
 
 # Only show tags count, only show # of annotations, sort by start, then age (ignore project)
-report.active.columns=id,entry.age,start.age,depends.indicator,project,priority,recur,description.count,tags.count,scheduled.remaining,due,until
-report.active.labels=ID,Age,Active,D,Project,Prio,Recur,Description,Tags,Sch,Due,Until
+report.active.columns=id,entry.age,start.age,agilestatus,depends.count,project,priority,recur,description.count,tags.count,scheduled.remaining,due,until
+report.active.labels=ID,Age,Active,Status,D,Project,Prio,Recur,Description,Tags,Sch,Due,Until
 report.active.sort=start+,entry+
 
 report.blocked.columns=id,depends,project,priority,due,start.active,description
@@ -180,6 +186,9 @@ report.blocking.labels=ID,UUID,Deps,Act,Project,Prio,Sch,Due,Until,Description,U
 report.list.columns=id,agilestatus,entry.age,start.age,depends.indicator,project,priority,description,tags.count,recur.indicator,scheduled,due,until.remaining,urgency
 report.list.labels=ID,Status,Age,Active,D,Project,Prio,Description,Tags,R,Sch,Due,Until,Urg
 report.list.sort=urgency-,due+,entry+
+
+# Extend timesheet history from 4 weeks to 6 weeks
+report.timesheet.filter=(+PENDING -WAITING start.after:now-6wks) or (+COMPLETED -WAITING end.after:now-6wks)
 
 ## Custom reports ##
 
@@ -199,6 +208,14 @@ report.today.filter=status:pending (scheduled.before:now or (+next and agilestat
 report.today.sort=due+,urgency-
 report.today.context=1
 
+# Today report showing most urgent scheduled tasks and tasks with due dates soon that ARE NOT BLOCKED
+report.now.description=Urgent and unblocked tasks to work on today
+report.now.columns=id,start.age,project,priority,description,took,estimate,scheduled.age,due.relative,urgency
+report.now.labels=ID,Active,Project,Prio,Description,Spent,Est,Sched,Due,Urg
+report.now.filter=status:pending (scheduled.before:now or (+next and agilestatus:active) or due.before:today+2days) +READY
+report.now.sort=urgency-
+report.now.context=1
+
 # Inbox report showing tasks to be processed
 report.inbox.description=Detailed view of tasks in the inbox
 report.inbox.columns=id,start.active,entry.age,depends,estimate,priority,project,tags,recur,due,wait.remaining,until.remaining,description,urgency
@@ -208,9 +225,9 @@ report.inbox.sort=entry+,urgency-
 report.inbox.context=0
 
 report.jira.description=Report for jira issues
-report.jira.columns=id,jiraissuetype,agilestatus,jirastatus,entry.age,start.age,depends,project,priority,jirapriority,description.count,tags.count,took,estimate,scheduled.countdown,due.relative,urgency
-report.jira.labels=ID,Type,Status,Jira Status,Age,Active,Deps,Project,Prio,Jira P,Description,Tags,Spent,Estimate,Sch,Due,Urg
-report.jira.filter=status:pending -WAITING +jira
+report.jira.columns=agilestatus,id,jiraissuetype,depends,jirastatus,wait.remaining,start.age,project,priority,jirapriority,description.count,tags.count,entry.age,took,estimate,scheduled.countdown,due.relative,urgency
+report.jira.labels=Status,ID,Type,Deps,Jira Status,Wait,Active,Project,Prio,Jira P,Description,Tags,Age,Spent,Estimate,Sch,Due,Urg
+report.jira.filter=(status:pending or status:waiting) +jira
 report.jira.sort=agilestatus+,jirastatus+,urgency-
 report.jira.context=1
 
@@ -231,10 +248,10 @@ report.backburner.sort=urgency-,entry+
 report.backburner.context=1
 
 report.timelog.description=Finished tasks with times (spent or estimated) logged
-report.timelog.columns=uuid.short,id,status.short,project,priority,description.count,end,took,estimate
-report.timelog.labels=UUID,ID,St,Project,Prio,Description,Completed,Spent,Estimated
+report.timelog.columns=uuid.short,end,status.short,project,description.count,priority,estimate,took
+report.timelog.labels=UUID,Completed,St,Project,Description,Prio,Estimated,Spent
 report.timelog.filter=(estimate.any: or took.any: ) (status:completed or status:deleted)
-report.timelog.sort=end-,took-,estimate-
+report.timelog.sort=end-
 report.timelog.context=1
 
 report.estimates.description=Tasks with time estimates
@@ -304,7 +321,7 @@ context.School.write=+school
 context.TTC.read=+ttc
 context.TTC.write=+ttc +work
 
-context.TMobile.read=+tmobile
+context.TMobile.read=+tmobile or +tmobilemac
 context.TMobile.write=+tmobile +work
 
 # Leave room for sync message
