@@ -337,5 +337,5 @@ uda.taskwarrior-tui.shortcuts.1=taskurlopen -o
 uda.taskwarrior-tui.keyconfig.shortcut1=O
 uda.taskwarrior-tui.shortcuts.2=$XDG_CONFIG_HOME/task/tt_scripts/switch_lists.sh
 uda.taskwarrior-tui.keyconfig.shortcut2=>
-uda.taskwarrior-tui.tick-rate=2000
+uda.taskwarrior-tui.tick-rate=4000
 uda.taskwarrior-tui.task-detail-prefetch=false
