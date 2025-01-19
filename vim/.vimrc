@@ -466,6 +466,15 @@ let g:tex_flavor = 'latex'
 let g:tex_comment_nospell = 1
 
 " }}}
+" Spelling Setup: {{{
+
+let s:spell_dir = $HOME . '/.vim/spell/'
+if !filereadable(s:spell_dir . 'en.utf-8.add.spl') && filereadable(s:spell_dir . 'en.utf-8.add')
+  silent! execute 'mkspell ' . s:spell_dir . 'en.utf-8.add'
+  echom 'Spelling file generated at ' . s:spell_dir
+endif
+
+" }}}
 
 " ------------------------------Plugin Options--------------------------------
 " Netrw Options: {{{
