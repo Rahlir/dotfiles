@@ -110,7 +110,8 @@ wk.setup{
     { "<leader>d", group = "diagnostics" },
     { "<leader>z", group = "notes"},
     { "<leader>n", group = "neogen", icon = "" },
-    -- { "<leader>lI", desc = "Organize imports" },
+    { "<leader>c", group = "calendar", icon = "" },
+    { "<leader>S", group = "dbext", icon = "" },
 
     { "<leader>h", group = "gitgutter" },
     { "<leader>hp", desc = "Preview hunk" },
