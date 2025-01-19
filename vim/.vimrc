@@ -188,7 +188,8 @@ set undofile  " store undo data persistently
 set clipboard^=unnamed,unnamedplus  " yanking and pasting using system clipboard
 " how long to wait for next key in mappings. Default of 1000 is too long.
 " Note that it affects which-key when which-key maps overlap with other plugins (such as y and ys)
-set timeoutlen=500
+" Commented out for now since it seems to have caused more harm than good
+" set timeoutlen=500
 
 " }}}
 " Custom Mappings: {{{
@@ -473,6 +474,19 @@ if !filereadable(s:spell_dir . 'en.utf-8.add.spl') && filereadable(s:spell_dir .
   silent! execute 'mkspell ' . s:spell_dir . 'en.utf-8.add'
   echom 'Spelling file generated at ' . s:spell_dir
 endif
+
+" }}}
+" Custom Commands: {{{
+
+function! s:SyntaxStack()
+  if !exists("*synstack")
+    return
+  endif
+  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
+
+" Setup SytanxStack usercommand
+command SyntaxStack call s:SyntaxStack()
 
 " }}}
 
@@ -870,13 +884,6 @@ augroup END
 " --------------------------------Functions-----------------------------------
 " Global Functions: {{{
 
-function! SynStack()
-  if !exists("*synstack")
-    return
-  endif
-  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
-endfunc
-
 function! SetGruvBackground(bg)
   if a:bg != 'dark' && a:bg != 'light'
     return
@@ -914,5 +921,69 @@ function! SetEverforestBackground(bg)
   call lightline#update()
   do ColorScheme
 endfunction
+
+if has('nvim')
+  " Store output of a channel into dictonary in which the function is defined
+  function! s:OPOnEvent(job_id, data, event) dict
+    let var_ref = a:event
+    let self[var_ref][-1] .= a:data[0]
+    call extend(self[var_ref], a:data[1:])
+  endfunction
+
+  " Get secrets from 1password cli. Neovim specific function as it relies on
+  " job-control of neovim. Signing into the op client is required only on the
+  " first call to the function.
+  " Arguments:
+  "   vault: Vault name in which the item is stored.
+  "   item: Item name
+  "   fields: List of fields to return from the 1password item
+  " Returns:
+  "   List of values for the given item and fields.
+  function! GetOPSecrets(vault, item, fields)
+    if !exists('g:op_job_id')
+      let g:op_job_output = {
+            \ 'stdout': [''],
+            \ 'stderr': [''],
+            \ 'on_stdout': function('s:OPOnEvent'),
+            \ 'on_stderr': function('s:OPOnEvent'),
+            \ }
+      let g:op_job_id = jobstart(split(&shell), g:op_job_output)
+    else
+      let g:op_job_output.stdout = ['']
+      let g:op_job_output.stderr = ['']
+    endif
+    call chansend(g:op_job_id, "op item get --reveal --vault " . a:vault . " " . a:item . " --fields " . join(a:fields, ",") . "\n")
+    while len(g:op_job_output.stdout[0]) == 0 && len(g:op_job_output.stderr[0]) == 0
+      sleep 500m
+    endwhile
+    let result = split(g:op_job_output.stdout[0], ",")
+    if len(g:op_job_output.stderr[0])
+      echoerr "1password cli returned error: " . g:op_job_output.stderr[0]
+    elseif len(result) != len(a:fields)
+      echoerr "1password cli returned unexpected results: " . g:op_job_output.stdout[0]
+    else
+      return result
+    endif
+  endfunction
+else
+
+  " Get secrets from 1password cli. Unlike the more complex neovim function,
+  " this function doesn't rely on job control and signing in is required on
+  " every call.
+  " Arguments:
+  "   vault: Vault name in which the item is stored.
+  "   item: Item name
+  "   fields: List of fields to return from the 1password item
+  " Returns:
+  "   List of values for the given item and fields.
+  function! GetOPSecrets(vault, item, fields)
+    let l:secrets = systemlist("op item get --reveal --vault " . a:vault . " " . a:item . " --fields " . join(a:fields, ","))
+    let l:result = split(l:secrets[0], ",")
+    if len(l:result) != len(a:fields)
+      echoerr "Failed to get secrets from 1password."
+    endif
+    return l:result
+  endfunction
+endif
 
 " }}}
