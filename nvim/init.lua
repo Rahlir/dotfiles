@@ -247,10 +247,8 @@ require('telescope').setup{
 -- Lightline: {{{
 local lightline = vim.g.lightline
 
-lightline.active.right = {
-  { 'diag_errors', 'diag_warnings', 'diag_ok', 'diag_info', 'diag_hint' },
-  { 'lineinfo', 'percent' },
-  { 'fileformat', 'fileencoding', 'filetype' }
+lightline.active.right[1] = {
+  'diag_errors', 'diag_warnings', 'diag_ok', 'diag_info', 'diag_hint'
 }
 lightline.component_expand.diag_errors = 'rahlir#errors'
 lightline.component_expand.diag_warnings = 'rahlir#warnings'

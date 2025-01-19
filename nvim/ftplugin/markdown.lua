@@ -31,4 +31,16 @@ if require("zk.util").notebook_root(vim.fn.expand('%:p')) ~= nil then
   vim.keymap.set("n", "<leader>zL", "<Cmd>ZkLinks<CR>", { desc = "Links outgoing from this note", unpack(bufopts) })
   vim.keymap.set("n", "<leader>zb", "<Cmd>ZkBacklinks<CR>", { desc = "Backlinks to this note", unpack(bufopts) })
   vim.keymap.set("v", "<leader>zN", ":'<,'>ZkNewFromTitleSelection<CR>", { desc = "New note with title of selection", unpack(bufopts) })
+  vim.keymap.set("i", "<M-d>", function()
+    if vim.g.calendar_action ~= nil then
+      vim.g.old_calendar_action = vim.g.calendar_action
+    end
+    vim.g.calendar_action = "ZkInsertDailyLink"
+    vim.fn['calendar#show'](0)
+  end, bufopts)
+
+  -- When you run :Calendar in a zk note, you can use a calendar window to pick
+  -- daily note to open.
+  vim.g.calendar_sign = "ZkDailySigns"
+  vim.g.calendar_action = "ZkOpenDaily"
 end

@@ -27,6 +27,8 @@ Plug 'dhruvasagar/vim-table-mode', {'for': ['markdown', 'text', 'rst']}
 Plug 'preservim/tagbar'
 Plug 'kshenoy/vim-signature'
 Plug 'psliwka/vim-smoothie'
+Plug 'mattn/calendar-vim'
+Plug 'vim-scripts/dbext.vim'
 
 " Mac specific plugins. This check should work for any recent
 " vim on macOS
@@ -532,11 +534,11 @@ let g:gitgutter_lightline_sign_removed = "\Uf015a"
 let g:separator_def = {
       \ 'separator': {'left': '', 'right': '' },
       \ 'subseparator': { 'left': '', 'right': '' }
-  \ }
+      \ }
 let g:separator_bubbles = {
       \ 'separator': { 'left': '', 'right': '' },
       \ 'subseparator': { 'left': '', 'right': '' },
-  \ }
+      \ }
 
 let g:lightline = {
       \ 'colorscheme': g:current_colorscheme,
@@ -560,13 +562,17 @@ let g:lightline = {
       \       'tagbarsort': 'LightlineTagbarsort',
       \       'fileencoding': 'LightlineFileencoding',
       \       'tagbarflags': 'LightlineTagbarflags',
-      \       'currentscope': 'LightlineCurrentScope'
+      \       'currentscope': 'LightlineCurrentScope',
+      \       'lineinfo': 'LightlineLineInfo',
+      \       'percent': 'LightlinePercent'
       \ },
       \ 'component_expand': {
       \       'gitsummary': 'LightLineGitGutter',
       \   },
       \ 'component_type': {}
-\ }
+      \ }
+
+" Lightline Component Functions:
 
 function! LightLineGitGutter()
   if exists('*GitGutterGetHunkSummary')
@@ -623,9 +629,26 @@ endfunction
 function! LightlineFilename()
   let fname = expand('%:t')
   return fname =~# '^__Tagbar__' ? '' :
+        \ fname ==# '__Calendar' ? strftime('%a %-d %B') :
         \ &filetype ==# 'startify' ? "󱓞 Let's start" :
         \ (fname !=# '' ? fname : '[No Name]') .
         \ (LightlineModified() !=# '' ? ' ' . LightlineModified() : '')
+endfunction
+
+function! LightlineLineInfo()
+  if winwidth(0) < 80
+    return ''
+  endif
+  let lineinfo = printf('%3d:%-2d', line('.'), col('.'))
+  return lineinfo
+endfunction
+
+function! LightlinePercent()
+  if winwidth(0) < 80
+    return ''
+  endif
+  let percent = line('.') * 100 / line('$') . '%'
+  return printf('%-4s', percent)
 endfunction
 
 function! LightLineGitBranch()
@@ -667,6 +690,8 @@ function! LightlineCurrentScope()
   return exists('b:lightline_current_scope') ? b:lightline_current_scope : ""
 endfunction
 
+" Tagbar Status Configuration:
+
 let g:tagbar_status_func = 'TagbarStatusFunc'
 
 function! TagbarStatusFunc(current, sort, fname, flags, ...) abort
@@ -683,6 +708,8 @@ function! TagbarStatusFunc(current, sort, fname, flags, ...) abort
     else
       return 'TB [' . a:sort . ']%= %<' . a:fname
 endfunction
+
+" Current Scope Update Implementation:
 
 function! s:UpdateCurrentScope()
   let tag = tagbar#currenttag('%s', '', 'f', 'scoped-stl')
@@ -716,6 +743,8 @@ function! s:UpdateCurrentScope()
   call lightline#update()
 endfunction
 
+" Autocmds Related To Lightline:
+
 augroup vimrc_lightline
   autocmd!
   autocmd User GitGutter call lightline#update()
@@ -726,7 +755,6 @@ augroup vimrc_lightline
   " tagbar#currenttag is an expensive function especially in large
   " files. Hence, we cache the current tag in a buffer variable and do
   " the update only on CursorHold events.
-  "autocmd CursorHold <buffer> call s:UpdateCurrentScope()
   autocmd CursorHold * call s:UpdateCurrentScope()
 augroup END
 
@@ -852,6 +880,192 @@ augroup END
 " Default is <leader>t which conflicts with my tagbbar mappings
 let g:table_mode_map_prefix = '<leader>,'
 let g:table_mode_tableize_d_map = '<leader><'
+
+" }}} 
+" DBExt Options: {{{
+
+" Options:
+let g:dbext_default_profile = ''
+let g:dbext_default_passwd = ''
+" My psqlrc contains helpful messages that can be silenced by setting
+" quietstartup to 1
+let g:dbext_default_PGSQL_cmd_options = '-v quietstartup=1'
+let g:dbext_default_history_file = s:statedir . '/dbext_sql_history.txt'
+let g:dbext_map_prefix = '<Leader>S'
+
+" Functions:
+
+" Connect DBExt to postgresql database using secrets stored in 1password.
+" Arguments:
+"   project: Project name. If set to 'autodetect', it will detect project name
+"     from the current directory. Project name is the directory name whose
+"     parent path is ~/Development/{tmobile,rahlir,ttc,other}. Default is
+"     'autodetect'.
+"   devenv: Development environment, one of 'dev', 'test', 'prod', or
+"     'autodetect' dev, test, or prod. If set to 'autodetect', it will first
+"     check the environmental variable DEVENV, if empty it will check if the
+"     file contains dev, test, or prod, then it will fallback to prod. Default
+"     is 'autodetect'.
+function! s:DBExtConnectPSQL(...)
+  let info_msg = ''
+
+  let l:project = get(a:, 1, 'autodetect')
+
+  if l:project ==# 'autodetect'
+    let l:devpath_regex = '^' . $HOME . '/Development/\(tmobile\|rahlir\|ttc\|other\)/'
+    let l:current_path = expand("%:p:h")
+
+    if l:current_path !~# l:devpath_regex . '.\+'
+      echo "ERROR: Not in recognizable project directory. Cannot autodetect project."
+      return
+    endif
+
+    let l:project = split(
+          \ substitute(l:current_path, l:devpath_regex, '', ''), '/'
+          \ )[0]
+    let info_msg .= "Autodetected project '" . l:project . "'. "
+  endif
+
+  let l:devenv = get(a:, 2, 'autodetect')
+
+  if l:devenv ==# 'autodetect'
+    if len($DEV_ENV) > 0
+      let l:devenv = $DEV_ENV
+      let info_msg .= "Autodetected devenv '" . l:devenv . "' from env var."
+    elseif expand('%:t:r') =~# '^\(.*_\)\?\(dev\|test\|prod\)\(_.*\)\?$'
+      let filename = expand('%:t:r')
+      " Checked in the order of priority: prod > test > dev
+      let l:devenv = filename =~# '^\(.*_\)\?\(prod\)\(_.*\)\?$' ? 'prod' : 
+            \ filename =~# '^\(.*_\)\?\(test\)\(_.*\)\?$' ? 'test' : 'dev'
+      let info_msg .= "Autodetected devenv '" . l:devenv . "' from filename."
+    else
+      let l:devenv = 'prod'
+      let info_msg .= "Couldn't autodetect devenv, falling back to '" . l:devenv . "'."
+    endif
+  endif
+
+  if len(info_msg)
+    echom info_msg
+  endif
+
+  exec "DBSetOption type=PGSQL"
+  let l:options = ["type=PGSQL"]
+
+  let l:secret_item = "postgres_" . l:project . "_" . l:devenv
+  let l:field_names = ["host", "port", "database", "user", "password"]
+  let l:secrets = GetOPSecrets("Development", l:secret_item, l:field_names)
+  let l:id = 0
+  for field in l:field_names
+    if field ==# "password"
+      let l:pgpass_path = exists("g:dbext_default_PGSQL_pgpass") ? g:dbext_default_PGSQL_pgpass : "$HOME/.pgpass"
+      call writefile(["*:*:*:*:" . l:secrets[l:id]], expand(l:pgpass_path), 's')
+      call setfperm(expand(l:pgpass_path), "rw-------")
+      let g:dbext_wrote_to_pgpass = 1
+    else
+      let l:dbext_field = field ==# "database" ? "dbname" : field
+      exec "DBSetOption " . l:dbext_field . "=" . l:secrets[l:id]
+      call add(l:options, l:dbext_field . "=" . l:secrets[l:id])
+    endif
+    let l:id += 1
+  endfor
+  execute 'redraw!'
+  echo "DBExt options set: " . join(l:options, " ")
+endfunction
+
+function! s:ConnectPSQLComplete(lead, cmdline, cursorpos)
+  let pre = strpart(a:cmdline, 0, a:cursorpos)
+  let n_args = len(split(pre . 'end'))
+
+  if n_args == 2
+    " Complete project
+    " NOTE: Unfortunately, these completions are static, hence I need to
+    " update this list if I have more projects
+    let completions = ['autodetect', 'nba', 'savedesk', 'volte', 'ocn', 'nakralovkach']
+  elseif n_args == 3
+    let completions = ['autodetect', 'prod', 'test', 'dev']
+  else
+    return ''
+  endif
+  return join(completions, "\n")
+endfunction
+
+" Remove .pgpass file that is used to store password to PostgreSQL database.
+" Should be used as part of VimLeave autocommand in case DBExtConnectPSQL
+" function wrote the file in order to cleanup.
+function! s:RemovePGPass()
+  let l:pgpass_path = exists("g:dbext_default_PGSQL_pgpass") ? g:dbext_default_PGSQL_pgpass : "$HOME/.pgpass"
+  call delete(expand(l:pgpass_path))
+endfunction
+
+" Keymaps:
+nnoremap <silent> <leader>Sr :DBResultsOpen<CR>
+nnoremap <silent> <leader>SR :DBResultsClose<CR>
+
+" Commands:
+command -nargs=* -complete=custom,s:ConnectPSQLComplete DBExtConnectPSQL call s:DBExtConnectPSQL(<f-args>)
+
+" Autocommands:
+augroup dbextExtras
+    autocmd!
+    autocmd VimLeave * if exists('g:dbext_wrote_to_pgpass') | call s:RemovePGPass() | endif
+augroup END
+
+" }}}
+" Calendar Options: {{{
+
+let g:calendar_no_mappings = 1
+let g:calendar_mark = 'left-fit'
+let g:calendar_datetime = ''
+
+" Functions:
+
+" Function to be used for g:calendar_action which inserts link to a daily note
+" for the selected date.
+function g:ZkInsertDailyLink(day, month, year, week, dir)
+  let l:linktext = printf("[[daily/%04d-%02d-%02d]]", a:year, a:month, a:day)
+  call calendar#close()
+  let l:cursorpos = getcurpos('.')
+  let l:currentline = getline('.')
+  let l:modifiedline = 
+        \ strpart(l:currentline, 0, l:cursorpos[4] - 1)
+        \ . l:linktext
+        \ . strpart(l:currentline, l:cursorpos[4] - 1)
+  call setline(l:cursorpos[1], l:modifiedline)
+  startinsert
+  call setpos('.', [
+        \ 0,
+        \ l:cursorpos[1],
+        \ l:cursorpos[2]+len(l:linktext),
+        \ l:cursorpos[3],
+        \ l:cursorpos[4]+len(l:linktext)])
+  if exists('g:old_calendar_action')
+    let g:calendar_action = g:old_calendar_action
+    unlet g:old_calendar_action
+  else
+    unlet g:calendar_action
+  endif
+endfunction
+
+" Function to be used for g:calendar_sign which checks whether the given date
+" has a daily note.
+function! g:ZkDailySigns(day, month, year)
+  let l:dailydir = "$ZK_NOTEBOOK_DIR/daily"
+  let l:sfile = printf("%s/%04d-%02d-%02d.md", l:dailydir, a:year, a:month, a:day)
+  return filereadable(expand(l:sfile))
+endfunction
+
+" Function to be used for g:calendar_action which opens a daily note for the
+" selected date (used as default g:calendar_action when a zk note is opened).
+function! g:ZkOpenDaily(day,month,year,week,dir)
+  let l:dailydir = "$ZK_NOTEBOOK_DIR/daily"
+  let l:dailyfile = printf("%s/%04d-%02d-%02d.md", l:dailydir, a:year, a:month, a:day)
+  if !filereadable(expand(l:dailyfile))
+    echo "ERROR: daily file for " . printf("%04d-%02d-%02d", a:year, a:month, a:day) . " does not exist!"
+  else
+    wincmd w
+    execute "edit " . expand(l:dailyfile)
+  endif
+endfunction
 
 " }}}
 " Isort Options: {{{
