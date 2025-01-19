@@ -36,6 +36,7 @@ endif
 
 " Neovim specific plugins
 if has('nvim')
+  Plug 'stevearc/conform.nvim'
   Plug 'lukas-reineke/indent-blankline.nvim'
   Plug 'L3MON4D3/LuaSnip', {'tag': 'v2.*', 'do': 'make install_jsregexp'}
   Plug 'danymat/neogen'

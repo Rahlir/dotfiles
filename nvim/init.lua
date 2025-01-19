@@ -124,7 +124,7 @@ wk.setup{
     { "<leader>sc", desc = "Toggle colorcolumn" },
 
     { "<leader>r", group = "formatting" },
-    { "<leader>rs", desc = "Remove trailing spaces in line" },
+    { "<leader>rs", desc = "Remove trailing spaces on current line" },
     { "<leader>rS", desc = "Remove trailing spaces globally" },
 
     { "<leader>i", group = "insert-shortcuts", icon = "" },
@@ -664,4 +664,35 @@ ibl.setup{
 ibl.update{
   exclude = { filetypes = { "startify", "markdown" } }
 }
+-- }}}
+-- conform: {{{
+require("conform").setup({
+  formatters_by_ft = {
+    python = { "isort", "black" },
+    javascript = { "prettierd", "prettier", stop_after_first = true },
+    typescript = { "prettierd", "prettier", stop_after_first = true },
+    typescriptreact = { "prettierd", "prettier", stop_after_first = true },
+    vue = { "prettierd", "prettier", stop_after_first = true }
+  },
+  default_format_opts = {
+    lsp_format = "fallback"
+  },
+  notify_no_formatters = true
+})
+-- Setup conform formatexpr in filetypes where we have some conform formatters configured.
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "python", "javascript", "typescript", "typescriptreact", "vue" },
+  callback = function()
+    vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+  end,
+  group = nvimrc_augroup
+})
+-- Setup Conform command which runs conform on the entire buffer
+vim.api.nvim_create_user_command("Conform", function()
+  require("conform").format({ async = true })
+end, {})
+-- Setup Conform keybind which runs conform on the entire buffer
+vim.keymap.set('n', '<leader>rc', function()
+  require("conform").format({ async = true })
+end, { noremap = true, silent = true, desc = "Format with conform" })
 -- }}}
