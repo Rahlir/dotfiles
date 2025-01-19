@@ -21,11 +21,15 @@ local luasnip = require("luasnip")
 local i = luasnip.insert_node
 local sn = luasnip.snippet_node
 
-module.get_visual = function(args, parent)
+module.get_visual = function(_, parent, _, user_args)
   if #parent.snippet.env.LS_SELECT_RAW > 0 then
     return sn(nil, i(1, parent.snippet.env.LS_SELECT_RAW))
   else
-    return sn(nil, i(1))
+    if user_args == nil then
+      return sn(nil, i(1))
+    else
+      return sn(nil, i(1, user_args))
+    end
   end
 end
 

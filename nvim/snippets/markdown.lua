@@ -21,7 +21,9 @@ return {
     i(2, "Note that..."),
     i(0)
   }))
+
 }, {
+
   s({ trig = ";B" },
   fmt("**{}**", d(1, get_visual))),
 
