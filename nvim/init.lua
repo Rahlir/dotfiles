@@ -32,7 +32,7 @@ vim.api.nvim_create_autocmd("FileType", {
 -- Autocommand to use treesitter for indenting javascriptreact and typescriptreact files
 -- with treesitter
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "javascriptreact", "typescriptreact" },
+  pattern = { "javascriptreact", "typescriptreact", "vue" },
   command = "TSBufEnable indent",
   group = nvimrc_augroup
 })
@@ -275,11 +275,11 @@ vim.api.nvim_create_autocmd('DiagnosticChanged', {
 -- Treesitter: {{{
 -- Mappings:
 vim.keymap.set('n', '<leader>st', function()
-  vim.cmd.TSToggle('highlight')
+  vim.cmd.TSBufToggle('highlight')
   vim.print("treesitter highlighting was toggled...")
 end, { noremap=true, silent=true, desc = "Toggle treesitter highlighting" })
 vim.keymap.set('n', '<leader>sT', function()
-  vim.cmd.TSToggle('indent')
+  vim.cmd.TSBufToggle('indent')
   vim.print("treesitter indent was toggled...")
 end, { noremap=true, silent=true, desc = "Toggle treesitter indent" })
 
@@ -468,9 +468,9 @@ cmp.setup {
       end
     end, {'i', 's'}),
 
-    ['<CR>'] = cmp.mapping(function(fallback)
+    ['<space>'] = cmp.mapping(function(fallback)
       if cmp.visible() and cmp.get_active_entry() then
-        cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+        cmp.confirm({ select = false })
       else
         fallback()
       end
@@ -602,6 +602,15 @@ end
 require('lspconfig')['ts_ls'].setup{
   on_attach = on_attach,
   capabilities = capabilities,
+  init_options = {
+    plugins = {
+      {
+        name = "@vue/typescript-plugin",
+        location = "/Users/uhlirt/.local/lib/node_modules/@vue/typescript-plugin",
+        languages = { "javascript", "typescript", "vue" }
+      }
+    }
+  },
   settings = {
     typescript = {
       format = {
@@ -609,6 +618,7 @@ require('lspconfig')['ts_ls'].setup{
       }
     }
   },
+  filetypes = { "javascript", "typescript", "vue" },
   commands = {
     TsserverOrganizeImports = {
       organize_imports,
@@ -630,6 +640,37 @@ require('lspconfig')['gopls'].setup{
 require('lspconfig')['astro'].setup{
   on_attach = on_attach,
   capabilities = capabilities
+}
+
+local lsp_util = require('lspconfig.util')
+
+local function get_typescript_server_path(root_dir)
+  local global_ts = vim.env.HOMEBREW_PREFIX .. '/opt/typescript/libexec/lib/node_modules/typescript/lib'
+  -- Alternative location if installed as root:
+  -- local global_ts = '/usr/local/lib/node_modules/typescript/lib'
+  local found_ts = ''
+  local function check_dir(path)
+    found_ts =  lsp_util.path.join(path, 'node_modules', 'typescript', 'lib')
+    if lsp_util.path.exists(found_ts) then
+      return path
+    end
+  end
+  if lsp_util.search_ancestors(root_dir, check_dir) then
+    return found_ts .. "LOCAL"
+  else
+    if not lsp_util.path.exists(global_ts) then
+      error("No global or local typescript library found. Please install it.")
+    end
+    return global_ts
+  end
+end
+
+require('lspconfig')['volar'].setup{
+  on_new_config = function(new_config, new_root_dir)
+    new_config.init_options.typescript.tsdk = get_typescript_server_path(new_root_dir)
+  end,
+  on_attach = on_attach,
+  capabilities = capabilities,
 }
 -- }}}
 -- ZK: {{{
