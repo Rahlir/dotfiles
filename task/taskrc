@@ -301,6 +301,9 @@ alias.bb=backburner
 ### Other ###
 # News version
 news.version=3.1.0
+# I do reviews on Monday. This makes the week grouping in timesheet report
+# consistent with that.
+weekstart=Monday
 
 # Show all projects on summary. Why would you want to complete
 # a project if you don't get to see the satisfying 100% completion
