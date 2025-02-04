@@ -2,8 +2,8 @@ interval = "4weeks"
 
 [school]
 filter = "+school"
-interval = "2weeks"
+interval = "3weeks"
 
 [work]
 filter = "+work"
-interval = "1week"
+interval = "2weeks"
