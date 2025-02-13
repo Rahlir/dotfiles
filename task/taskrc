@@ -149,7 +149,7 @@ uda.githuburl.type=string
 uda.githuburl.label=Github URL
 uda.githubtype.type=string
 uda.githubtype.label=Github Type
-uda.githubnumber.type=numeric
+uda.githubnumber.type=string
 uda.githubnumber.label=Github Issue/PR #
 uda.githubuser.type=string
 uda.githubuser.label=Github User
@@ -230,6 +230,14 @@ report.jira.labels=Status,ID,Type,Deps,Jira Status,Wait,Active,Project,Prio,Jira
 report.jira.filter=(status:pending or status:waiting) +jira
 report.jira.sort=agilestatus+,jirastatus+,urgency-
 report.jira.context=1
+
+# Report for all github and gitlab tasks.
+report.code.description=Report for github and gitlab tasks
+report.code.columns=agilestatus,id,githubtype,gitlabtype,project,priority,description.truncated_count,githubupdatedat,gitlabupdatedat,tags.count,gitlabauthor,githubuser,scheduled.countdown,due.relative,githubcreatedon,gitlabcreatedon,urgency
+report.code.labels=Status,ID,Github Type,Gitlab Type,Project,Prio,Description,Github Upd,Gitlab Upd,Tags,Author,User,Sch,Due,Github Cr,Gitlab Cr,Urg
+report.code.filter=(status:pending or status:waiting) (+github or +gitlab)
+report.code.sort=agilestatus+,urgency-
+report.code.context=1
 
 # Backlog report showing both waiting and pending tasks in cnext-like report
 report.backlog.description=Compact overview of all open tasks
