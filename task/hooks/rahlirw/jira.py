@@ -105,18 +105,21 @@ def set_agilestatus(task: dict):
         task["jirasprintupdate"] = datetime_to_taskdate(datetime.now())
         old_agilestatus = task.get("agilestatus")
         sprint_field = api_get(f"issue/{task["jiraid"]:s}", f"fields={sprint_id:s}")
-        for sprint_str in sprint_field["fields"][sprint_id]:
-            sprint_state = get_sprint_state(sprint_str)
-            if sprint_state == "ACTIVE":
-                if old_agilestatus != "active":
-                    print("Setting agilestatus to 'active'")
-                task["agilestatus"] = "active"
-                return
-            elif sprint_state == "FUTURE":
-                task["agilestatus"] = "backlog"
+        if sprint_strings := sprint_field["fields"][sprint_id]:
+            for sprint_str in sprint_strings:
+                sprint_state = get_sprint_state(sprint_str)
+                if sprint_state == "ACTIVE":
+                    if old_agilestatus != "active":
+                        print("Setting agilestatus to 'active'")
+                    task["agilestatus"] = "active"
+                    return
+                elif sprint_state == "FUTURE":
+                    task["agilestatus"] = "backlog"
 
-        if task["agilestatus"] == "backlog" and old_agilestatus != "backlog":
-            print("Setting agilestatus to 'backlog'")
+            if task["agilestatus"] == "backlog" and old_agilestatus != "backlog":
+                print("Setting agilestatus to 'backlog'")
+        else:
+            print("WARNING: No sprint string set for the task.")
 
 
 def update_project_name(task: dict):
