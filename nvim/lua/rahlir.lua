@@ -8,7 +8,7 @@ module.get_diagnostic_count = function(severity)
     error = vim.diagnostic.severity.ERROR
   }
 
-  if vim.diagnostic.is_enabled(0) then
+  if vim.diagnostic.is_enabled({bufnr=0}) then
     return vim.tbl_count(vim.diagnostic.get(
     0, { severity = severity_nvim[severity] }
     ))
