@@ -27,7 +27,7 @@ vim.keymap.set('i', '<S-Tab>', '<Plug>delimitMateS-Tab', keymap_opts)
 local nvimrc_augroup = vim.api.nvim_create_augroup("nvimrc", { clear = true })
 -- Autocommand to use treesitter for folding where useful
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "cpp", "java", "typescriptreact", "javascriptreact", "python" },
+  pattern = { "cpp", "java", "typescriptreact", "javascriptreact", "python", "vue" },
   callback = function()
     vim.wo.foldmethod = "expr"
     vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
@@ -715,7 +715,7 @@ ibl.update{
 -- conform: {{{
 require("conform").setup({
   formatters_by_ft = {
-    python = { "isort", "black" },
+    python = { "isort", "black", "docformatter" },
     javascript = { "prettierd", "prettier", stop_after_first = true },
     typescript = { "prettierd", "prettier", stop_after_first = true },
     typescriptreact = { "prettierd", "prettier", stop_after_first = true },
