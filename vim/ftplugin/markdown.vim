@@ -3,7 +3,7 @@
 " by Tadeas Uhlir <tadeas.uhlir@gmail.com>
 
 " Conceal links, typesetting characters, etc.
-setlocal conceallevel=2
+setlocal conceallevel=1
 " Syntax highlighting in code blocks (nvim uses treesitter, so not needed)
 if !has('nvim')
   let g:markdown_fenced_languages = [
