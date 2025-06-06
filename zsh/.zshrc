@@ -130,6 +130,9 @@ _check_for_active_venv() {
 
 _check_for_venv() {
     local tocheck=$PWD
+    if [[ $tocheck != $HOME/* ]]; then
+        return
+    fi
 
     while [[ $tocheck != $HOME && -z $VIRTUAL_ENV ]]; do
         if [[ -r $tocheck/.venv/bin/activate ]]; then
@@ -140,8 +143,6 @@ _check_for_venv() {
     done
 }
 
-# Check for venv once on starting the shell
-_check_for_venv > /dev/null
 
 add-zsh-hook -Uz chpwd _check_for_active_venv
 add-zsh-hook -Uz chpwd _check_for_venv
@@ -358,6 +359,10 @@ _p10k_paths=(
 # Load configuration
 [[ -r $XDG_CONFIG_HOME/zsh/p10k.zsh ]] && \
     source $XDG_CONFIG_HOME/zsh/p10k.zsh
+
+# Check for venv once on starting the shell
+# NOTE: This has to be **after** sourcing p10k.zsh
+_check_for_venv > /dev/null
 
 # Unset local variables
 unset _synhl_paths
