@@ -134,7 +134,7 @@ _check_for_venv() {
         return
     fi
 
-    while [[ $tocheck != $HOME && -z $VIRTUAL_ENV ]]; do
+    while [[ $tocheck == $HOME/* && -z $VIRTUAL_ENV ]]; do
         if [[ -r $tocheck/.venv/bin/activate ]]; then
             print -P "%F{blue}Activating virtual environment.%f"
             source $tocheck/.venv/bin/activate && typeset -g CHPWD_HOOK_VENV=$tocheck/.venv
