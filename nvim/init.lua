@@ -117,8 +117,9 @@ wk.setup{
     { "<leader>d", group = "diagnostics" },
     { "<leader>z", group = "notes"},
     { "<leader>n", group = "neogen", icon = "" },
-    { "<leader>c", group = "calendar", icon = "" },
+    { "<leader>C", group = "calendar", icon = "" },
     { "<leader>S", group = "dbext", icon = "" },
+    { "<leader>c", group = "codecompanion", icon = "" },
 
     { "<leader>h", group = "gitgutter" },
     { "<leader>hp", desc = "Preview hunk" },
@@ -724,7 +725,13 @@ require("conform").setup({
   default_format_opts = {
     lsp_format = "fallback"
   },
-  notify_no_formatters = true
+  notify_no_formatters = true,
+  formatters = {
+    docformatter = {
+      inherit = true,
+      append_args = { "--black" }
+    }
+  }
 })
 -- Setup conform formatexpr in filetypes where we have some conform formatters configured.
 vim.api.nvim_create_autocmd("FileType", {
@@ -742,4 +749,174 @@ end, {})
 vim.keymap.set('n', '<leader>rc', function()
   require("conform").format({ async = true })
 end, { noremap = true, silent = true, desc = "Format with conform" })
+-- }}}
+-- codecompanion: {{{
+require("codecompanion").setup({
+  adapters = {
+    gemini = function()
+      return require("codecompanion.adapters").extend("gemini", {
+        schema = {
+          model = {
+            default = "gemini-2.5-pro"
+          }
+        }
+      })
+    end,
+    gemini2 = function()
+      return require("codecompanion.adapters").extend("gemini", {
+        schema = {
+          model = {
+            default = "gemini-2.0-flash"
+          }
+        }
+      })
+    end
+  },
+  strategies = {
+    chat = {
+      adapter = "gemini",
+      tools = {
+        opts = {
+          default_tools = {
+            -- "grep_search",
+            -- "file_search",
+            -- "read_file"
+          }
+        }
+      }
+    },
+    inline = {
+      adapter = "gemini",
+    },
+    cmd = {
+      adapter = "gemini",
+    }
+  },
+  prompt_library = {
+    ['Diff code review'] = {
+      strategy = 'chat',
+      description = 'Perform a code review',
+      opts = {
+        auto_submit = true,
+        user_prompt = false,
+        ignore_system_prompt = true,
+      },
+      prompts = {
+        {
+          role = 'system',
+          content = [[
+You are an experienced code review assistant. Your role is to help me
+understand and analyze a merge request so I can provide thoughtful,
+well-reasoned feedback to my colleague. Do not perform the code review yourself.
+Instead, guide me through the process and help me identify what to focus on. You can
+use @read_file @file_search and @grep_search to orient yourself in the code base.
+
+Your Tasks:
+1. Change Summary & Overview:
+  - Provide a clear, high-level summary of what this merge request accomplishes
+  - Identify the main files/modules affected and the nature of changes (new features, bug fixes, refactoring, etc.)
+  - Highlight the scope and complexity of the changes
+
+2. Areas Requiring Attention: Point out specific areas I should focus on during my review.
+  - Critical Logic Changes: Functions/methods with complex business logic modifications
+  - Security Considerations: Authentication, authorization, input validation, data handling
+  - Performance Impact: Database queries, loops, memory usage, API calls
+  - Error Handling: Exception handling, edge cases, failure scenarios
+  - Dependencies: New libraries, version updates, external service integrations
+  - Breaking Changes: API modifications, interface changes, backward compatibility
+
+3. Review Focus Questions
+For each significant change, help me think through:
+  - What is this change trying to accomplish?
+  - Are there any edge cases or scenarios that might not be handled?
+  - Is the approach consistent with our existing codebase patterns?
+  - Are there potential performance or security implications?
+  - How might this affect other parts of the system?
+
+4. Code Quality Checkpoints
+Guide me to examine:
+  - Readability: Is the code clear and well-documented?
+  - Maintainability: Will future developers understand this easily?
+  - Testing: Are there adequate tests for the changes?
+  - Architecture: Does this fit well with our existing design patterns?
+  - Standards: Does it follow our team's coding conventions?
+
+5. Feedback Structuring
+Help me organize my feedback into:
+  - Must Fix: Critical issues that block the merge
+  - Should Fix: Important improvements that enhance quality
+  - Consider: Suggestions for potential improvements
+  - Positive Notes: What was done well (important for team morale)
+
+What I Need From You:
+1. Analyze the diff/changes I provide and give me the overview above.
+2. Ask clarifying questions if you need more context about our codebase or requirements
+3. Suggest specific lines or sections I should pay extra attention to and why
+4. When describing the changes of the merge request, show me the important code snippets
+4. Help me formulate feedback comments based on my comments and our discussion
+5. Help me formulate questions to ask the author if something is unclear
+6. Remind me of best practices relevant to the specific changes being made
+
+What You Should NOT Do:
+- Don't write the code review comments for me unless prompted
+- Don't make definitive judgments about whether code is "good" or "bad" unless prompted
+- Don't provide solutions to issues you identify unless prompted
+
+Remember: I want to be an engaged, thoughtful reviewer who provides valuable
+feedback. Help me understand what I'm looking at and guide my analysis, but let
+me draw the conclusions and write the feedback myself.
+          ]]
+        },
+        {
+          role = 'user',
+          content = function()
+            local target_branch = vim.fn.input('Target branch for merge base diff (default: develop): ', 'develop')
+            local mr_diff = vim.fn.system('git diff --merge-base ' .. target_branch)
+            return "This is the diff of the merge request:\n\n```\n" .. mr_diff .. "\n```\n\n"
+          end,
+        },
+      },
+    }
+  }
+})
+vim.keymap.set({'n', 'v'}, '<leader>cc', '<cmd>CodeCompanionChat Toggle<cr>', { desc = "Toggle CodeCompanion chat", unpack(diagopts) })
+vim.keymap.set({'n', 'v'}, '<leader>ca', '<cmd>CodeCompanionActions<cr>', { desc = "Open CodeCompanion action pallete", unpack(diagopts) })
+vim.keymap.set({'v'}, '<leader>c=', '<cmd>CodeCompanionChat Add<cr>', { desc = "Add selected code to the chat buffer.", unpack(diagopts) })
+
+local codecompanion_augroup = vim.api.nvim_create_augroup(
+  "codecompanion",
+  { clear = true }
+)
+
+vim.g.codecompanion_request_started = false
+vim.g.codecompanion_request_streaming = false
+
+vim.api.nvim_create_autocmd({ "User" }, {
+  pattern = " CodeCompanionChatAdapter",
+  group = codecompanion_augroup,
+  callback = function(request)
+    vim.print(request)
+    if request.data.adapter == nil or vim.tbl_isempty(request.data) then
+      return
+    end
+    vim.g.codecompanion_adapter = request.data.adapter.name
+  end
+})
+
+vim.api.nvim_create_autocmd({ "User" }, {
+  pattern = "CodeCompanionRequest*",
+  group = codecompanion_augroup,
+  callback = function(request)
+    if request.match == "CodeCompanionRequestStarted" then
+      vim.g.codecompanion_adapter = request.data.adapter.formatted_name
+      vim.g.codecompanion_request_started = true
+    elseif request.match == "CodeCompanionRequestStreaming" then
+      vim.g.codecompanion_request_started = false
+      vim.g.codecompanion_request_streaming = true
+    else
+      vim.g.codecompanion_request_started = false
+      vim.g.codecompanion_request_streaming = false
+    end
+  end
+})
 -- }}}

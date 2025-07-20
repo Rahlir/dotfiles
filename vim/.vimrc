@@ -67,6 +67,8 @@ if has('nvim')
   " while nvim-web-devicons is used by Telescope
   Plug 'ryanoasis/vim-devicons'
   Plug 'nvim-tree/nvim-web-devicons'
+
+  Plug 'olimorris/codecompanion.nvim'
 endif
 
 call plug#end()
@@ -631,6 +633,7 @@ function! LightlineFilename()
   return fname =~# '^__Tagbar__' ? '' :
         \ fname ==# '__Calendar' ? strftime('%a %-d %B') :
         \ &filetype ==# 'startify' ? "󱓞 Let's start" :
+        \ &filetype ==# 'codecompanion' ? CodeCompanionStatus() :
         \ (fname !=# '' ? fname : '[No Name]') .
         \ (LightlineModified() !=# '' ? ' ' . LightlineModified() : '')
 endfunction
@@ -641,6 +644,18 @@ function! LightlineLineInfo()
   endif
   let lineinfo = printf('%3d:%-2d', line('.'), col('.'))
   return lineinfo
+endfunction
+
+function! CodeCompanionStatus()
+  let icon = '  '
+  let adapter = get(g:, 'codecompanion_adapter', "CodeCompanion")
+  if g:codecompanion_request_started
+    return icon . adapter . '  thinking 󱧤'
+  elseif g:codecompanion_request_streaming
+    return icon. adapter . '  talking 󱋊'
+  endif
+
+  return icon . adapter . "  ready "
 endfunction
 
 function! LightlinePercent()
@@ -725,7 +740,7 @@ function! s:UpdateCurrentScope()
     endif
 
     let shortened = 0
-    while len(tag) > 40
+    while len(tag) > 50
       let sro = get(tagbar#state#get_current_file(1).typeinfo, "sro", " ")
       let taglist = split(tag, escape(sro, '.'))
       let replacement = sro ==# '.' ? '>' : '...'
@@ -892,6 +907,8 @@ let g:dbext_default_passwd = ''
 let g:dbext_default_PGSQL_cmd_options = '-v quietstartup=1'
 let g:dbext_default_history_file = s:statedir . '/dbext_sql_history.txt'
 let g:dbext_map_prefix = '<Leader>S'
+let g:dbext_default_profile_dwh = 'type=ORA:user=NBA:passwd=STrE_20240626plu:srvname=dwhprdd-rac-scan.st.sk\:1525/EWH_USR_ALL'
+let g:dbext_default_profile_dwhtmcz = 'type=ORA:user=NBA_TMCZ:passwd=PaS_UT20240528kls:srvname=dwhprdd-rac-scan.st.sk\:1525/EWH_USR_ALL'
 
 " Functions:
 

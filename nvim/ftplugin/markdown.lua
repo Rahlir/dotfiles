@@ -38,7 +38,7 @@ if require("zk.util").notebook_root(vim.fn.expand('%:p')) ~= nil then
     vim.g.calendar_action = "ZkInsertDailyLink"
     vim.fn['calendar#show'](0)
   end, bufopts)
-  vim.keymap.set("n", "<leader>cc", "<Cmd>Calendar<CR>", { desc = "Daily note picker", unpack(bufopts) })
+  vim.keymap.set("n", "<leader>Cc", "<Cmd>Calendar<CR>", { desc = "Daily note picker", unpack(bufopts) })
 
   -- When you run :Calendar in a zk note, you can use a calendar window to pick
   -- daily note to open.
