@@ -95,6 +95,8 @@ export KUBECACHEDIR=$XDG_CACHE_HOME/kube
 if [[ "$(uname -s)" == Darwin ]]; then
     # Use keychain with pip
     export PIP_USE_FEATURE=truststore
+    # Use keychain with UV
+    export UV_NATIVE_TLS=1
 fi
 # Alternative location for USQL history
 export USQL_HISTORY=$XDG_STATE_HOME/usql/history
