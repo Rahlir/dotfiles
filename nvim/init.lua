@@ -25,23 +25,6 @@ vim.keymap.set('i', '<S-Tab>', '<Plug>delimitMateS-Tab', keymap_opts)
 -- }}}
 -- Autocommands: {{{
 local nvimrc_augroup = vim.api.nvim_create_augroup("nvimrc", { clear = true })
--- Autocommand to use treesitter for folding where useful
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "cpp", "java", "typescriptreact", "javascriptreact", "python", "vue" },
-  callback = function()
-    vim.wo.foldmethod = "expr"
-    vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-    vim.wo.foldlevel = 99
-  end,
-  group = nvimrc_augroup
-})
--- Autocommand to use treesitter for indenting javascriptreact and typescriptreact files
--- with treesitter
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "javascriptreact", "typescriptreact", "vue" },
-  command = "TSBufEnable indent",
-  group = nvimrc_augroup
-})
 --- }}}
 -- Diagnostics: {{{
 -- Mappings:
@@ -280,87 +263,192 @@ vim.api.nvim_create_autocmd('DiagnosticChanged', {
 })
 -- }}}
 -- Treesitter: {{{
--- Mappings:
-vim.keymap.set('n', '<leader>st', function()
-  vim.cmd.TSBufToggle('highlight')
-  vim.print("treesitter highlighting was toggled...")
-end, { noremap=true, silent=true, desc = "Toggle treesitter highlighting" })
-vim.keymap.set('n', '<leader>sT', function()
-  vim.cmd.TSBufToggle('indent')
-  vim.print("treesitter indent was toggled...")
-end, { noremap=true, silent=true, desc = "Toggle treesitter indent" })
 
-require('nvim-treesitter.configs').setup{
-  ensure_installed = { "bash", "c", "cpp", "python", "vim", "make", "cmake",
-                       "comment", "lua", "ledger", "markdown",
-                       "markdown_inline", "javascript", "typescript", "tsx" },
+-- Basic setup: {{{
+require('nvim-treesitter').install({
+  "c", "cpp", "cmake", "comment", "go", "java", "javascript",
+  "jsx", "lua", "ledger", "markdown", "markdown_inline",
+  "python", "rust", "typescript", "tsx", "vim", "vue", "zsh"
+})
 
-  -- I think this could solve the error on updates when upgrading treesitter with plug
-  sync_install = true,  -- only applied to `ensure_installed`
-  highlight = {
-    enable = true,  -- false will disable the whole extension
-
-    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-    -- Instead of true it can also be a list of languages
-    additional_vim_regex_highlighting = { "markdown", "vim" },
+require('nvim-treesitter-textobjects').setup{
+  select = {
+    -- Automatically jump forward to textobj, similar to targets.vim
+    lookahead = true,
   },
 
-  textobjects = {
-    select = {
-      enable = true,
-      -- Automatically jump forward to textobj, similar to targets.vim
-      lookahead = true,
-      keymaps = {
-        -- You can use the capture groups defined in textobjects.scm
-        ["af"] = { query = "@function.outer", desc = "Function outer region" },
-        ["if"] = { query = "@function.inner", desc = "Function inner region" },
-        ["ac"] = { query = "@class.outer", desc = "Class outer region" },
-        ["ic"] = { query = "@class.inner", desc = "Class inner region" },
-        ["ia"] = { query = "@parameter.inner", desc = "Parameter inner region" },
-        ["aa"] = { query = "@parameter.outer", desc = "Paramtere outer region" },
-        ["ik"] = { query = "@block.inner", desc = "Block inner region" },
-        ["ak"] = { query = "@block.outer", desc = "Block outer region" },
-        ["ii"] = { query = "@conditional.inner", desc = "Conditional inner region" },
-        ["ai"] = { query = "@conditional.outer", desc = "Conditional outer region" },
-        ["il"] = { query = "@loop.inner", desc = "Loop inner region" },
-        ["al"] = { query = "@loop.outer", desc = "Loop outer region" },
-        ["i="] = { query = "@assignment.inner", desc = "Assignment inner region" },
-        ["a="] = { query = "@assignment.outer", desc = "Assignment outer region" }
-      },
-    },
-
-    move = {
-      enable = true,
-      set_jumps = true,
-      goto_next_start = {
-        ["]m"] = { query = "@function.outer", desc = "Next function" },
-        ["]]"] = { query = "@class.outer", desc = "Next class" },
-        ["]k"] = { query = "@block.outer", desc = "Next block" },
-        ["]a"] = { query = "@parameter.inner", desc = "Next parameter" },
-      },
-      goto_next_end = {
-        ["]M"] = { query = "@function.outer", desc = "End of next function" },
-        ["]["] = { query = "@class.outer", desc = "End of next class" },
-        ["]K"] = { query = "@block.outer", desc = "End of next block" },
-        ["]A"] = { query = "@parameter.inner", desc = "End of next parameter" },
-      },
-      goto_previous_start = {
-        ["[m"] = { query = "@function.outer", desc = "Previous function" },
-        ["[["] = { query = "@class.outer", desc = "Previous class" },
-        ["[k"] = { query = "@block.outer", desc = "Previous block" },
-        ["[a"] = { query = "@parameter.inner", desc = "Previous parameter" },
-      },
-      goto_previous_end = {
-        ["[M"] = { query = "@function.outer", desc = "End of previous function" },
-        ["[]"] = { query = "@class.outer", desc = "End of previous class" },
-        ["[K"] = { query = "@block.outer", desc = "End of previous block" },
-        ["[A"] = { query = "@parameter.inner", desc = "End of previous parameter" },
-      }
-    },
-  },
+  move = {
+    set_jumps = true,
+  }
 }
+-- }}}
+
+-- Autocommands: {{{
+-- Use treesitter HIGHLIGHTING as default:
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = {
+    "cpp", "cmake", "go", "java", "javascript", "javascriptreact", "ledger",
+    "lua", "markdown", "python", "rust", "typescript", "typescriptreact", "vue"
+  },
+  callback = function()
+    vim.treesitter.start()
+  end,
+  group = nvimrc_augroup
+})
+-- Use treesitter FOLDING as default:
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "cpp", "java", "typescriptreact", "javascriptreact", "python", "vue" },
+  callback = function()
+    vim.wo.foldmethod = "expr"
+    vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+    vim.wo.foldlevel = 99
+  end,
+  group = nvimrc_augroup
+})
+-- Use treesitter INDENT as default:
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "javascriptreact", "typescriptreact", "vue" },
+  callback = function()
+    vim.bo.indentexpr = "v:lua.require('nvim-treesitter').indentexpr()"
+  end,
+  group = nvimrc_augroup
+})
+-- }}}
+
+-- Toggle mappings: {{{
+vim.keymap.set('n', '<leader>st', function()
+  if vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()] ~= nil then
+    vim.treesitter.stop()
+    vim.print("Turned off treesitter highlighting...")
+  else
+    vim.treesitter.start()
+    vim.print("Turned on treesitter highlighting...")
+  end
+end, { noremap=true, silent=true, desc="Toggle treesitter highlighting" })
+
+vim.keymap.set('n', '<leader>sT', function()
+  local current_indentexpr = vim.bo.indentexpr
+  local current_buffer = vim.api.nvim_get_current_buf()
+  if current_indentexpr ~= "v:lua.require('nvim-treesitter').indentexpr()" then
+    vim.b[current_buffer].rahlir_previous_indentexpr = current_indentexpr
+    vim.bo.indentexpr = "v:lua.require('nvim-treesitter').indentexpr()"
+    vim.print("Turned on treesitter indent...")
+  else
+    local previous_indentexpr = vim.b[current_buffer].rahlir_previous_indentexpr
+    if previous_indentexpr == nil then
+      previous_indentexpr = ""
+    end
+    vim.bo.indentexpr = previous_indentexpr
+    vim.print("Turned off treesitter indent...")
+  end
+end, { noremap=true, silent=true, desc="Toggle treesitter indent" })
+-- }}}
+
+-- Select keymappings: {{{
+vim.keymap.set({ "x", "o" }, "af", function()
+  require('nvim-treesitter-textobjects.select').select_textobject("@function.outer", "textobjects")
+end, { desc = "Function outer region" })
+vim.keymap.set({ "x", "o" }, "if", function()
+  require('nvim-treesitter-textobjects.select').select_textobject("@function.inner", "textobjects")
+end, { desc = "Function inner region" })
+
+vim.keymap.set({ "x", "o" }, "ac", function()
+  require('nvim-treesitter-textobjects.select').select_textobject("@class.outer", "textobjects")
+end, { desc = "Class outer region" })
+vim.keymap.set({ "x", "o" }, "ic", function()
+  require('nvim-treesitter-textobjects.select').select_textobject("@class.inner", "textobjects")
+end, { desc = "Class inner region" })
+
+vim.keymap.set({ "x", "o" }, "aa", function()
+  require('nvim-treesitter-textobjects.select').select_textobject("@parameter.outer", "textobjects")
+end, { desc = "Parameter outer region" })
+vim.keymap.set({ "x", "o" }, "ia", function()
+  require('nvim-treesitter-textobjects.select').select_textobject("@parameter.inner", "textobjects")
+end, { desc = "Parameter inner region" })
+
+vim.keymap.set({ "x", "o" }, "ak", function()
+  require('nvim-treesitter-textobjects.select').select_textobject("@block.outer", "textobjects")
+end, { desc = "Block outer region" })
+vim.keymap.set({ "x", "o" }, "ik", function()
+  require('nvim-treesitter-textobjects.select').select_textobject("@block.inner", "textobjects")
+end, { desc = "Block inner region" })
+
+vim.keymap.set({ "x", "o" }, "ai", function()
+  require('nvim-treesitter-textobjects.select').select_textobject("@conditional.outer", "textobjects")
+end, { desc = "Conditional outer region" })
+vim.keymap.set({ "x", "o" }, "ii", function()
+  require('nvim-treesitter-textobjects.select').select_textobject("@conditional.inner", "textobjects")
+end, { desc = "Conditional inner region" })
+
+vim.keymap.set({ "x", "o" }, "al", function()
+  require('nvim-treesitter-textobjects.select').select_textobject("@loop.outer", "textobjects")
+end, { desc = "Loop outer region" })
+vim.keymap.set({ "x", "o" }, "il", function()
+  require('nvim-treesitter-textobjects.select').select_textobject("@loop.inner", "textobjects")
+end, { desc = "Loop inner region" })
+
+vim.keymap.set({ "x", "o" }, "a=", function()
+  require('nvim-treesitter-textobjects.select').select_textobject("@assignment.outer", "textobjects")
+end, { desc = "Assignment outer region" })
+vim.keymap.set({ "x", "o" }, "i=", function()
+  require('nvim-treesitter-textobjects.select').select_textobject("@assignment.inner", "textobjects")
+end, { desc = "Assignment inner region" })
+-- }}}
+
+-- Move keymappings: {{{
+vim.keymap.set({ "n", "x", "o" }, "]m", function()
+  require('nvim-treesitter-textobjects.move').goto_next_start("@function.outer", "textobjects")
+end, { desc = "Next function" })
+vim.keymap.set({ "n", "x", "o" }, "]M", function()
+  require('nvim-treesitter-textobjects.move').goto_next_end("@function.outer", "textobjects")
+end, { desc = "End of next function" })
+vim.keymap.set({ "n", "x", "o" }, "[m", function()
+  require('nvim-treesitter-textobjects.move').goto_previous_start("@function.outer", "textobjects")
+end, { desc = "Previous function" })
+vim.keymap.set({ "n", "x", "o" }, "]M", function()
+  require('nvim-treesitter-textobjects.move').goto_previous_end("@function.outer", "textobjects")
+end, { desc = "End of previous function" })
+
+vim.keymap.set({ "n", "x", "o" }, "]]", function()
+  require('nvim-treesitter-textobjects.move').goto_next_start("@class.outer", "textobjects")
+end, { desc = "Next class" })
+vim.keymap.set({ "n", "x", "o" }, "][", function()
+  require('nvim-treesitter-textobjects.move').goto_next_end("@class.outer", "textobjects")
+end, { desc = "End of next class" })
+vim.keymap.set({ "n", "x", "o" }, "[[", function()
+  require('nvim-treesitter-textobjects.move').goto_previous_start("@class.outer", "textobjects")
+end, { desc = "Previous class" })
+vim.keymap.set({ "n", "x", "o" }, "[]", function()
+  require('nvim-treesitter-textobjects.move').goto_previous_end("@class.outer", "textobjects")
+end, { desc = "End of previous class" })
+
+vim.keymap.set({ "n", "x", "o" }, "]k", function()
+  require('nvim-treesitter-textobjects.move').goto_next_start("@block.outer", "textobjects")
+end, { desc = "Next block" })
+vim.keymap.set({ "n", "x", "o" }, "]K", function()
+  require('nvim-treesitter-textobjects.move').goto_next_end("@block.outer", "textobjects")
+end, { desc = "End of next block" })
+vim.keymap.set({ "n", "x", "o" }, "[k", function()
+  require('nvim-treesitter-textobjects.move').goto_previous_start("@block.outer", "textobjects")
+end, { desc = "Previous block" })
+vim.keymap.set({ "n", "x", "o" }, "[K", function()
+  require('nvim-treesitter-textobjects.move').goto_previous_end("@block.outer", "textobjects")
+end, { desc = "End of previous block" })
+
+vim.keymap.set({ "n", "x", "o" }, "]a", function()
+  require('nvim-treesitter-textobjects.move').goto_next_start("@parameter.outer", "textobjects")
+end, { desc = "Next parameter" })
+vim.keymap.set({ "n", "x", "o" }, "]A", function()
+  require('nvim-treesitter-textobjects.move').goto_next_end("@parameter.outer", "textobjects")
+end, { desc = "End of next parameter" })
+vim.keymap.set({ "n", "x", "o" }, "[a", function()
+  require('nvim-treesitter-textobjects.move').goto_previous_start("@parameter.outer", "textobjects")
+end, { desc = "Previous parameter" })
+vim.keymap.set({ "n", "x", "o" }, "[A", function()
+  require('nvim-treesitter-textobjects.move').goto_previous_end("@parameter.outer", "textobjects")
+end, { desc = "End of previous parameter" })
+-- }}}
+
 -- }}}
 -- Neogen: {{{
 
@@ -587,15 +675,12 @@ local on_attach = function(client, bufnr)
   vim.keymap.set({'n', 'i'}, '<C-s>', vim.lsp.buf.signature_help, bufopts)
 end
 
-require('lspconfig')['clangd'].setup{
+vim.lsp.config('*', {
   on_attach = on_attach,
   capabilities = capabilities
-}
+})
 
-require('lspconfig')['pyright'].setup{
-  on_attach = on_attach,
-  capabilities = capabilities
-}
+vim.lsp.enable({'clangd', 'pyright', 'jdtls', 'gopls', 'astro', 'ts_ls', 'vtsls', 'vue_ls'})
 
 local function organize_imports()
   local params = {
@@ -606,7 +691,7 @@ local function organize_imports()
   vim.lsp.buf.execute_command(params)
 end
 
-require('lspconfig')['ts_ls'].setup{
+vim.lsp.config('ts_ls', {
   on_attach = on_attach,
   capabilities = capabilities,
   init_options = {
@@ -618,13 +703,6 @@ require('lspconfig')['ts_ls'].setup{
       }
     }
   },
-  settings = {
-    typescript = {
-      format = {
-        semicolons = 'remove'
-      }
-    }
-  },
   filetypes = { "javascript", "typescript", "vue" },
   commands = {
     TsserverOrganizeImports = {
@@ -632,22 +710,7 @@ require('lspconfig')['ts_ls'].setup{
       description = "Organize TS Imports"
     }
   }
-}
-
-require('lspconfig')['jdtls'].setup{
-  on_attach = on_attach,
-  capabilities = capabilities
-}
-
-require('lspconfig')['gopls'].setup{
-  on_attach = on_attach,
-  capabilities = capabilities
-}
-
-require('lspconfig')['astro'].setup{
-  on_attach = on_attach,
-  capabilities = capabilities
-}
+})
 
 local lsp_util = require('lspconfig.util')
 
@@ -672,13 +735,36 @@ local function get_typescript_server_path(root_dir)
   end
 end
 
-require('lspconfig')['volar'].setup{
+local vue_plugin = {
+  name = "@vue/typescript-plugin",
+  location = "~/.local/lib/node_modules/@vue/typescript-plugin",
+  languages = { "vue" },
+  configNamespace = "typescript"
+}
+
+vim.lsp.config('vtsls', {
+  settings = {
+    vtsls = {
+      tsserver = {
+        globalPlugins = {
+          vue_plugin
+        }
+      }
+    }
+  },
+  filetypes = { "vue" },
+  on_attach = on_attach,
+  capabilities = capabilities,
+})
+
+vim.lsp.config('vue_ls', {
   on_new_config = function(new_config, new_root_dir)
     new_config.init_options.typescript.tsdk = get_typescript_server_path(new_root_dir)
   end,
   on_attach = on_attach,
   capabilities = capabilities,
-}
+})
+
 -- }}}
 -- ZK: {{{
 require("zk").setup{
@@ -754,24 +840,26 @@ end, { noremap = true, silent = true, desc = "Format with conform" })
 -- codecompanion: {{{
 require("codecompanion").setup({
   adapters = {
-    gemini = function()
-      return require("codecompanion.adapters").extend("gemini", {
-        schema = {
-          model = {
-            default = "gemini-2.5-pro"
+    http = {
+      gemini = function()
+        return require("codecompanion.adapters").extend("gemini", {
+          schema = {
+            model = {
+              default = "gemini-3-pro-preview"
+            }
           }
-        }
-      })
-    end,
-    gemini2 = function()
-      return require("codecompanion.adapters").extend("gemini", {
-        schema = {
-          model = {
-            default = "gemini-2.0-flash"
+        })
+      end,
+      gemini_flash = function()
+        return require("codecompanion.adapters").extend("gemini", {
+          schema = {
+            model = {
+              default = "gemini-2.5-flash"
+            }
           }
-        }
-      })
-    end
+        })
+      end
+    }
   },
   strategies = {
     chat = {
@@ -779,9 +867,12 @@ require("codecompanion").setup({
       tools = {
         opts = {
           default_tools = {
-            -- "grep_search",
-            -- "file_search",
-            -- "read_file"
+            "grep_search",
+            "file_search",
+            "read_file",
+            "list_code_usages",
+            "web_search",
+            "fetch_webpage",
           }
         }
       }
@@ -793,96 +884,24 @@ require("codecompanion").setup({
       adapter = "gemini",
     }
   },
-  prompt_library = {
-    ['Diff code review'] = {
-      strategy = 'chat',
-      description = 'Perform a code review',
-      opts = {
-        auto_submit = true,
-        user_prompt = false,
-        ignore_system_prompt = true,
-      },
-      prompts = {
-        {
-          role = 'system',
-          content = [[
-You are an experienced code review assistant. Your role is to help me
-understand and analyze a merge request so I can provide thoughtful,
-well-reasoned feedback to my colleague. Do not perform the code review yourself.
-Instead, guide me through the process and help me identify what to focus on. You can
-use @read_file @file_search and @grep_search to orient yourself in the code base.
-
-Your Tasks:
-1. Change Summary & Overview:
-  - Provide a clear, high-level summary of what this merge request accomplishes
-  - Identify the main files/modules affected and the nature of changes (new features, bug fixes, refactoring, etc.)
-  - Highlight the scope and complexity of the changes
-
-2. Areas Requiring Attention: Point out specific areas I should focus on during my review.
-  - Critical Logic Changes: Functions/methods with complex business logic modifications
-  - Security Considerations: Authentication, authorization, input validation, data handling
-  - Performance Impact: Database queries, loops, memory usage, API calls
-  - Error Handling: Exception handling, edge cases, failure scenarios
-  - Dependencies: New libraries, version updates, external service integrations
-  - Breaking Changes: API modifications, interface changes, backward compatibility
-
-3. Review Focus Questions
-For each significant change, help me think through:
-  - What is this change trying to accomplish?
-  - Are there any edge cases or scenarios that might not be handled?
-  - Is the approach consistent with our existing codebase patterns?
-  - Are there potential performance or security implications?
-  - How might this affect other parts of the system?
-
-4. Code Quality Checkpoints
-Guide me to examine:
-  - Readability: Is the code clear and well-documented?
-  - Maintainability: Will future developers understand this easily?
-  - Testing: Are there adequate tests for the changes?
-  - Architecture: Does this fit well with our existing design patterns?
-  - Standards: Does it follow our team's coding conventions?
-
-5. Feedback Structuring
-Help me organize my feedback into:
-  - Must Fix: Critical issues that block the merge
-  - Should Fix: Important improvements that enhance quality
-  - Consider: Suggestions for potential improvements
-  - Positive Notes: What was done well (important for team morale)
-
-What I Need From You:
-1. Analyze the diff/changes I provide and give me the overview above.
-2. Ask clarifying questions if you need more context about our codebase or requirements
-3. Suggest specific lines or sections I should pay extra attention to and why
-4. When describing the changes of the merge request, show me the important code snippets
-4. Help me formulate feedback comments based on my comments and our discussion
-5. Help me formulate questions to ask the author if something is unclear
-6. Remind me of best practices relevant to the specific changes being made
-
-What You Should NOT Do:
-- Don't write the code review comments for me unless prompted
-- Don't make definitive judgments about whether code is "good" or "bad" unless prompted
-- Don't provide solutions to issues you identify unless prompted
-
-Remember: I want to be an engaged, thoughtful reviewer who provides valuable
-feedback. Help me understand what I'm looking at and guide my analysis, but let
-me draw the conclusions and write the feedback myself.
-          ]]
-        },
-        {
-          role = 'user',
-          content = function()
-            local target_branch = vim.fn.input('Target branch for merge base diff (default: develop): ', 'develop')
-            local mr_diff = vim.fn.system('git diff --merge-base ' .. target_branch)
-            return "This is the diff of the merge request:\n\n```\n" .. mr_diff .. "\n```\n\n"
-          end,
-        },
-      },
-    }
-  }
 })
-vim.keymap.set({'n', 'v'}, '<leader>cc', '<cmd>CodeCompanionChat Toggle<cr>', { desc = "Toggle CodeCompanion chat", unpack(diagopts) })
-vim.keymap.set({'n', 'v'}, '<leader>ca', '<cmd>CodeCompanionActions<cr>', { desc = "Open CodeCompanion action pallete", unpack(diagopts) })
-vim.keymap.set({'v'}, '<leader>c=', '<cmd>CodeCompanionChat Add<cr>', { desc = "Add selected code to the chat buffer.", unpack(diagopts) })
+vim.keymap.set(
+  {'n', 'v'},
+  '<leader>cc',
+  '<cmd>CodeCompanionChat Toggle<cr>', { desc = "Toggle CodeCompanion chat", unpack(diagopts) }
+)
+vim.keymap.set(
+  {'n', 'v'},
+  '<leader>ca',
+  '<cmd>CodeCompanionActions<cr>',
+  { desc = "Open CodeCompanion action pallete", unpack(diagopts) }
+)
+vim.keymap.set(
+  {'v'},
+  '<leader>c=',
+  '<cmd>CodeCompanionChat Add<cr>',
+  { desc = "Add selected code to the chat buffer.", unpack(diagopts) }
+)
 
 local codecompanion_augroup = vim.api.nvim_create_augroup(
   "codecompanion",

@@ -44,7 +44,7 @@ if has('nvim')
   Plug 'danymat/neogen'
   Plug 'neovim/nvim-lspconfig'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-  Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+  Plug 'nvim-treesitter/nvim-treesitter-textobjects', {'branch': 'main'}
 
   " This is not a neovim specific plugin, but I am using it as a
   " replacement of pyright's (LSP) organize import command. Hence I
