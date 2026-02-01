@@ -80,6 +80,24 @@ function switch-background() {
         ln -fs "colors/${THEMENAME}-$newbg.css" ${XDG_CONFIG_HOME:-$HOME/.config}/gtk-4.0/colors.css
     fi
 
+    if (( $+commands[claude] )); then
+        if sed --version > /dev/null 2>&1; then
+            sed -i "s/\"theme\": \".*\"/\"theme\": \"$newbg\"/" "$HOME/.claude.json"
+        else
+            sed -i '' "s/\"theme\": \".*\"/\"theme\": \"$newbg\"/" "$HOME/.claude.json"
+        fi
+    fi
+
+    if [[ -r "$HOME/.gemini/settings.json" ]]; then
+        [[ $newbg == "dark" ]] && local gemini_theme="Default" || local gemini_theme="Default Light"
+
+        if sed --version > /dev/null 2>&1; then
+            sed -i "s/\"theme\": \"Default.*\"/\"theme\": \"$gemini_theme\"/" "$HOME/.gemini/settings.json"
+        else
+            sed -i '' "s/\"theme\": \"Default.*\"/\"theme\": \"$gemini_theme\"/" "$HOME/.gemini/settings.json"
+        fi
+    fi
+
     if [[ "$(uname -s)" == Linux ]]; then
         if [[ "$XDG_SESSION_TYPE" == wayland ]]; then
             gsettings set org.gnome.desktop.interface gtk-theme $gtk_theme

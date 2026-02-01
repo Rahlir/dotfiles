@@ -41,3 +41,9 @@ log/
 
 # This is useful when stashing away scrap files
 .scraps/
+
+# T-Mobile projects
+db_queries/
+requests/
+
+**/.claude/settings.local.json
