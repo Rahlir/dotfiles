@@ -54,6 +54,7 @@
     # Using only LF line endings, see core.autocrlf in
     # https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration
     autocrlf = input
+    hooksPath = ~/.config/git/hooks
 
 [init]
     # Use main instead of master on git init
