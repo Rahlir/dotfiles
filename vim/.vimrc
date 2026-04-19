@@ -68,7 +68,7 @@ if has('nvim')
   Plug 'ryanoasis/vim-devicons'
   Plug 'nvim-tree/nvim-web-devicons'
 
-  Plug 'olimorris/codecompanion.nvim'
+  Plug 'exafunction/windsurf.nvim'
 endif
 
 call plug#end()
@@ -633,7 +633,6 @@ function! LightlineFilename()
   return fname =~# '^__Tagbar__' ? '' :
         \ fname ==# '__Calendar' ? strftime('%a %-d %B') :
         \ &filetype ==# 'startify' ? "󱓞 Let's start" :
-        \ &filetype ==# 'codecompanion' ? CodeCompanionStatus() :
         \ (fname !=# '' ? fname : '[No Name]') .
         \ (LightlineModified() !=# '' ? ' ' . LightlineModified() : '')
 endfunction
@@ -644,18 +643,6 @@ function! LightlineLineInfo()
   endif
   let lineinfo = printf('%3d:%-2d', line('.'), col('.'))
   return lineinfo
-endfunction
-
-function! CodeCompanionStatus()
-  let icon = '  '
-  let adapter = get(g:, 'codecompanion_adapter', "CodeCompanion")
-  if g:codecompanion_request_started
-    return icon . adapter . '  thinking 󱧤'
-  elseif g:codecompanion_request_streaming
-    return icon. adapter . '  talking 󱋊'
-  endif
-
-  return icon . adapter . "  ready "
 endfunction
 
 function! LightlinePercent()

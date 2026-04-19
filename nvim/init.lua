@@ -102,7 +102,6 @@ wk.setup{
     { "<leader>n", group = "neogen", icon = "" },
     { "<leader>C", group = "calendar", icon = "" },
     { "<leader>S", group = "dbext", icon = "" },
-    { "<leader>c", group = "codecompanion", icon = "" },
 
     { "<leader>h", group = "gitgutter" },
     { "<leader>hp", desc = "Preview hunk" },
@@ -254,11 +253,44 @@ lightline.component_type.diag_ok = 'left'
 lightline.component_type.diag_info = 'left'
 lightline.component_type.diag_hint = 'left'
 
+-- Keep lightline rendering, but stop it from writing a statusline into every
+-- window. A float-aware wrapper below will decide when the statusline should
+-- render.
+lightline.enable = vim.tbl_extend('force', lightline.enable or {}, { statusline = 0 })
+
 vim.g.lightline = lightline
+
+_G.nvimrc_lightline_statusline = function()
+  local winid = tonumber(vim.g.statusline_winid) or 0
+  if winid == 0 then
+    return vim.fn['lightline#statusline'](0)
+  end
+
+  local ok, cfg = pcall(vim.api.nvim_win_get_config, winid)
+  if ok and cfg.relative ~= '' then
+    return ''
+  end
+
+  local actual = tonumber(vim.g.actual_curwin) or vim.api.nvim_get_current_win()
+  local inactive = actual ~= winid and 1 or 0
+  return vim.fn['lightline#statusline'](inactive)
+end
+
+vim.fn['lightline#enable']()
+
+-- Remove any startup window-local statuslines so every window uses the global
+-- wrapper above.
+for _, win in ipairs(vim.api.nvim_list_wins()) do
+  vim.wo[win].statusline = ''
+end
+
+vim.o.statusline = "%!v:lua.nvimrc_lightline_statusline()"
 
 -- Update lightline if diagnostics change
 vim.api.nvim_create_autocmd('DiagnosticChanged', {
-  callback = 'lightline#update',
+  callback = function()
+    vim.fn['lightline#update']()
+  end,
   group = nvimrc_augroup
 })
 -- }}}
@@ -596,9 +628,10 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 -- LspConfig: {{{
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
+local on_attach = function(args)
+  local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
   -- See `:help vim.lsp.*` for documentation on any of the below functions
-  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+  vim.api.nvim_buf_set_option(args.buf, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
   wk.add({
     { "<leader>l", group = "lsp" },
@@ -607,7 +640,7 @@ local on_attach = function(client, bufnr)
   })
 
   -- Mappings:
-  local bufopts = { noremap=true, silent=true, buffer=bufnr }
+  local bufopts = { noremap=true, silent=true, buffer=args.buf }
   local teleopts = {
     show_line=false, layout_config={ width=0.7, preview_width=0.45 }, initial_mode="normal"
   }
@@ -669,14 +702,9 @@ local on_attach = function(client, bufnr)
   'n', '<leader>fS', builtin.lsp_dynamic_workspace_symbols,
   { desc = "Telescope workspace symbols", unpack(bufopts) }
   )
-
-  -- Misc
-  vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-  vim.keymap.set({'n', 'i'}, '<C-s>', vim.lsp.buf.signature_help, bufopts)
 end
 
 vim.lsp.config('*', {
-  on_attach = on_attach,
   capabilities = capabilities
 })
 
@@ -692,7 +720,6 @@ local function organize_imports()
 end
 
 vim.lsp.config('ts_ls', {
-  on_attach = on_attach,
   capabilities = capabilities,
   init_options = {
     plugins = {
@@ -753,7 +780,6 @@ vim.lsp.config('vtsls', {
     }
   },
   filetypes = { "vue" },
-  on_attach = on_attach,
   capabilities = capabilities,
 })
 
@@ -761,8 +787,12 @@ vim.lsp.config('vue_ls', {
   on_new_config = function(new_config, new_root_dir)
     new_config.init_options.typescript.tsdk = get_typescript_server_path(new_root_dir)
   end,
-  on_attach = on_attach,
   capabilities = capabilities,
+})
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = on_attach,
+  group = nvimrc_augroup
 })
 
 -- }}}
@@ -770,11 +800,6 @@ vim.lsp.config('vue_ls', {
 require("zk").setup{
   -- can be "telescope", "fzf" or "select"
   picker = "telescope",
-  lsp = {
-    config = {
-      on_attach = on_attach
-    }
-  }
 }
 
 -- Mappings:
@@ -782,6 +807,9 @@ local opts = { noremap=true, silent=false }
 vim.keymap.set("n", "<leader>zn", "<Cmd>ZkNew { title = vim.fn.input('Title: ') }<CR>", { desc = "New note", unpack(opts) })
 vim.keymap.set("n", "<leader>zl", "<Cmd>ZkNotes<CR>", { desc = "List of notes", unpack(opts) })
 vim.keymap.set("n", "<leader>zt", "<Cmd>ZkTags<CR>", { desc = "List of tags", unpack(opts) })
+vim.keymap.set("n", "<leader>zd", "<Cmd>ZkNew { dir = 'daily' }<CR>", { desc = "Daily note", unpack(opts) })
+vim.keymap.set("n", "<leader>zz", ":edit $ZK_NOTEBOOK_DIR/todo.md<CR>", { desc = "Todo note", silent = true, unpack(opts) })
+vim.keymap.set("n", "<leader>zp", "<Cmd>ZkNotes { 'projects' }<CR>", { desc = "Project notes", unpack(opts) })
 
 -- }}}
 -- indent-blankline: {{{
@@ -837,106 +865,33 @@ vim.keymap.set('n', '<leader>rc', function()
   require("conform").format({ async = true })
 end, { noremap = true, silent = true, desc = "Format with conform" })
 -- }}}
--- codecompanion: {{{
-require("codecompanion").setup({
-  adapters = {
-    http = {
-      gemini = function()
-        return require("codecompanion.adapters").extend("gemini", {
-          schema = {
-            model = {
-              default = "gemini-3-pro-preview"
-            }
-          }
-        })
-      end,
-      gemini_flash = function()
-        return require("codecompanion.adapters").extend("gemini", {
-          schema = {
-            model = {
-              default = "gemini-2.5-flash"
-            }
-          }
-        })
-      end
-    }
-  },
-  strategies = {
-    chat = {
-      adapter = "gemini",
-      tools = {
-        opts = {
-          default_tools = {
-            "grep_search",
-            "file_search",
-            "read_file",
-            "list_code_usages",
-            "web_search",
-            "fetch_webpage",
-          }
-        }
-      }
+-- windsurf: {{{
+require("codeium").setup({
+  enable_cmp_source = false,
+  enable_chat = false,
+  virtual_text = {
+    enabled = true,
+    filetypes = {
+      python = true,
+      typescript = true,
+      javascript = true,
+      typescriptreact = true,
+      javascriptreact = true,
+      vue = true,
+      cpp = true,
+      c = true,
+      lua = true
     },
-    inline = {
-      adapter = "gemini",
-    },
-    cmd = {
-      adapter = "gemini",
+    default_filetype_enabled = false,
+    idle_delay = 100,
+    key_bindings = {
+      accept = "<S-CR>",
+      accept_word = false,
+      accept_line = false,
+      clear = "<C-CR>",
+      next = "<M-]>",
+      prev = "<M-[>",
     }
-  },
-})
-vim.keymap.set(
-  {'n', 'v'},
-  '<leader>cc',
-  '<cmd>CodeCompanionChat Toggle<cr>', { desc = "Toggle CodeCompanion chat", unpack(diagopts) }
-)
-vim.keymap.set(
-  {'n', 'v'},
-  '<leader>ca',
-  '<cmd>CodeCompanionActions<cr>',
-  { desc = "Open CodeCompanion action pallete", unpack(diagopts) }
-)
-vim.keymap.set(
-  {'v'},
-  '<leader>c=',
-  '<cmd>CodeCompanionChat Add<cr>',
-  { desc = "Add selected code to the chat buffer.", unpack(diagopts) }
-)
-
-local codecompanion_augroup = vim.api.nvim_create_augroup(
-  "codecompanion",
-  { clear = true }
-)
-
-vim.g.codecompanion_request_started = false
-vim.g.codecompanion_request_streaming = false
-
-vim.api.nvim_create_autocmd({ "User" }, {
-  pattern = " CodeCompanionChatAdapter",
-  group = codecompanion_augroup,
-  callback = function(request)
-    vim.print(request)
-    if request.data.adapter == nil or vim.tbl_isempty(request.data) then
-      return
-    end
-    vim.g.codecompanion_adapter = request.data.adapter.name
-  end
-})
-
-vim.api.nvim_create_autocmd({ "User" }, {
-  pattern = "CodeCompanionRequest*",
-  group = codecompanion_augroup,
-  callback = function(request)
-    if request.match == "CodeCompanionRequestStarted" then
-      vim.g.codecompanion_adapter = request.data.adapter.formatted_name
-      vim.g.codecompanion_request_started = true
-    elseif request.match == "CodeCompanionRequestStreaming" then
-      vim.g.codecompanion_request_started = false
-      vim.g.codecompanion_request_streaming = true
-    else
-      vim.g.codecompanion_request_started = false
-      vim.g.codecompanion_request_streaming = false
-    end
-  end
+  }
 })
 -- }}}
