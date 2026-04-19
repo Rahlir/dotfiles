@@ -33,6 +33,7 @@ replace_commands_statusline() {
         "\#{sessionsno}"
         "\#{memory}"
         "\#{task}"
+        "\#{brew}"
     )
     local interpolate_cmds=(
         "#($script_dir/uptime.sh)"
@@ -41,6 +42,7 @@ replace_commands_statusline() {
         "#($script_dir/sessionsno.sh)"
         "#($script_dir/memory.sh)"
         "#($script_dir/task.sh)"
+        "#($script_dir/brew.sh)"
     )
 
     for ((i=0; i<${#interpolate_fields[@]}; i++)); do

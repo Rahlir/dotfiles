@@ -6,5 +6,5 @@ if raw_output=$(sensors -u 2>&1); then
 elif raw_output=$(osx-cpu-temp 2>&1); then
     echo -n $raw_output
 else
-    echo -n Error
+    echo -n "error"
 fi
