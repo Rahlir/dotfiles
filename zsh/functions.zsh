@@ -192,3 +192,57 @@ function bugwarrior {
     BUGWARRIORRC=/tmp/bugwarrior.toml $bugwarrior_cmd $@
     cd $original_wd
 }
+
+function gitco {
+    local tmpdir
+    tmpfile=$(mktemp) || return 1
+    local diff
+    diff=$(git diff --cached) || return 1
+    if [[ -z $diff ]]; then
+        echo "Nothing to commit"
+        return 1
+    fi
+    echo "✨ Generating commit message..."
+
+    pi -p --no-tools --no-extensions --no-skills --no-context-files --no-session --model openai-codex/gpt-5.3-codex:minimal \
+    "Generate a git commit message for the attached staged diff following the Conventional Commits 1.0.0 specification.
+
+Format:
+  <type>[optional scope]: <description>
+
+  [optional body]
+
+  [optional footer(s)]
+
+Rules:
+- type MUST be one of: feat, fix, build, chore, ci, docs, style, refactor, perf, test, revert
+- Use feat for new features, fix for bug fixes or very small features
+- scope is optional: a noun in parentheses describing the affected section, e.g. feat(parser):
+- description: short summary in present tense, max 72 chars total for the first line
+- Append ! after type/scope for breaking changes, e.g. feat! or feat(api)!
+- Breaking changes MUST also have a 'BREAKING CHANGE: <description>' footer
+- Body and footers are optional; separate each section with a blank line
+- Output ONLY the commit message. No preamble, no markdown fences, no explanation.
+- Ensure every line is wrapped to 72 chars
+
+Examples:
+  feat(auth): add OAuth2 login support
+  fix: prevent race condition in request handler
+  docs: correct typo in README
+  feat!: drop support for Node 6
+
+  BREAKING CHANGE: Node 6 is no longer supported.
+
+Staged diff:
+$diff" > $tmpfile
+
+    if (( ? != 0 )); then
+        rm -f $tmpfile
+        return 1
+    fi
+    
+    git commit --edit --file $tmpfile
+    local rc=$?
+    rm -f $tmpfile
+    return $rc
+}
