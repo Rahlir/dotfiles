@@ -202,6 +202,11 @@ function gitco {
         echo "Nothing to commit"
         return 1
     fi
+    local pchook=".git/hooks/pre-commit"
+    if [[ -x $pchook ]]; then
+        $pchook || return 1
+    fi
+
     echo "✨ Generating commit message..."
 
     pi -p --no-tools --no-extensions --no-skills --no-context-files --no-session --model openai-codex/gpt-5.3-codex:minimal \
@@ -234,14 +239,14 @@ Examples:
   BREAKING CHANGE: Node 6 is no longer supported.
 
 Staged diff:
-$diff" > $tmpfile
+$diff" > $tmpfile 2> /dev/null
 
     if (( ? != 0 )); then
         rm -f $tmpfile
         return 1
     fi
     
-    git commit --edit --file $tmpfile
+    git commit --no-verify --edit --file $tmpfile
     local rc=$?
     rm -f $tmpfile
     return $rc
