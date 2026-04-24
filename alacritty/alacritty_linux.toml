@@ -31,3 +31,18 @@ style = "Bold Italic"
 # Window options
 [window]
 dynamic_title = false
+
+
+# Explicit CSI u sequences for modified Enter.
+# tmux requests extended keys via xterm modifyOtherKeys (CSI > 4 ; 2 m),
+# but Alacritty only supports the kitty keyboard protocol. These bindings
+# bypass the protocol negotiation so Ctrl/Shift-Enter work inside tmux.
+[[keyboard.bindings]]
+key = "Return"
+mods = "Shift"
+chars = "\u001B[13;2u"
+
+[[keyboard.bindings]]
+key = "Return"
+mods = "Control"
+chars = "\u001B[13;5u"
