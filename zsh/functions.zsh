@@ -202,14 +202,15 @@ function gitco {
         echo "Nothing to commit"
         return 1
     fi
-    local pchook=".git/hooks/pre-commit"
+    local pchook
+    pchook=$(git rev-parse --git-path hooks/pre-commit) || return 1
     if [[ -x $pchook ]]; then
         $pchook || return 1
     fi
 
     echo "✨ Generating commit message..."
 
-    pi -p --no-tools --no-extensions --no-skills --no-context-files --no-session --model openai-codex/gpt-5.3-codex:minimal \
+    pi -p --no-tools --no-extensions --no-skills --no-context-files --no-session --model openai-codex/gpt-5.5:low \
     "Generate a git commit message for the attached staged diff following the Conventional Commits 1.0.0 specification.
 
 Format:
@@ -231,9 +232,28 @@ Rules:
 - Ensure every line is wrapped to 72 chars
 
 Examples:
+
   feat(auth): add OAuth2 login support
+
+  Implements the full OAuth2 workflow for authenticating the user to the
+  application.
+
+  Changelog: added
+
+  ----------------------------------------------
+
   fix: prevent race condition in request handler
+
+  The request handler had a race condition when multiple requests were processed
+  concurrently. This commit adds lock mechanism with \`asyncio.Lock\` that prevents
+  these race conditions.
+
+  ----------------------------------------------
+
   docs: correct typo in README
+
+  ----------------------------------------------
+
   feat!: drop support for Node 6
 
   BREAKING CHANGE: Node 6 is no longer supported.
