@@ -1,352 +1,47 @@
-# TASKRC
+# TASKRC - Task System v3
 #
-# Basic taskwarrior configuration file. Use the command 'task show' to see
-# all defaults and overrides.
+# Minimal by design: the AI (pi / chatbot) is the primary interface and
+# does ranking, reviews, and reports. This config only keeps raw `task`
+# feasible without AI. Config is FROZEN: changes only in a quarterly
+# design session. See projects/task-system-v3.md in the notes repo.
 #
 # by Tadeas Uhlir <tadeas.uhlir@gmail.com>
 
-### Sourcing other files ###
-# Holidays
-include holidays/holidays.en-US.2023.rc
-include holidays/holidays.en-US.2024.rc
-include holidays/holidays.cs-CZ.2023.rc
-include holidays/holidays.cs-CZ.2024.rc
+### Includes ###
 # Color theme
 include themes/$THEMENAME-$THEMEBG.theme
-# Task sync config. This is not part of dotfiles as is
-# sensitive and device dependent
+# Sync config (sensitive and device dependent, not in dotfiles)
 include $XDG_CONFIG_HOME/task/tasksyncrc
 
 ### XDG dirs ###
 data.location=$XDG_DATA_HOME/task
 hooks.location=$XDG_CONFIG_HOME/task/hooks
 
-### Urgency setup ###
-# Blocking tasks inherit urgency, hence blocked task unfortunately
-# have no urgency penalty. So far this has been working okay for me
-urgency.inherit=1
-urgency.blocking.coefficient=0.0
-urgency.blocked.coefficient=-0.0
-urgency.project.coefficient=0.8
-urgency.annotations.coefficient=0.5
-urgency.user.tag.stale.coefficient=-1.0
-urgency.user.tag.nextweek.coefficient=10
-
-indent.annotation=4
-### Calendar setup ###
-# Calendar command shows both holidays and list report of all
-# due tasks that fall within the calendar time window
-calendar.details=full
-calendar.holidays=full
-calendar.details.report=calreport
-
-### UDAs ###
-# Low priority means task is less important than no priority
-uda.priority.values=H,M,,L
-urgency.uda.priority.L.coefficient=-1.0
-# Duration pulled from timewarrior
-uda.took.type=duration
-uda.took.label=Time Spent
-# Time estimate of a task
-uda.estimate.type=duration
-uda.estimate.label=Time Estimated
-urgency.uda.estimate.coefficient=0.8
-uda.agilestatus.type=string
-uda.agilestatus.label=Agile Status
-uda.agilestatus.values=inbox,backlog,active
-uda.agilestatus.default=inbox
-urgency.uda.agilestatus.backlog.coefficient=-1.0
-urgency.uda.agilestatus.inbox.coefficient=20.0
-# Bugwarrior UDAs
-# JIRA
-# Default ones
-uda.jiraissuetype.type=string
-uda.jiraissuetype.label=Issue Type
-uda.jirasummary.type=string
-uda.jirasummary.label=Jira Summary
-uda.jiraurl.type=string
-uda.jiraurl.label=Jira URL
-uda.jiradescription.type=string
-uda.jiradescription.label=Jira Description
-uda.jiraid.type=string
-uda.jiraid.label=Jira Issue ID
-uda.jiraestimate.type=numeric
-uda.jiraestimate.label=Estimate
-uda.jirafixversion.type=string
-uda.jirafixversion.label=Fix Version
-uda.jiracreatedts.type=date
-uda.jiracreatedts.label=Created At
-uda.jirastatus.type=string
-uda.jirastatus.label=Jira Status
-uda.jirastatus.values=Waiting,Released,Code review,To Do,New,Testing,In Solution,In Progress
-uda.jirasubtasks.type=string
-uda.jirasubtasks.label=Jira Subtasks
-uda.jiraparent.type=string
-uda.jiraparent.label=Jira Parent
-# My custom ones
-uda.jiraepic.type=string
-uda.jiraepic.label=Jira Epic ID
-uda.jirapriority.type=string
-uda.jirapriority.label=Jira Priority
-# Used for updating info regarding jira sprints
-uda.jirasprintupdate.type=date
-uda.jirasprintupdate.label=Jira Sprints Updated
-# GITLAB
-# Default ones
-uda.gitlabtitle.type=string
-uda.gitlabtitle.label=Gitlab Title
-uda.gitlabdescription.type=string
-uda.gitlabdescription.label=Gitlab Description
-uda.gitlabcreatedon.type=date
-uda.gitlabcreatedon.label=Gitlab Created
-uda.gitlabupdatedat.type=date
-uda.gitlabupdatedat.label=Gitlab Updated
-uda.gitlabduedate.type=date
-uda.gitlabduedate.label=Gitlab Due Date
-uda.gitlabmilestone.type=string
-uda.gitlabmilestone.label=Gitlab Milestone
-uda.gitlaburl.type=string
-uda.gitlaburl.label=Gitlab URL
-uda.gitlabrepo.type=string
-uda.gitlabrepo.label=Gitlab Repo Slug
-uda.gitlabtype.type=string
-uda.gitlabtype.label=Gitlab Type
-uda.gitlabnumber.type=string
-uda.gitlabnumber.label=Gitlab Issue/MR #
-uda.gitlabstate.type=string
-uda.gitlabstate.label=Gitlab Issue/MR State
-uda.gitlabupvotes.type=numeric
-uda.gitlabupvotes.label=Gitlab Upvotes
-uda.gitlabdownvotes.type=numeric
-uda.gitlabdownvotes.label=Gitlab Downvotes
-uda.gitlabwip.type=numeric
-uda.gitlabwip.label=Gitlab MR Work-In-Progress Flag
-uda.gitlabauthor.type=string
-uda.gitlabauthor.label=Gitlab Author
-uda.gitlabassignee.type=string
-uda.gitlabassignee.label=Gitlab Assignee
-uda.gitlabnamespace.type=string
-uda.gitlabnamespace.label=Gitlab Namespace
-uda.gitlabweight.type=numeric
-uda.gitlabweight.label=Gitlab Weight
-# GITHUB
-# Default ones
-uda.githubtitle.type=string
-uda.githubtitle.label=Github Title
-uda.githubbody.type=string
-uda.githubbody.label=Github Body
-uda.githubcreatedon.type=date
-uda.githubcreatedon.label=Github Created
-uda.githubupdatedat.type=date
-uda.githubupdatedat.label=Github Updated
-uda.githubclosedon.type=date
-uda.githubclosedon.label=GitHub Closed
-uda.githubmilestone.type=string
-uda.githubmilestone.label=Github Milestone
-uda.githubrepo.type=string
-uda.githubrepo.label=Github Repo Slug
-uda.githuburl.type=string
-uda.githuburl.label=Github URL
-uda.githubtype.type=string
-uda.githubtype.label=Github Type
-uda.githubnumber.type=string
-uda.githubnumber.label=Github Issue/PR #
-uda.githubuser.type=string
-uda.githubuser.label=Github User
-uda.githubnamespace.type=string
-uda.githubnamespace.label=Github Namespace
-uda.githubstate.type=string
-uda.githubstate.label=GitHub State
-uda.githubdraft.type=numeric
-uda.githubdraft.label=GitHub Draft
-
-# Urgency setup for bugwarrior UDAs
-urgency.uda.jirastatus.Code review.coefficient=-5.0
+### Task model ###
+# +active = this week's working set (managed at weekly refresh).
+# Backlog = pending without +active. The boost keeps stock reports
+# (next) useful without AI.
+urgency.user.tag.active.coefficient=15.0
 
 ### Reports ###
+# This week's working set
+report.week.description=This week's working set
+report.week.filter=status:pending +active
+report.week.columns=id,project,priority,due.relative,description.count,urgency
+report.week.labels=ID,Project,Prio,Due,Description,Urg
+report.week.sort=urgency-
 
-## Builtin reports ##
+# Backlog, oldest first (doubles as a manual decay view)
+report.shelf.description=Backlog (pending, not active)
+report.shelf.filter=status:pending -active
+report.shelf.columns=id,entry.age,project,due.relative,description.count
+report.shelf.labels=ID,Age,Project,Due,Description
+report.shelf.sort=entry+
 
-# Next overhaul
-report.next.columns=id,start.age,depends,project,priority,recur,description.count,tags.count,took,estimate,scheduled.countdown,due.relative,until.remaining,urgency
-report.next.labels=ID,Active,Deps,Project,Prio,Recur,Description,Tags,Spent,Estimate,Sch,Due,Until,Urg
-report.next.filter=status:pending -WAITING limit:page agilestatus:active
-
-# Only show tags count, only show # of annotations, sort by start, then age (ignore project)
-report.active.columns=id,entry.age,start.age,agilestatus,depends.count,project,priority,recur,description.count,tags.count,scheduled.remaining,due,until
-report.active.labels=ID,Age,Active,Status,D,Project,Prio,Recur,Description,Tags,Sch,Due,Until
-report.active.sort=start+,entry+
-
-report.blocked.columns=id,depends,project,priority,due,start.active,description
-report.blocked.labels=ID,Deps,Project,Prio,Due,Act,Description
-
-report.blocking.columns=id,uuid.short,depends,start.active,project,priority,scheduled.remaining,due.relative,until.remaining,description,urgency
-report.blocking.labels=ID,UUID,Deps,Act,Project,Prio,Sch,Due,Until,Description,Urg
-
-report.list.columns=id,agilestatus,entry.age,start.age,depends.indicator,project,priority,description,tags.count,recur.indicator,scheduled,due,until.remaining,urgency
-report.list.labels=ID,Status,Age,Active,D,Project,Prio,Description,Tags,R,Sch,Due,Until,Urg
-report.list.sort=urgency-,due+,entry+
-
-# Extend timesheet history from 4 weeks to 6 weeks
-report.timesheet.filter=(+PENDING -WAITING start.after:now-6wks) or (+COMPLETED -WAITING end.after:now-6wks)
-
-## Custom reports ##
-
-# Report for the calendar
-report.calreport.description=Report for the calendar view
-report.calreport.columns=id,start.age,depends,project,priority,recur,description.count,took,scheduled,due,until,urgency
-report.calreport.labels=ID,Active,Deps,Project,Prio,Recur,Description,Spent,Sch,Due,Until,Urg
-report.calreport.filter=status:pending -WAITING
-report.calreport.sort=due+,scheduled+
-report.calreport.context=1
-
-# Today report showing scheduled tasks and tasks with due dates soon
-report.today.description=Tasks to work on today
-report.today.columns=id,start.age,depends,project,priority,description,took,estimate,scheduled.age,due.relative,urgency
-report.today.labels=ID,Active,Deps,Project,Prio,Description,Spent,Est,Sched,Due,Urg
-report.today.filter=status:pending (scheduled.before:now or (+next and agilestatus:active) or due.before:today+2days)
-report.today.sort=due+,urgency-
-report.today.context=1
-
-# Today report showing most urgent scheduled tasks and tasks with due dates soon that ARE NOT BLOCKED
-report.now.description=Urgent and unblocked tasks to work on today
-report.now.columns=id,start.age,project,priority,description,took,estimate,scheduled.age,due.relative,urgency
-report.now.labels=ID,Active,Project,Prio,Description,Spent,Est,Sched,Due,Urg
-report.now.filter=status:pending (scheduled.before:now or (+next and agilestatus:active) or due.before:today+2days) +READY
-report.now.sort=urgency-
-report.now.context=1
-
-# Inbox report showing tasks to be processed
-report.inbox.description=Detailed view of tasks in the inbox
-report.inbox.columns=id,start.active,entry.age,depends,estimate,priority,project,tags,recur,due,wait.remaining,until.remaining,description,urgency
-report.inbox.labels=ID,Act,Age,Deps,Est,Prio,Project,Tags,Recur,Due,Wait,Until,Description,Urg
-report.inbox.filter=(status:pending or status:waiting) agilestatus:inbox
-report.inbox.sort=entry+,urgency-
-report.inbox.context=0
-
-report.jira.description=Report for jira issues
-report.jira.columns=agilestatus,id,jiraissuetype,depends,jirastatus,wait.remaining,start.age,project,priority,jirapriority,description.count,tags.count,entry.age,took,estimate,scheduled.countdown,due.relative,urgency
-report.jira.labels=Status,ID,Type,Deps,Jira Status,Wait,Active,Project,Prio,Jira P,Description,Tags,Age,Spent,Estimate,Sch,Due,Urg
-report.jira.filter=(status:pending or status:waiting) +jira
-report.jira.sort=agilestatus+,jirastatus+,urgency-
-report.jira.context=1
-
-# Report for all github and gitlab tasks.
-report.code.description=Report for github and gitlab tasks
-report.code.columns=agilestatus,id,githubtype,gitlabtype,project,priority,description.truncated_count,githubupdatedat,gitlabupdatedat,tags.count,gitlabauthor,githubuser,scheduled.countdown,due.relative,githubcreatedon,gitlabcreatedon,urgency
-report.code.labels=Status,ID,Github Type,Gitlab Type,Project,Prio,Description,Github Upd,Gitlab Upd,Tags,Author,User,Sch,Due,Github Cr,Gitlab Cr,Urg
-report.code.filter=(status:pending or status:waiting) (+github or +gitlab)
-report.code.sort=agilestatus+,urgency-
-report.code.context=1
-
-# Backlog report showing both waiting and pending tasks in cnext-like report
-report.backlog.description=Compact overview of all open tasks
-report.backlog.columns=id,agilestatus,entry.age,start.active,depends,project,priority,tags,description.count,took,estimate,recur,scheduled.countdown,due.relative,until.remaining,urgency
-report.backlog.labels=ID,Status,Age,Act,Deps,Project,Prio,Tags,Description,Spent,Est,Recur,Sch,Due,Until,Urg
-report.backlog.filter=status:pending -WAITING
-report.backlog.sort=urgency-,entry+
-report.backlog.context=1
-
-# Same as backlog, but only show waiting tasks
-report.backburner.description=Compact overview of open tasks that are not on the active list
-report.backburner.columns=id,entry.age,start.age,depends,project,priority,description.count,tags.count,took,estimate,scheduled.countdown,due.relative,until.remaining,urgency
-report.backburner.labels=ID,Age,Active,Deps,Project,Prio,Description,Tags,Spent,Estimate,Sch,Due,Until,Urg
-report.backburner.filter=status:pending -WAITING agilestatus:backlog
-report.backburner.sort=urgency-,entry+
-report.backburner.context=1
-
-report.timelog.description=Finished tasks with times (spent or estimated) logged
-report.timelog.columns=uuid.short,end,status.short,project,description.count,priority,estimate,took
-report.timelog.labels=UUID,Completed,St,Project,Description,Prio,Estimated,Spent
-report.timelog.filter=(estimate.any: or took.any: ) (status:completed or status:deleted)
-report.timelog.sort=end-
-report.timelog.context=1
-
-report.estimates.description=Tasks with time estimates
-report.estimates.columns=id,start.age,project,priority,description.count,tags.count,estimate,urgency
-report.estimates.labels=ID,Active,Project,Prio,Description,Tag,Estimated,Urg
-report.estimates.filter=estimate.any: status:pending
-report.estimates.sort=estimate-,urgency-
-report.estimates.context=1
-
-report.projectview.columns=id,start.active,depends.count,project.indented,description.count,tags.count,took,estimate,recur.indicator,scheduled.countdown,due.countdown,until.countdown
-report.projectview.labels=ID,A,Dep,Project,Description,Tags,Spent,Est,R,Sch,Due,Until
-report.projectview.filter=project.any: status:pending
-report.projectview.sort=project+,depends+
-
-# Report for zk daily page. Very similar to today report, except it doesn't show overdue tasks as they
-# are printed separately in zk
-report._zk.description=Report for daily note template generation
-report._zk.columns=uuid
-report._zk.filter=status:pending ((due.before:today+2days and due.after:now) or scheduled.before:now or (+next and agilestatus:active))
-report._zk.sort=due+,urgency-
-report._zk.context=0
-
-# Default next-like reports for taskwarrior-tui review
-report._ttreview.description=Default next view used for taskwarrior-tui review
-report._ttreview.columns=id,entry.age,start.age,wait.remaining,depends,project,priority,recur,description.count,tags,took,estimate,scheduled.countdown,due.relative,until.remaining,urgency
-report._ttreview.labels=ID,Age,Active,Wait,Deps,Project,Prio,Recur,Description,Tags,Spent,Estimate,Sch,Due,Until,Urg
-report._ttreview.filter=(status:pending or ( status:waiting and wait.before:eow )) agilestatus:active
-report._ttreview.sort=urgency-
-report._ttreview.context=1
-
-report._ttreview2.description=Default next view used for second taskwarrior-tui review screen
-report._ttreview2.columns=id,agilestatus,entry.age,start.age,depends,project,priority,recur,description.count,tags,took,estimate,scheduled.countdown,due.relative,until.remaining,urgency
-report._ttreview2.labels=ID,Status,Age,Active,Deps,Project,Prio,Recur,Description,Tags,Spent,Estimate,Sch,Due,Until,Urg
-report._ttreview2.filter=status:pending ( agilestatus:backlog or agilestatus:inbox )
-report._ttreview2.sort=urgency-
-report._ttreview2.context=1
-
-# ### Aliases ###
-alias.dailystatus=status:completed end.after:today timelog
-alias.editconf=execute nvim $XDG_CONFIG_HOME/task/taskrc
-alias.review=execute taskreview
-alias.open=execute taskurlopen
-alias.backlink=execute taskbacklink
-alias.bl=backlog
-alias.bb=backburner
+# Bare `task` shows the week
+default.command=week
 
 ### Other ###
-# News version
-news.version=3.1.0
-# I do reviews on Monday. This makes the week grouping in timesheet report
-# consistent with that.
+# Weekly refresh happens on Monday
 weekstart=Monday
-
-# Show all projects on summary. Why would you want to complete
-# a project if you don't get to see the satisfying 100% completion
-# bar
-summary.all.projects=1
-
-# Contexts
-# TODO: It is possible change configuration with context using
-# context.<name>.rc.<key>=<value>. Might be interesting to think about this
-context.AtWork.read=(+work or +office) and -docbrown
-context.AtWork.write=+work
-
-context.Workflow.read=+dotfiles or +meta or +notes
-
-context.School.read=+school
-context.School.write=+school
-
-context.TTC.read=+ttc
-context.TTC.write=+ttc +work
-
-context.TMobile.read=+tmobile or +tmobilemac
-context.TMobile.write=+tmobile +work
-
-# Leave room for sync message
-reserved.lines=2
-uda.reviewed.type=date
-uda.reviewed.label=Reviewed
-
-### Taskwarrior TUI ###
-uda.taskwarrior-tui.task-report.next.filter=status:pending agilestatus:active
-uda.taskwarrior-tui.selection.reverse=yes
-uda.taskwarrior-tui.tabs.change-focus-rotate=true
-uda.taskwarrior-tui.shortcuts.1=taskurlopen -o
-uda.taskwarrior-tui.keyconfig.shortcut1=O
-uda.taskwarrior-tui.shortcuts.2=$XDG_CONFIG_HOME/task/tt_scripts/switch_lists.sh
-uda.taskwarrior-tui.keyconfig.shortcut2=>
-uda.taskwarrior-tui.tick-rate=4000
-uda.taskwarrior-tui.task-detail-prefetch=false
+news.version=3.4.2

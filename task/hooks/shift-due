@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+"""Shift midnight due dates to end of day (23:59:59 local).
+
+Fixes the `due:friday` = Friday-00:00 trap: without this, a task due
+"Friday" counts as overdue the entire Friday, which would also trigger
+false-overdue morning nudges in the AI workflow.
+
+Self-contained on purpose (stdlib only, no rahlirw dependency) so that
+deploying to a new replica is "copy this one file". Works as both an
+on-add and an on-modify hook: it reads all stdin lines and emits the
+last one (on-add receives the new task only; on-modify receives the old
+task then the new task).
+
+Task System v3 policy: this is the only hook. New hooks require a
+quarterly design session (see projects/task-system-v3.md in notes).
+"""
+
+import json
+import sys
+from datetime import datetime, time, timezone
+
+LOCAL_ZONE = datetime.now().astimezone().tzinfo
+END_OF_DAY = time(23, 59, 59)
+
+
+def main() -> int:
+    lines = sys.stdin.buffer.read().splitlines()
+    task = json.loads(lines[-1].decode("utf-8", errors="replace"))
+
+    if "due" in task:
+        due = datetime.fromisoformat(task["due"]).astimezone(LOCAL_ZONE)
+        if due.time() == time(0, 0, 0):
+            shifted = due.replace(
+                hour=END_OF_DAY.hour,
+                minute=END_OF_DAY.minute,
+                second=END_OF_DAY.second,
+            )
+            task["due"] = shifted.astimezone(timezone.utc).strftime(
+                "%Y%m%dT%H%M%SZ"
+            )
+            print(
+                "Due time shifted from "
+                f"{due.strftime('%H:%M:%S')} to {shifted.strftime('%H:%M:%S')}"
+            )
+
+    print(json.dumps(task))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
