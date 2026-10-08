@@ -15,7 +15,7 @@ vim.opt.updatetime = 300
 -- Add fix that has already been added to vim (errorformat ignoring (g)make[\d]: *** mesages)
 -- The vim fix was submitted here: https://groups.google.com/g/vim_dev/c/IUC2_PW2ZgI
 vim.opt.errorformat = "%*[^\"]\"%f\"%*\\D%l: %m,\"%f\"%*\\D%l: %m,%-Gg%\\?make[%*\\d]: *** [%f:%l:%m,%-Gg%\\?make: *** [%f:%l:%m,%-G%f:%l: (Each undeclared identifier is reported only once,%-G%f:%l: for each function it appears in.),%-GIn file included from %f:%l:%c:,%-GIn file included from %f:%l:%c\\,,%-GIn file included from %f:%l:%c,%-GIn file included from %f:%l,%-G%*[ ]from %f:%l:%c,%-G%*[ ]from %f:%l:,%-G%*[ ]from %f:%l\\,,%-G%*[ ]from %f:%l,%f:%l:%c:%m,%f(%l):%m,%f:%l:%m,\"%f\"\\, line %l%*\\D%c%*[^ ] %m,%D%*\\a[%*\\d]: Entering directory %*[`']%f',%X%*\\a[%*\\d]: Leaving directory %*[`']%f',%D%*\\a: Entering directory %*[`']%f',%X%*\\a: Leaving directory %*[`']%f',%DMaking %*\\a in %f,%f|%l| %m"
-vim.g.python3_host_prog = '$WORKON_HOME/neovim/bin/python'
+vim.g.python3_host_prog = vim.fn.expand('$XDG_DATA_HOME/nvim-venv/bin/python')
 
 -- Keymaps:
 local keymap_opts = { noremap=true, silent=true }
@@ -872,7 +872,7 @@ require("codeium").setup({
   virtual_text = {
     enabled = true,
     filetypes = {
-      python = true,
+      python = false,
       typescript = true,
       javascript = true,
       typescriptreact = true,
