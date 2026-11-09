@@ -19,8 +19,6 @@ prepend_path () {
     esac
 }
 
-prepend_path "$HOME/.local/bin"
-
 ##################################################
 ###              OS Specific ENVs              ###
 ##################################################
@@ -41,6 +39,10 @@ if [ "$(uname -s)" = Darwin ]; then
 elif [ "$(uname -s)" = Linux ]; then
     export PKG_PREFIX=/usr
 fi
+
+# NOTE: needs to be after the OS specific ENVs. Otherwise, the
+# ~/.local/bin is lower in priority than homebrew stuff.
+prepend_path "$HOME/.local/bin"
 
 ##################################################
 ###                    LANG                    ###

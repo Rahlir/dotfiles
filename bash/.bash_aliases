@@ -10,7 +10,6 @@ alias ip='ip -color=auto'
 # Basic aliases
 alias q='exit'
 alias c='clear'
-alias cc='clear && tmux clear-history'
 alias ll='LC_COLLATE=C ls -alF'
 alias lsa='ls -a'
 alias pfind='find . -name'
