@@ -530,6 +530,29 @@ let g:gitgutter_lightline_sign_added = "\Uf0419"
 let g:gitgutter_lightline_sign_modified = "\Uf0377"
 let g:gitgutter_lightline_sign_removed = "\Uf015a"
 
+" g:gitgutter_diff_base is global, so it applies to every repo until reset.
+function! s:GitGutterMergeBase(target) abort
+  let l:target = empty(a:target) ? 'origin/HEAD' : a:target
+  let l:sha = trim(system('git merge-base HEAD ' . shellescape(l:target)))
+  if v:shell_error
+    echohl ErrorMsg | echom 'merge-base failed: ' . l:sha | echohl None
+    return
+  endif
+  let g:gitgutter_diff_base = l:sha
+  GitGutterAll
+endfunction
+
+function! s:GitGutterReset() abort
+  let g:gitgutter_diff_base = ''
+  GitGutterAll
+endfunction
+
+command! -nargs=? GitGutterMergeBase call s:GitGutterMergeBase(<q-args>)
+command! GitGutterReset call s:GitGutterReset()
+
+nnoremap <silent> <leader>hm :GitGutterMergeBase<CR>
+nnoremap <silent> <leader>hr :GitGutterReset<CR>
+
 " }}}
 " Lightline Options: {{{
 

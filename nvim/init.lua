@@ -107,6 +107,8 @@ wk.setup{
     { "<leader>hp", desc = "Preview hunk" },
     { "<leader>hs", desc = "Stage hunk" },
     { "<leader>hu", desc = "Undo hunk" },
+    { "<leader>hm", desc = "Diff vs merge base" },
+    { "<leader>hr", desc = "Reset diff base" },
 
     { "<leader>s", group = "options", icon = "" },
     { "<leader>sh", desc = "Toggle hlsearch" },
@@ -210,7 +212,40 @@ vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = "Telescope live gr
 vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = "Telescope buffers" })
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = "Telescope help tags" })
 vim.keymap.set('n', '<leader>fd', builtin.diagnostics, { desc = "Telescope diagnostics" })
-vim.keymap.set('n', '<leader>ft', builtin.git_status, { desc = "Telescope git status" })
+-- builtin.git_status always diffs against HEAD, so when a gitgutter diff base is
+-- set, list files changed since that base instead.
+local function git_status_or_since_base()
+  local base = vim.g.gitgutter_diff_base
+  if base == nil or base == '' then
+    return builtin.git_status()
+  end
+  local root = vim.trim(vim.fn.system({ 'git', 'rev-parse', '--show-toplevel' }))
+  if vim.v.shell_error ~= 0 then
+    vim.notify('Not in a git repository', vim.log.levels.ERROR)
+    return
+  end
+  local pickers = require('telescope.pickers')
+  local finders = require('telescope.finders')
+  local previewers = require('telescope.previewers')
+  local make_entry = require('telescope.make_entry')
+  local conf = require('telescope.config').values
+
+  pickers.new({ cwd = root }, {
+    prompt_title = 'Changed since ' .. base:sub(1, 8),
+    finder = finders.new_oneshot_job(
+      { 'git', 'diff', '--name-only', base },
+      { cwd = root, entry_maker = make_entry.gen_from_file({ cwd = root }) }
+    ),
+    sorter = conf.file_sorter({}),
+    previewer = previewers.new_termopen_previewer({
+      cwd = root,
+      get_command = function(entry)
+        return { 'git', '--no-pager', 'diff', base, '--', entry.value }
+      end,
+    }),
+  }):find()
+end
+vim.keymap.set('n', '<leader>ft', git_status_or_since_base, { desc = "Telescope git status / since diff base" })
 vim.keymap.set('n', '<leader>fr', builtin.resume, { desc = "Resume last telescope" })
 vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = "Telescope keymaps" })
 
