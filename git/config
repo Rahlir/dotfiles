@@ -49,12 +49,12 @@
 
     # Remove file(s) from Git but not from disk
     untrack = rm --cache --
+    mr = "!f(){ t=${2:-main}; ttl=${1:-$(git log --format=%s \"origin/$t..HEAD\" | head -1)}; git push -u origin HEAD -o merge_request.create -o merge_request.target=\"$t\" -o merge_request.remove_source_branch -o merge_request.title=\"$ttl\"; }; f"
 
 [core]
     # Using only LF line endings, see core.autocrlf in
     # https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration
     autocrlf = input
-    hooksPath = ~/.config/git/hooks
 
 [init]
     # Use main instead of master on git init
@@ -111,3 +111,5 @@
     oldMoved = cyan
     # Moved and yanked
     newMoved = brightcyan
+[includeIf "gitdir:~/Development/tmobile/"]
+    path = ~/.gitconfig-tmobile

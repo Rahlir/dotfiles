@@ -42,6 +42,12 @@ log/
 # This is useful when stashing away scrap files
 .scraps/
 
+# Agent handoff documents (see clanker-stuff /handoff and /pickup prompts)
+.handoffs/
+
+# Pi settings
+.pi/
+
 # T-Mobile projects
 db_queries/
 requests/
